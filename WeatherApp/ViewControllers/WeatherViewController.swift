@@ -12,13 +12,18 @@ class WeatherViewController: UIViewController {
     
     let tableView = UITableView()
     let weatherService = WeatherApiService()
-    let cities = ["London", "Split", "Osijek", "Rijeka"]
+    let cities = ["Tunis", "Chicago", "Sidney", "Thredbo"]
     var weatherData: [WeatherData] = []{
         didSet {
             DispatchQueue.main.async {
                 self.tableView.reloadData()
             }
         }
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.navigationBar.isTranslucent = false
+        navigationController?.navigationBar.barTintColor = .systemBlue
     }
     
     override func viewDidLoad() {
@@ -70,6 +75,14 @@ extension WeatherViewController: UITableViewDataSource {
 
 extension WeatherViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 90
+        return 100
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        print("selected \(indexPath.row)")
+        let selectedCity = weatherData[indexPath.row]
+        let nextViewController = WeatherDetailViewController(with: selectedCity)
+        nextViewController.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(nextViewController, animated: true)
     }
 }

@@ -32,22 +32,22 @@ class WeatherApiService {
     }
     
     func prepareData(_ weather: Weather, _ city: String) -> WeatherData {
-        let weatherIcon = setWeatherIcon(weather.weatherDescription[0].id)
-        return WeatherData(city: city, weather: weather.mainWeatherData, weatherIcon: weatherIcon)
+        let weatherIcon = setWeatherIcon(weather.weatherDescription[0].conditionID)
+        return WeatherData(city: city, parameters: weather.mainWeatherData, icon: weatherIcon, description: weather.weatherDescription[0].weatherDescription)
     }
     
     func setWeatherIcon(_ weatherID: Int) -> String {
         switch weatherID {
         case 200...232:
-            return "cloud.bolt"
+            return "cloud.bolt.rain.fill"
         case 300...321:
-            return "cloud.drizzle"
+            return "cloud.drizzle.fill"
         case 500...531:
-            return "cloud.rain"
+            return "cloud.rain.fill"
         case 600...622:
-            return "cloud.snow"
+            return "cloud.snow.fill"
         case 701...781:
-            return "cloud.fog"
+            return "cloud.fog.fill"
         case 800:
             return "sun.max"
         case 801...804:

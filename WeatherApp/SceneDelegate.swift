@@ -11,11 +11,13 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
+    var navigationController: UINavigationController?
     
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let winScene = (scene as? UIWindowScene) else { return }
         window = UIWindow(windowScene: winScene)
-        window?.rootViewController = WeatherViewController()
+        navigationController = UINavigationController(rootViewController: WeatherViewController())
+        window?.rootViewController = navigationController
         
         window?.makeKeyAndVisible()
     }

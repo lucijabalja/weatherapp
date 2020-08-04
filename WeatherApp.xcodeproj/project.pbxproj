@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		7F722B8B24D9565C0045CBA8 /* WeatherDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F722B8A24D9565C0045CBA8 /* WeatherDetailViewController.swift */; };
+		7F722B8D24D967700045CBA8 /* WeatherDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F722B8C24D967700045CBA8 /* WeatherDetailView.swift */; };
 		7F8BA64B24D83D8F004BFC74 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8BA64A24D83D8F004BFC74 /* AppDelegate.swift */; };
 		7F8BA64D24D83D8F004BFC74 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F8BA64C24D83D8F004BFC74 /* SceneDelegate.swift */; };
 		7F8BA65424D83D91004BFC74 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 7F8BA65324D83D91004BFC74 /* Assets.xcassets */; };
@@ -40,6 +41,7 @@
 
 /* Begin PBXFileReference section */
 		7F722B8A24D9565C0045CBA8 /* WeatherDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailViewController.swift; sourceTree = "<group>"; };
+		7F722B8C24D967700045CBA8 /* WeatherDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailView.swift; sourceTree = "<group>"; };
 		7F8BA64724D83D8F004BFC74 /* WeatherApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WeatherApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		7F8BA64A24D83D8F004BFC74 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		7F8BA64C24D83D8F004BFC74 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				7F8BA68824D84DB8004BFC74 /* WeatherTableViewCell.swift */,
+				7F722B8C24D967700045CBA8 /* WeatherDetailView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -308,6 +311,7 @@
 				7F8BA67C24D83DDD004BFC74 /* WeatherViewController.swift in Sources */,
 				7F8BA64B24D83D8F004BFC74 /* AppDelegate.swift in Sources */,
 				7F8BA64D24D83D8F004BFC74 /* SceneDelegate.swift in Sources */,
+				7F722B8D24D967700045CBA8 /* WeatherDetailView.swift in Sources */,
 				7F8BA68324D841ED004BFC74 /* WeatherApiService.swift in Sources */,
 				7F8BA68724D84281004BFC74 /* Global.swift in Sources */,
 			);
