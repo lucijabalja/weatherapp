@@ -64,6 +64,7 @@ class WeatherTableViewCell: UITableViewCell {
         maxTempLabel.textColor =  .white
         maxTempLabel.clipsToBounds = true
         maxTempLabel.translatesAutoresizingMaskIntoConstraints = false
+        
         self.contentView.addSubview(weatherIcon)
         self.contentView.addSubview(cityLabel)
         self.contentView.addSubview(minTempLabel)
@@ -86,7 +87,6 @@ class WeatherTableViewCell: UITableViewCell {
         
         maxTempLabel.centerYAnchor.constraint(equalTo:self.contentView.centerYAnchor).isActive = true
         maxTempLabel.trailingAnchor.constraint(equalTo:self.minTempLabel.leadingAnchor, constant: -8).isActive = true
-
     }
     
     required init?(coder aDecoder: NSCoder) {

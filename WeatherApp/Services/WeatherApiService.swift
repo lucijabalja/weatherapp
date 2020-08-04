@@ -37,7 +37,7 @@ class WeatherApiService {
     }
     
     func setWeatherIcon(_ weatherID: Int) -> String {
-        switch weatherID{
+        switch weatherID {
         case 200...232:
             return "cloud.bolt"
         case 300...321:
