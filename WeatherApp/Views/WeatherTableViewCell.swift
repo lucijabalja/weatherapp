@@ -23,7 +23,7 @@ class WeatherTableViewCell: UITableViewCell {
             cityLabel.text = weatherData.city
             currentTempLabel.text = "\(weatherData.parameters.currentTemperature)°"
             minTempLabel.text = "\(weatherData.parameters.minTemperature)°"
-            maxTempLabel.text = "\(weatherData.parameters.maxTemperature)° /"
+            maxTempLabel.text = "\(weatherData.parameters.maxTemperature)°/"
         }
     }
     
@@ -43,7 +43,6 @@ class WeatherTableViewCell: UITableViewCell {
     
     func setupUI() {
         contentView.backgroundColor = .systemBlue
-        
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.clipsToBounds = true
         

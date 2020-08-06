@@ -22,6 +22,7 @@ class WeatherDetailView: UIView {
     var weatherData: WeatherData! {
         didSet {
             setLabelsText()
+            setDateTime()
         }
     }
     
@@ -32,11 +33,10 @@ class WeatherDetailView: UIView {
     }
     
     func setLabelsText() {
-        setDateTime()
         weatherIcon.image = UIImage(systemName: weatherData.icon)
         cityLabel.text = weatherData.city
         weatherDescription.text = weatherData.description
-        currentTempLabel.text = "\(weatherData.parameters.currentTemperature)°"
+        currentTempLabel.text = "\(weatherData.parameters.currentTemperature)°C"
         minTempLabel.text = "\(weatherData.parameters.minTemperature)°"
         maxTempLabel.text = "\(weatherData.parameters.maxTemperature)°"
         humidityTitle.text = "HUMIDITY"
@@ -52,7 +52,7 @@ class WeatherDetailView: UIView {
         formatter.timeStyle = .short
         timeLabel.text = formatter.string(from: currentDate)
     }
-
+    
     func setupUI() {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBlue
@@ -121,7 +121,6 @@ class WeatherDetailView: UIView {
         humidityLabel.topAnchor.constraint(equalTo: humidityTitle.bottomAnchor, constant: 5).isActive = true
         humidityLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
         humidityLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
-        
     }
     
     required init?(coder: NSCoder) {

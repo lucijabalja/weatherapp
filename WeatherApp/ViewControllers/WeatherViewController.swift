@@ -11,8 +11,8 @@ import UIKit
 class WeatherViewController: UIViewController {
     let tableView = UITableView()
     let weatherService = WeatherApiService()
-    let cities = ["Tunis", "Split", "Sidney", "Dublin"]
-    var weatherData: [WeatherData] = []{
+    let cities = ["Zagreb", "Split", "Osijek", "Rijeka"]
+    var weatherData: [WeatherData] = [] {
         didSet {
             DispatchQueue.main.async {
                 self.tableView.reloadData()
@@ -66,7 +66,6 @@ extension WeatherViewController: UITableViewDataSource {
 }
 
 extension WeatherViewController: UITableViewDelegate {
-    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCity = weatherData[indexPath.row]
         let nextViewController = WeatherDetailViewController(with: selectedCity)
