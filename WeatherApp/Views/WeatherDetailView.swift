@@ -9,6 +9,8 @@
 import UIKit
 
 class WeatherDetailView: UIView {
+    let dateLabel = UILabel()
+    let timeLabel = UILabel()
     let weatherIcon = UIImageView()
     let cityLabel = UILabel()
     let weatherDescription = UILabel()
@@ -30,6 +32,7 @@ class WeatherDetailView: UIView {
     }
     
     func setLabelsText() {
+        setDateTime()
         weatherIcon.image = UIImage(systemName: weatherData.icon)
         cityLabel.text = weatherData.city
         weatherDescription.text = weatherData.description
@@ -40,10 +43,22 @@ class WeatherDetailView: UIView {
         humidityLabel.text = "\(weatherData.parameters.humidity)%"
     }
     
+    func setDateTime() {
+        let formatter = DateFormatter()
+        let currentDate = Date()
+        formatter.dateStyle = .full
+        dateLabel.text = formatter.string(from: currentDate)
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
+        timeLabel.text = formatter.string(from: currentDate)
+    }
+    
     func setupUI() {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBlue
         
+        UISetup.setLabel(dateLabel)
+        UISetup.setLabel(timeLabel, size: 30)
         UISetup.setImageView(weatherIcon)
         UISetup.setLabel(cityLabel, size: 40)
         UISetup.setLabel(weatherDescription)
@@ -56,6 +71,8 @@ class WeatherDetailView: UIView {
         cityLabel.numberOfLines = 0
         weatherDescription.numberOfLines = 0
         
+        addSubview(dateLabel)
+        addSubview(timeLabel)
         addSubview(weatherIcon)
         addSubview(cityLabel)
         addSubview(weatherDescription)
@@ -67,15 +84,23 @@ class WeatherDetailView: UIView {
     }
     
     func setupConstraints() {
-        weatherIcon.topAnchor.constraint(equalTo:self.topAnchor, constant: 30).isActive = true
-        weatherIcon.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        weatherIcon.heightAnchor.constraint(equalToConstant: 100).isActive = true
-        weatherIcon.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        dateLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true
+        dateLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
+        dateLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
         
-        cityLabel.topAnchor.constraint(equalTo:weatherIcon.bottomAnchor, constant:20).isActive = true
+        timeLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 10).isActive = true
+        timeLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
+        timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
+        
+        cityLabel.topAnchor.constraint(equalTo:timeLabel.bottomAnchor, constant:20).isActive = true
         cityLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
-        weatherDescription.topAnchor.constraint(equalTo:cityLabel.bottomAnchor, constant:10).isActive = true
+        weatherIcon.topAnchor.constraint(equalTo:cityLabel.bottomAnchor, constant: 20).isActive = true
+        weatherIcon.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+        weatherIcon.heightAnchor.constraint(equalToConstant: 150).isActive = true
+        weatherIcon.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        
+        weatherDescription.topAnchor.constraint(equalTo:weatherIcon.bottomAnchor, constant:10).isActive = true
         weatherDescription.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
         currentTempLabel.topAnchor.constraint(equalTo:weatherDescription.bottomAnchor, constant:20).isActive = true

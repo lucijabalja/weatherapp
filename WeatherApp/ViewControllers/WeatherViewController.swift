@@ -25,7 +25,6 @@ class WeatherViewController: UIViewController {
         tableView.dataSource = self
         tableView.delegate = self
         tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: "weatherCell")
-        
         setupUI()
         setupConstraints()
         fillTableView()
