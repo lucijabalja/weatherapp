@@ -15,19 +15,11 @@ class WeatherDetailView: UIView {
     let currentTempLabel = UILabel()
     let minTempLabel = UILabel()
     let maxTempLabel = UILabel()
+    let humidityTitle = UILabel()
     let humidityLabel = UILabel()
-    let pressureLabel = UILabel()
-    
     var weatherData: WeatherData! {
         didSet {
-            weatherIcon.image = UIImage(systemName: weatherData.icon)
-            cityLabel.text = weatherData.city
-            weatherDescription.text = weatherData.description
-            currentTempLabel.text = "\(weatherData.parameters.currentTemperature)°"
-            minTempLabel.text = "\(weatherData.parameters.minTemperature)°"
-            maxTempLabel.text = "\(weatherData.parameters.maxTemperature)°"
-            humidityLabel.text = "\(weatherData.parameters.humidity)"
-            pressureLabel.text = "\(weatherData.parameters.pressure)"
+            setLabelsText()
         }
     }
     
@@ -37,51 +29,41 @@ class WeatherDetailView: UIView {
         setupConstraints()
     }
     
+    func setLabelsText() {
+        weatherIcon.image = UIImage(systemName: weatherData.icon)
+        cityLabel.text = weatherData.city
+        weatherDescription.text = weatherData.description
+        currentTempLabel.text = "\(weatherData.parameters.currentTemperature)°"
+        minTempLabel.text = "\(weatherData.parameters.minTemperature)°"
+        maxTempLabel.text = "\(weatherData.parameters.maxTemperature)°"
+        humidityTitle.text = "HUMIDITY"
+        humidityLabel.text = "\(weatherData.parameters.humidity)%"
+    }
+    
     func setupUI() {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBlue
         
-        weatherIcon.contentMode = .scaleAspectFill // image will never be strecthed vertially or horizontally
-        weatherIcon.translatesAutoresizingMaskIntoConstraints = false // enable autolayout
-        weatherIcon.layer.cornerRadius = 35
-        weatherIcon.clipsToBounds = true
-        weatherIcon.tintColor = .white
+        UISetup.setImageView(weatherIcon)
+        UISetup.setLabel(cityLabel, size: 40)
+        UISetup.setLabel(weatherDescription)
+        UISetup.setLabel(currentTempLabel, size: 60)
+        UISetup.setLabel(minTempLabel, size: 25)
+        UISetup.setLabel(maxTempLabel, size: 35)
+        UISetup.setLabel(humidityTitle)
+        UISetup.setLabel(humidityLabel, size: 25)
         
-        cityLabel.font = UIFont.boldSystemFont(ofSize: 40)
-        cityLabel.textColor = .white
         cityLabel.numberOfLines = 0
-        cityLabel.adjustsFontSizeToFitWidth = true
-        cityLabel.translatesAutoresizingMaskIntoConstraints = false
-        cityLabel.textAlignment = .center
-        
-        weatherDescription.font = UIFont.boldSystemFont(ofSize: 20)
-        weatherDescription.textColor = .white
         weatherDescription.numberOfLines = 0
-        weatherDescription.adjustsFontSizeToFitWidth = true
-        weatherDescription.translatesAutoresizingMaskIntoConstraints = false
-        weatherDescription.textAlignment = .center
         
-        currentTempLabel.font = UIFont.boldSystemFont(ofSize: 60)
-        currentTempLabel.textColor =  .white
-        currentTempLabel.clipsToBounds = true
-        currentTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        minTempLabel.font = UIFont.boldSystemFont(ofSize: 25)
-        minTempLabel.textColor =  .white
-        minTempLabel.clipsToBounds = true
-        minTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        maxTempLabel.font = UIFont.boldSystemFont(ofSize: 35)
-        maxTempLabel.textColor =  .white
-        maxTempLabel.clipsToBounds = true
-        maxTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-       addSubview(weatherIcon)
-       addSubview(cityLabel)
-       addSubview(weatherDescription)
-       addSubview(currentTempLabel)
-       addSubview(minTempLabel)
-       addSubview(maxTempLabel)
+        addSubview(weatherIcon)
+        addSubview(cityLabel)
+        addSubview(weatherDescription)
+        addSubview(currentTempLabel)
+        addSubview(minTempLabel)
+        addSubview(maxTempLabel)
+        addSubview(humidityTitle)
+        addSubview(humidityLabel)
     }
     
     func setupConstraints() {
@@ -106,10 +88,18 @@ class WeatherDetailView: UIView {
         minTempLabel.topAnchor.constraint(equalTo:currentTempLabel.bottomAnchor, constant: 23).isActive = true
         minTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 45).isActive = true
         minTempLabel.heightAnchor.constraint(equalToConstant:50).isActive = true
+        
+        humidityTitle.topAnchor.constraint(equalTo: maxTempLabel.bottomAnchor, constant: 20).isActive = true
+        humidityTitle.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
+        humidityTitle.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
+        
+        humidityLabel.topAnchor.constraint(equalTo: humidityTitle.bottomAnchor, constant: 5).isActive = true
+        humidityLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
+        humidityLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
+        
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
 }

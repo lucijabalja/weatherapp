@@ -9,10 +9,9 @@
 import UIKit
 
 class WeatherViewController: UIViewController {
-    
     let tableView = UITableView()
     let weatherService = WeatherApiService()
-    let cities = ["Tunis", "Chicago", "Sidney", "Thredbo"]
+    let cities = ["Zagreb", "Split", "Rijeka", "Osijek"]
     var weatherData: [WeatherData] = []{
         didSet {
             DispatchQueue.main.async {
@@ -21,26 +20,20 @@ class WeatherViewController: UIViewController {
         }
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        navigationController?.navigationBar.isTranslucent = false
-        navigationController?.navigationBar.barTintColor = .systemBlue
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         tableView.dataSource = self
         tableView.delegate = self
-        
         tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: "weatherCell")
+        
         setupUI()
         setupConstraints()
         fillTableView()
     }
     
     func fillTableView() {
-        for city in cities {
-            weatherService.fetchWeather(for: city, completion: {
-                (weatherResult) in
+        cities.forEach { city in
+            weatherService.fetchWeather(for: city, completion: { (weatherResult) in
                 self.weatherData.append(weatherResult)
             })
         }
@@ -74,12 +67,8 @@ extension WeatherViewController: UITableViewDataSource {
 }
 
 extension WeatherViewController: UITableViewDelegate {
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
-    }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        print("selected \(indexPath.row)")
         let selectedCity = weatherData[indexPath.row]
         let nextViewController = WeatherDetailViewController(with: selectedCity)
         nextViewController.modalPresentationStyle = .fullScreen

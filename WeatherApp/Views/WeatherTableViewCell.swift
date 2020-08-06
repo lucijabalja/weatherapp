@@ -47,36 +47,14 @@ class WeatherTableViewCell: UITableViewCell {
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.clipsToBounds = true
         
-        weatherIcon.contentMode = .scaleAspectFill // image will never be strecthed vertially or horizontally
-        weatherIcon.translatesAutoresizingMaskIntoConstraints = false // enable autolayout
-        weatherIcon.layer.cornerRadius = 35
-        weatherIcon.clipsToBounds = true
-        weatherIcon.tintColor = .white
-        
-        cityLabel.font = UIFont.boldSystemFont(ofSize: 30)
-        cityLabel.textColor = .white
+        UISetup.setImageView(weatherIcon)
+        UISetup.setLabel(cityLabel, size: 30, textAlignment: .left)
+        UISetup.setLabel(currentTempLabel, size: 40, textAlignment: .right)
+        UISetup.setLabel(maxTempLabel, size: 15, textAlignment: .right)
+        UISetup.setLabel(minTempLabel, size: 15, textAlignment: .left)
         cityLabel.numberOfLines = 0
-        cityLabel.adjustsFontSizeToFitWidth = true
-        cityLabel.translatesAutoresizingMaskIntoConstraints = false
-        
-        currentTempLabel.font = UIFont.boldSystemFont(ofSize: 40)
-        currentTempLabel.textColor =  .white
-        currentTempLabel.clipsToBounds = true
-        currentTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        currentTempLabel.textAlignment = .right
-
-        minTempLabel.font = UIFont.boldSystemFont(ofSize: 15)
         minTempLabel.textColor =  .systemGray4
-        minTempLabel.clipsToBounds = true
-        minTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        minTempLabel.textAlignment = .left
 
-        maxTempLabel.font = UIFont.boldSystemFont(ofSize: 20)
-        maxTempLabel.textColor =  .white
-        maxTempLabel.clipsToBounds = true
-        maxTempLabel.translatesAutoresizingMaskIntoConstraints = false
-        maxTempLabel.textAlignment = .right
-        
         contentView.addSubview(containerView)
         contentView.addSubview(weatherIcon)
         contentView.addSubview(cityLabel)
@@ -87,7 +65,7 @@ class WeatherTableViewCell: UITableViewCell {
     
     func setupConstraints() {
         weatherIcon.centerYAnchor.constraint(equalTo:self.contentView.centerYAnchor).isActive = true
-        weatherIcon.leadingAnchor.constraint(equalTo:self.contentView.leadingAnchor, constant: 10).isActive = true
+        weatherIcon.leadingAnchor.constraint(equalTo:self.contentView.leadingAnchor, constant: 15).isActive = true
         weatherIcon.widthAnchor.constraint(equalToConstant: 50).isActive = true
         weatherIcon.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
@@ -100,7 +78,7 @@ class WeatherTableViewCell: UITableViewCell {
         containerView.widthAnchor.constraint(equalToConstant: 150).isActive = true
         containerView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
         
-        currentTempLabel.topAnchor.constraint(equalTo: self.containerView.topAnchor, constant: 20).isActive = true
+        currentTempLabel.topAnchor.constraint(equalTo: self.containerView.topAnchor, constant: 30).isActive = true
         currentTempLabel.leadingAnchor.constraint(equalTo:self.containerView.leadingAnchor).isActive = true
         currentTempLabel.trailingAnchor.constraint(equalTo:self.containerView.trailingAnchor).isActive = true
     
