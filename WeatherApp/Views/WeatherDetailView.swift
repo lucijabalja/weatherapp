@@ -19,7 +19,7 @@ class WeatherDetailView: UIView {
     let maxTempLabel = UILabel()
     let humidityTitle = UILabel()
     let humidityLabel = UILabel()
-    var weatherData: WeatherData! {
+    var weatherData: WeatherData? {
         didSet {
             setLabelsText()
             setDateTime()
@@ -33,12 +33,13 @@ class WeatherDetailView: UIView {
     }
     
     func setLabelsText() {
+        guard let weatherData = weatherData else { return }
         weatherIcon.image = UIImage(systemName: weatherData.icon)
         cityLabel.text = weatherData.city
         weatherDescription.text = weatherData.description
         currentTempLabel.text = "\(weatherData.parameters.currentTemperature)°C"
-        minTempLabel.text = "\(weatherData.parameters.minTemperature)°"
-        maxTempLabel.text = "\(weatherData.parameters.maxTemperature)°"
+        minTempLabel.text = "\(weatherData.parameters.minTemperature)° min "
+        maxTempLabel.text = "max \(weatherData.parameters.maxTemperature)°"
         humidityTitle.text = "HUMIDITY"
         humidityLabel.text = "\(weatherData.parameters.humidity)%"
     }
@@ -63,13 +64,14 @@ class WeatherDetailView: UIView {
         UISetup.setLabel(cityLabel, size: 40)
         UISetup.setLabel(weatherDescription)
         UISetup.setLabel(currentTempLabel, size: 60)
-        UISetup.setLabel(minTempLabel, size: 25)
-        UISetup.setLabel(maxTempLabel, size: 35)
+        UISetup.setLabel(maxTempLabel, size: 30)
+        UISetup.setLabel(minTempLabel, size: 28)
         UISetup.setLabel(humidityTitle)
         UISetup.setLabel(humidityLabel, size: 25)
         
         cityLabel.numberOfLines = 0
         weatherDescription.numberOfLines = 0
+        minTempLabel.textColor = .systemGray4
         
         addSubview(dateLabel)
         addSubview(timeLabel)
@@ -107,13 +109,13 @@ class WeatherDetailView: UIView {
         currentTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
         maxTempLabel.topAnchor.constraint(equalTo:currentTempLabel.bottomAnchor, constant: 20).isActive = true
-        maxTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: -45).isActive = true
+        maxTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: -70).isActive = true
         maxTempLabel.heightAnchor.constraint(equalToConstant:50).isActive = true
         
-        minTempLabel.topAnchor.constraint(equalTo:currentTempLabel.bottomAnchor, constant: 23).isActive = true
-        minTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 45).isActive = true
+        minTempLabel.topAnchor.constraint(equalTo:currentTempLabel.bottomAnchor, constant: 20).isActive = true
         minTempLabel.heightAnchor.constraint(equalToConstant:50).isActive = true
-        
+        minTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 70).isActive = true
+
         humidityTitle.topAnchor.constraint(equalTo: maxTempLabel.bottomAnchor, constant: 20).isActive = true
         humidityTitle.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
         humidityTitle.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true

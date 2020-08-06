@@ -23,11 +23,11 @@ class Utils {
         case 701...781:
             return "cloud.fog.fill"
         case 800:
-            return "sun.max"
+            return "sun.max.fill"
         case 801...804:
-            return "cloud.bolt"
+            return "cloud.bolt.fill"
         default:
-            return "cloud"
+            return "cloud.fill"
         }
     }
 }
