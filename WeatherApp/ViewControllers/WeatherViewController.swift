@@ -11,7 +11,7 @@ import UIKit
 class WeatherViewController: UIViewController {
     let tableView = UITableView()
     let weatherService = WeatherApiService()
-    let cities = ["Zagreb", "Split", "Rijeka", "Osijek"]
+    let cities = ["Tunis", "Split", "Sidney", "Dublin"]
     var weatherData: [WeatherData] = []{
         didSet {
             DispatchQueue.main.async {

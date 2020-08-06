@@ -52,7 +52,7 @@ class WeatherDetailView: UIView {
         formatter.timeStyle = .short
         timeLabel.text = formatter.string(from: currentDate)
     }
-    
+
     func setupUI() {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBlue
