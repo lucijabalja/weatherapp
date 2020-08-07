@@ -9,30 +9,17 @@
 import UIKit
 
 class WeatherTableViewCell: UITableViewCell {
-    let containerView = UIView()
-    let weatherIcon = UIImageView()
-    let cityLabel = UILabel()
-    let currentTempLabel = UILabel()
-    let minTempLabel = UILabel()
-    let maxTempLabel = UILabel()
+    private let containerView = UIView()
+    private let weatherIcon = UIImageView()
+    private let cityLabel = UILabel()
+    private let currentTempLabel = UILabel()
+    private let minTempLabel = UILabel()
+    private let maxTempLabel = UILabel()
     
-    var weather: WeatherData? {
+    var weather: CityWeather? {
         didSet {
-            guard let weatherData = weather else { return }
-            weatherIcon.image = UIImage(systemName: weatherData.icon)
-            cityLabel.text = weatherData.city
-            currentTempLabel.text = "\(weatherData.parameters.currentTemperature)°"
-            minTempLabel.text = "\(weatherData.parameters.minTemperature)°"
-            maxTempLabel.text = "\(weatherData.parameters.maxTemperature)°/"
+            setLabelsText()
         }
-    }
-    
-    override func awakeFromNib() {
-        super.awakeFromNib()
-    }
-    
-    override func setSelected(_ selected: Bool, animated: Bool) {
-        super.setSelected(selected, animated: animated)
     }
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -41,19 +28,30 @@ class WeatherTableViewCell: UITableViewCell {
         setupConstraints()
     }
     
-    func setupUI() {
+    private func setLabelsText() {
+        guard let weatherData = weather else { return }
+        
+        weatherIcon.image = UIImage(systemName: weatherData.icon)
+        cityLabel.text = weatherData.city
+        currentTempLabel.text = "\(weatherData.parameters.currentTemperature)°"
+        minTempLabel.text = "\(weatherData.parameters.minTemperature)°"
+        maxTempLabel.text = "\(weatherData.parameters.maxTemperature)°/"
+    }
+    
+    private func setupUI() {
         contentView.backgroundColor = .systemBlue
         containerView.translatesAutoresizingMaskIntoConstraints = false
         containerView.clipsToBounds = true
         
-        UISetup.setImageView(weatherIcon)
-        UISetup.setLabel(cityLabel, size: 30, textAlignment: .left)
-        UISetup.setLabel(currentTempLabel, size: 40, textAlignment: .right)
-        UISetup.setLabel(maxTempLabel, size: 15, textAlignment: .right)
-        UISetup.setLabel(minTempLabel, size: 15, textAlignment: .left)
+        weatherIcon.styleView()
+        cityLabel.style(size: 30, textAlignment: .left)
+        currentTempLabel.style(size: 40, textAlignment: .right)
+        maxTempLabel.style(size: 15, textAlignment: .right)
+        minTempLabel.style(size: 15, textAlignment: .left)
+        
         cityLabel.numberOfLines = 0
         minTempLabel.textColor =  .systemGray4
-
+        
         contentView.addSubview(containerView)
         contentView.addSubview(weatherIcon)
         contentView.addSubview(cityLabel)
@@ -62,7 +60,7 @@ class WeatherTableViewCell: UITableViewCell {
         containerView.addSubview(maxTempLabel)
     }
     
-    func setupConstraints() {
+    private func setupConstraints() {
         weatherIcon.centerYAnchor.constraint(equalTo:self.contentView.centerYAnchor).isActive = true
         weatherIcon.leadingAnchor.constraint(equalTo:self.contentView.leadingAnchor, constant: 15).isActive = true
         weatherIcon.widthAnchor.constraint(equalToConstant: 50).isActive = true
@@ -80,7 +78,7 @@ class WeatherTableViewCell: UITableViewCell {
         currentTempLabel.topAnchor.constraint(equalTo: self.containerView.topAnchor, constant: 30).isActive = true
         currentTempLabel.leadingAnchor.constraint(equalTo:self.containerView.leadingAnchor).isActive = true
         currentTempLabel.trailingAnchor.constraint(equalTo:self.containerView.trailingAnchor).isActive = true
-    
+        
         maxTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: 5).isActive = true
         maxTempLabel.bottomAnchor.constraint(equalTo:self.containerView.bottomAnchor, constant: -5).isActive = true
         maxTempLabel.leadingAnchor.constraint(equalTo:self.containerView.leadingAnchor).isActive = true

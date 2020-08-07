@@ -9,17 +9,17 @@
 import UIKit
 
 class WeatherDetailView: UIView {
-    let dateLabel = UILabel()
-    let timeLabel = UILabel()
-    let weatherIcon = UIImageView()
-    let cityLabel = UILabel()
-    let weatherDescription = UILabel()
-    let currentTempLabel = UILabel()
-    let minTempLabel = UILabel()
-    let maxTempLabel = UILabel()
-    let humidityTitle = UILabel()
-    let humidityLabel = UILabel()
-    var weatherData: WeatherData? {
+    private let dateLabel = UILabel()
+    private let timeLabel = UILabel()
+    private let weatherIcon = UIImageView()
+    private let cityLabel = UILabel()
+    private let weatherDescription = UILabel()
+    private let currentTempLabel = UILabel()
+    private let minTempLabel = UILabel()
+    private let maxTempLabel = UILabel()
+    private let humidityTitle = UILabel()
+    private let humidityLabel = UILabel()
+    var weatherData: CityWeather? {
         didSet {
             setLabelsText()
             setDateTime()
@@ -32,8 +32,9 @@ class WeatherDetailView: UIView {
         setupConstraints()
     }
     
-    func setLabelsText() {
+    private func setLabelsText() {
         guard let weatherData = weatherData else { return }
+        
         weatherIcon.image = UIImage(systemName: weatherData.icon)
         cityLabel.text = weatherData.city
         weatherDescription.text = weatherData.description
@@ -44,7 +45,7 @@ class WeatherDetailView: UIView {
         humidityLabel.text = "\(weatherData.parameters.humidity)%"
     }
     
-    func setDateTime() {
+    private func setDateTime() {
         let formatter = DateFormatter()
         let currentDate = Date()
         formatter.dateStyle = .full
@@ -54,20 +55,20 @@ class WeatherDetailView: UIView {
         timeLabel.text = formatter.string(from: currentDate)
     }
     
-    func setupUI() {
+    private func setupUI() {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBlue
-        
-        UISetup.setLabel(dateLabel)
-        UISetup.setLabel(timeLabel, size: 30)
-        UISetup.setImageView(weatherIcon)
-        UISetup.setLabel(cityLabel, size: 40)
-        UISetup.setLabel(weatherDescription)
-        UISetup.setLabel(currentTempLabel, size: 60)
-        UISetup.setLabel(maxTempLabel, size: 30)
-        UISetup.setLabel(minTempLabel, size: 28)
-        UISetup.setLabel(humidityTitle)
-        UISetup.setLabel(humidityLabel, size: 25)
+             
+        dateLabel.style()
+        timeLabel.style(size: 30)
+        weatherIcon.styleView()
+        cityLabel.style(size: 40)
+        weatherDescription.style()
+        currentTempLabel.style(size: 60)
+        maxTempLabel.style(size: 30)
+        minTempLabel.style(size: 28)
+        humidityTitle.style()
+        humidityLabel.style(size: 25)
         
         cityLabel.numberOfLines = 0
         weatherDescription.numberOfLines = 0
@@ -85,44 +86,46 @@ class WeatherDetailView: UIView {
         addSubview(humidityLabel)
     }
     
-    func setupConstraints() {
-        dateLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true
-        dateLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
-        dateLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
+    private func setupConstraints() {
+        let topMargin: CGFloat = 10
+        let labelMargin: CGFloat = 20
+        let labelsHeight: CGFloat = 50
+        let centerDistance: CGFloat = 80
+        let iconDimensions: CGFloat = 150
         
-        timeLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: 10).isActive = true
-        timeLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
-        timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
-        
-        cityLabel.topAnchor.constraint(equalTo:timeLabel.bottomAnchor, constant:20).isActive = true
+        dateLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: topMargin).isActive = true
+        dateLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+
+        timeLabel.topAnchor.constraint(equalTo: dateLabel.bottomAnchor, constant: topMargin).isActive = true
+        timeLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
+
+        cityLabel.topAnchor.constraint(equalTo:timeLabel.bottomAnchor, constant: labelMargin).isActive = true
         cityLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
-        weatherIcon.topAnchor.constraint(equalTo:cityLabel.bottomAnchor, constant: 20).isActive = true
+        weatherIcon.topAnchor.constraint(equalTo:cityLabel.bottomAnchor, constant: labelMargin).isActive = true
         weatherIcon.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        weatherIcon.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        weatherIcon.widthAnchor.constraint(equalToConstant: 150).isActive = true
+        weatherIcon.heightAnchor.constraint(equalToConstant: iconDimensions).isActive = true
+        weatherIcon.widthAnchor.constraint(equalToConstant: iconDimensions).isActive = true
         
-        weatherDescription.topAnchor.constraint(equalTo:weatherIcon.bottomAnchor, constant:10).isActive = true
+        weatherDescription.topAnchor.constraint(equalTo:weatherIcon.bottomAnchor, constant: topMargin).isActive = true
         weatherDescription.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
-        currentTempLabel.topAnchor.constraint(equalTo:weatherDescription.bottomAnchor, constant:20).isActive = true
+        currentTempLabel.topAnchor.constraint(equalTo:weatherDescription.bottomAnchor, constant: labelMargin).isActive = true
         currentTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
         
-        maxTempLabel.topAnchor.constraint(equalTo:currentTempLabel.bottomAnchor, constant: 20).isActive = true
-        maxTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: -70).isActive = true
-        maxTempLabel.heightAnchor.constraint(equalToConstant:50).isActive = true
+        maxTempLabel.topAnchor.constraint(equalTo:currentTempLabel.bottomAnchor, constant: labelMargin).isActive = true
+        maxTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: -centerDistance).isActive = true
+        maxTempLabel.heightAnchor.constraint(equalToConstant: labelsHeight).isActive = true
         
-        minTempLabel.topAnchor.constraint(equalTo:currentTempLabel.bottomAnchor, constant: 20).isActive = true
-        minTempLabel.heightAnchor.constraint(equalToConstant:50).isActive = true
-        minTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: 70).isActive = true
+        minTempLabel.topAnchor.constraint(equalTo:currentTempLabel.bottomAnchor, constant: labelMargin).isActive = true
+        minTempLabel.heightAnchor.constraint(equalToConstant: labelsHeight).isActive = true
+        minTempLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor, constant: centerDistance).isActive = true
+        
+        humidityTitle.topAnchor.constraint(equalTo: maxTempLabel.bottomAnchor, constant: labelMargin).isActive = true
+        humidityTitle.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
 
-        humidityTitle.topAnchor.constraint(equalTo: maxTempLabel.bottomAnchor, constant: 20).isActive = true
-        humidityTitle.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
-        humidityTitle.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
-        
-        humidityLabel.topAnchor.constraint(equalTo: humidityTitle.bottomAnchor, constant: 5).isActive = true
-        humidityLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 20).isActive = true
-        humidityLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
+        humidityLabel.topAnchor.constraint(equalTo: humidityTitle.bottomAnchor, constant: topMargin).isActive = true
+        humidityLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
     }
     
     required init?(coder: NSCoder) {

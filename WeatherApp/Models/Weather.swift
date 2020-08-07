@@ -10,16 +10,16 @@ import Foundation
 
 struct Weather: Codable {
     let weatherDescription: [WeatherDescription]
-    let mainWeatherData: MainWeatherData
+    let weatherParameteres: WeatherParameters
     
     enum CodingKeys: String, CodingKey {
         case weatherDescription = "weather"
-        case mainWeatherData = "main"
+        case weatherParameteres = "main"
     }
     
-    func convertToWeatherData(with city: String) -> WeatherData {
+    func convertToWeatherData(with city: String) -> CityWeather {
         let weatherIcon = Utils.setWeatherIcon(weatherDescription[0].conditionID)
-        return WeatherData(city: city, parameters: mainWeatherData, icon: weatherIcon, description: weatherDescription[0].weatherDescription)
+        return CityWeather(city: city, parameters: weatherParameteres, icon: weatherIcon, description: weatherDescription[0].weatherDescription)
     }
 }
 
@@ -33,7 +33,7 @@ struct WeatherDescription: Codable {
     }
 }
 
-struct MainWeatherData: Codable {
+struct WeatherParameters: Codable {
     let currentTemperature: Double
     let minTemperature: Double
     let maxTemperature: Double
@@ -47,9 +47,9 @@ struct MainWeatherData: Codable {
     }
 }
 
-struct WeatherData {
+struct CityWeather {
     let city: String
-    let parameters: MainWeatherData
+    let parameters: WeatherParameters
     let icon: String
     let description: String
 }

@@ -9,26 +9,27 @@
 import UIKit
 
 class WeatherDetailViewController: UIViewController {
-    let weatherDetailView = WeatherDetailView()
-    var weatherData: WeatherData?
-
+    
+    private let weatherDetailView = WeatherDetailView()
+    private var weatherData: CityWeather?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         setupUI()
         setupConstraints()
     }
     
-    init(with weatherData: WeatherData) {
+    init(with weatherData: CityWeather) {
         super.init(nibName: nil, bundle: nil)
         weatherDetailView.weatherData = weatherData
     }
     
-    func setupUI() {
+    private func setupUI() {
         weatherDetailView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(weatherDetailView)
     }
     
-    func setupConstraints() {
+    private func setupConstraints() {
         weatherDetailView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         weatherDetailView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         weatherDetailView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true

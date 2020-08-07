@@ -8,8 +8,7 @@
 
 import Foundation
 
-class Global {
-   
-    static let apiKey = "56151fef235e6cebb33750525932d021"
+class Constants {
     static let appName = "Weather forecast"
+    static let weatherCell = "weatherCell"
 }
