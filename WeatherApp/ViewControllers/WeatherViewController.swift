@@ -56,7 +56,7 @@ class WeatherViewController: UIViewController {
         errorLabel.numberOfLines = 0
         
         tableView.backgroundColor = .systemBlue
-        tableView.separatorColor = .white
+        tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -110,5 +110,9 @@ extension WeatherViewController: UITableViewDelegate {
         let nextViewController = WeatherDetailViewController(with: selectedCity)
         nextViewController.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(nextViewController, animated: true)
+    }
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        return 100
     }
 }
