@@ -9,6 +9,7 @@
 import Foundation
 
 struct Weather: Codable {
+    
     let weatherDescription: [WeatherDescription]
     let weatherParameteres: WeatherParameters
     

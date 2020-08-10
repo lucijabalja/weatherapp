@@ -16,11 +16,6 @@ class WeatherTableViewCell: UITableViewCell {
     private let currentTempLabel = UILabel()
     private let minTempLabel = UILabel()
     private let maxTempLabel = UILabel()
-    var weather: CityWeather? {
-        didSet {
-            setLabelsText()
-        }
-    }
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
@@ -32,9 +27,7 @@ class WeatherTableViewCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
     
-    private func setLabelsText() {
-        guard let weather = weather else { return }
-        
+    func setup(_ weather: CityWeather) {
         weatherIcon.image = UIImage(systemName: weather.icon)
         cityLabel.text = weather.city
         currentTempLabel.text = "\(weather.parameters.currentTemperature)°"

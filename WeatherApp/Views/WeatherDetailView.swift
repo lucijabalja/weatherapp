@@ -19,6 +19,8 @@ class WeatherDetailView: UIView {
     private let maxTempLabel = UILabel()
     private let humidityTitle = UILabel()
     private let humidityLabel = UILabel()
+    
+    //should not be here
     var weatherData: CityWeather? {
         didSet {
             setLabelsText()

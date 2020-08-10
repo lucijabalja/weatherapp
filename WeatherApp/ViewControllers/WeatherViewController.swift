@@ -9,126 +9,90 @@
 import UIKit
 
 class WeatherViewController: UIViewController {
-    private let tableView = UITableView()
-    private let errorLabel = UILabel()
-    private let errorImage = UIImageView()
-    private let weatherService = WeatherApiService()
-    private let cities = ["Zagreb", "Split", "Osijek", "Rijeka"]
-    private var weatherData: [CityWeather] = [] {
+    
+    private let weatherView = WeatherView()
+    private var weatherViewModel: WeatherViewModel! {
         didSet {
-            DispatchQueue.main.async {
-                self.tableView.reloadData()
-            }
+            fillTableView()
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        setViewModel()
         setupTableView()
         setupUI()
         setupConstraints()
-        fillTableView()
+    }
+    
+    private func setViewModel() {
+        guard let navigationController = navigationController else { return }
+        
+        self.weatherViewModel = WeatherViewModel(coordinator: Coordinator(navigationController))
     }
     
     private func setupTableView() {
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: Constants.weatherCell)
+        weatherView.tableView.dataSource = self
+        weatherView.tableView.delegate = self
+        weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: Constants.weatherCell)
     }
     
     private func fillTableView() {
-        cities.forEach { city in
-            weatherService.fetchWeather(for: city, completion: { (weatherResult) in
-                self.weatherData.append(weatherResult)
-            })
+        weatherViewModel.fetchWeatherData() { (status) in
+            DispatchQueue.main.async {
+                self.weatherView.tableView.reloadData()
+            }
         }
     }
     
     private func setupUI() {
-        view.backgroundColor = .systemBlue
-        view.addSubview(tableView)
-        view.addSubview(errorImage)
-        view.addSubview(errorLabel)
-        
-        errorImage.styleView()
-        errorImage.image = UIImage(named: "error-icon")
-        errorImage.isHidden = true
-        errorImage.layer.cornerRadius = 0
-        
-        errorLabel.style(size: 25)
-        errorLabel.isHidden = true
-        errorLabel.numberOfLines = 0
-        
-        tableView.backgroundColor = .systemBlue
-        tableView.separatorStyle = .none
-        tableView.translatesAutoresizingMaskIntoConstraints = false
+        weatherView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(weatherView)
     }
     
     private func setupConstraints() {
-        let errorImageDimension: CGFloat = 60
-        let errorsTopAnchor: CGFloat = 50
-        let labelsMargin: CGFloat = 20
-        
-        tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
-        tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
-        tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
-        
-        errorImage.topAnchor.constraint(equalTo: view.topAnchor, constant: errorsTopAnchor).isActive = true
-        errorImage.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        errorImage.heightAnchor.constraint(equalToConstant: errorImageDimension).isActive = true
-        errorImage.widthAnchor.constraint(equalToConstant: errorImageDimension).isActive = true
-        
-        errorLabel.topAnchor.constraint(equalTo: errorImage.bottomAnchor, constant: labelsMargin).isActive = true
-        errorLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: labelsMargin).isActive = true
-        errorLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -labelsMargin).isActive = true
+        weatherView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }
     
-    private func setErrorLabel() {
-        tableView.isHidden = true
-        errorLabel.isHidden = false
-        errorImage.isHidden = false
-        errorLabel.text = "Error getting data! Please try again."
-    }
 }
 
 extension WeatherViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return weatherData.count
+        weatherViewModel.weatherData.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: Constants.weatherCell, for: indexPath)
-            as? WeatherTableViewCell else {
-                let cell = WeatherTableViewCell(style: .default, reuseIdentifier: Constants.weatherCell)
-                return cell
-        }
+        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.weatherCell, for: indexPath) as! WeatherTableViewCell
         
-        if weatherData.count > indexPath.row {
-            cell.weather = weatherData[indexPath.row]
+        if weatherViewModel.checkCount(with: indexPath.row) {
+            cell.setup(weatherViewModel.weatherData[indexPath.row])
         } else {
-            setErrorLabel()
+            weatherView.setErrorLabel()
         }
         
         return cell
     }
+    
 }
 
 extension WeatherViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        guard weatherData.count > indexPath.row else {
-            setErrorLabel()
+        guard weatherViewModel.checkCount(with: indexPath.row) else {
+            weatherView.setErrorLabel()
             return
         }
         
-        let cityWeather = weatherData[indexPath.row]
-        let nextViewController = WeatherDetailViewController(with: cityWeather)
-        nextViewController.modalPresentationStyle = .fullScreen
-        navigationController?.pushViewController(nextViewController, animated: true)
+        weatherViewModel.pushToDetailView(at: indexPath.row)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 100
     }
+    
 }
