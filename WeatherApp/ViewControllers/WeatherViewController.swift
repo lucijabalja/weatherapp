@@ -113,18 +113,19 @@ extension WeatherViewController: UITableViewDataSource {
         return cell
     }
 }
- 
+
 extension WeatherViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if weatherData.count > indexPath.row {
-            let cityWeather = weatherData[indexPath.row]
-            let nextViewController = WeatherDetailViewController(with: cityWeather)
-            nextViewController.modalPresentationStyle = .fullScreen
-            navigationController?.pushViewController(nextViewController, animated: true)
-        } else {
+        guard weatherData.count > indexPath.row else {
             setErrorLabel()
+            return
         }
+        
+        let cityWeather = weatherData[indexPath.row]
+        let nextViewController = WeatherDetailViewController(with: cityWeather)
+        nextViewController.modalPresentationStyle = .fullScreen
+        navigationController?.pushViewController(nextViewController, animated: true)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
