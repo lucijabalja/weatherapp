@@ -19,14 +19,3 @@ extension UILabel {
         self.translatesAutoresizingMaskIntoConstraints = false
     }
 }
-
-extension UIImageView {
-    
-    func styleView() {
-        self.contentMode = .scaleAspectFill
-        self.translatesAutoresizingMaskIntoConstraints = false
-        self.layer.cornerRadius = 35
-        self.clipsToBounds = true
-        self.tintColor = .white
-    }
-}

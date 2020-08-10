@@ -32,6 +32,10 @@ class WeatherDetailView: UIView {
         setupConstraints()
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private func setLabelsText() {
         guard let weatherData = weatherData else { return }
         
@@ -91,7 +95,7 @@ class WeatherDetailView: UIView {
         let labelMargin: CGFloat = 20
         let labelsHeight: CGFloat = 50
         let centerDistance: CGFloat = 80
-        let iconDimensions: CGFloat = 150
+        let iconDimension: CGFloat = 150
         
         dateLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: topMargin).isActive = true
         dateLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
@@ -104,8 +108,8 @@ class WeatherDetailView: UIView {
         
         weatherIcon.topAnchor.constraint(equalTo:cityLabel.bottomAnchor, constant: labelMargin).isActive = true
         weatherIcon.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        weatherIcon.heightAnchor.constraint(equalToConstant: iconDimensions).isActive = true
-        weatherIcon.widthAnchor.constraint(equalToConstant: iconDimensions).isActive = true
+        weatherIcon.heightAnchor.constraint(equalToConstant: iconDimension).isActive = true
+        weatherIcon.widthAnchor.constraint(equalToConstant: iconDimension).isActive = true
         
         weatherDescription.topAnchor.constraint(equalTo:weatherIcon.bottomAnchor, constant: topMargin).isActive = true
         weatherDescription.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
@@ -126,9 +130,5 @@ class WeatherDetailView: UIView {
 
         humidityLabel.topAnchor.constraint(equalTo: humidityTitle.bottomAnchor, constant: topMargin).isActive = true
         humidityLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

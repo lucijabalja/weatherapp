@@ -24,12 +24,16 @@ class WeatherViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.dataSource = self
-        tableView.delegate = self
-        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: Constants.weatherCell)
+        setupTableView()
         setupUI()
         setupConstraints()
         fillTableView()
+    }
+    
+    private func setupTableView() {
+        tableView.dataSource = self
+        tableView.delegate = self
+        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: Constants.weatherCell)
     }
     
     private func fillTableView() {
@@ -61,19 +65,22 @@ class WeatherViewController: UIViewController {
     }
     
     private func setupConstraints() {
+        let errorImageDimension: CGFloat = 60
+        let errorsTopAnchor: CGFloat = 50
+        let labelsMargin: CGFloat = 20
         tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
         tableView.rightAnchor.constraint(equalTo: view.rightAnchor).isActive = true
         
-        errorImage.topAnchor.constraint(equalTo: view.topAnchor, constant: 50).isActive = true
+        errorImage.topAnchor.constraint(equalTo: view.topAnchor, constant: errorsTopAnchor).isActive = true
         errorImage.centerXAnchor.constraint(equalTo: self.view.centerXAnchor).isActive = true
-        errorImage.heightAnchor.constraint(equalToConstant: 60).isActive = true
-        errorImage.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        errorImage.heightAnchor.constraint(equalToConstant: errorImageDimension).isActive = true
+        errorImage.widthAnchor.constraint(equalToConstant: errorImageDimension).isActive = true
         
-        errorLabel.topAnchor.constraint(equalTo: errorImage.bottomAnchor, constant: 20).isActive = true
-        errorLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: 20).isActive = true
-        errorLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
+        errorLabel.topAnchor.constraint(equalTo: errorImage.bottomAnchor, constant: labelsMargin).isActive = true
+        errorLabel.leftAnchor.constraint(equalTo: view.leftAnchor, constant: labelsMargin).isActive = true
+        errorLabel.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -labelsMargin).isActive = true
     }
     
     private func setErrorLabel() {
@@ -95,16 +102,19 @@ extension WeatherViewController: UITableViewDataSource {
                 let cell = WeatherTableViewCell(style: .default, reuseIdentifier: Constants.weatherCell)
                 return cell
         }
+        
         if weatherData.count > indexPath.row {
             cell.weather = weatherData[indexPath.row]
         } else {
             setErrorLabel()
         }
+        
         return cell
     }
 }
 
 extension WeatherViewController: UITableViewDelegate {
+    
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let selectedCity = weatherData[indexPath.row]
         let nextViewController = WeatherDetailViewController(with: selectedCity)

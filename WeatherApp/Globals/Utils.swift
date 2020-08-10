@@ -10,7 +10,7 @@ import Foundation
 
 class Utils {
     
-    static func setWeatherIcon(_ weatherID: Int) -> String {
+    static func resolveWeatherIcon(_ weatherID: Int) -> String {
         switch weatherID {
         case 200...232:
             return "cloud.bolt.rain.fill"

@@ -16,7 +16,6 @@ class WeatherTableViewCell: UITableViewCell {
     private let currentTempLabel = UILabel()
     private let minTempLabel = UILabel()
     private let maxTempLabel = UILabel()
-    
     var weather: CityWeather? {
         didSet {
             setLabelsText()
@@ -29,18 +28,23 @@ class WeatherTableViewCell: UITableViewCell {
         setupConstraints()
     }
     
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
+    
     private func setLabelsText() {
-        guard let weatherData = weather else { return }
+        guard let weather = weather else { return }
         
-        weatherIcon.image = UIImage(systemName: weatherData.icon)
-        cityLabel.text = weatherData.city
-        currentTempLabel.text = "\(weatherData.parameters.currentTemperature)°"
-        minTempLabel.text = "\(weatherData.parameters.minTemperature)°"
-        maxTempLabel.text = "\(weatherData.parameters.maxTemperature)°/"
+        weatherIcon.image = UIImage(systemName: weather.icon)
+        cityLabel.text = weather.city
+        currentTempLabel.text = "\(weather.parameters.currentTemperature)°"
+        minTempLabel.text = "\(weather.parameters.minTemperature)°"
+        maxTempLabel.text = "\(weather.parameters.maxTemperature)° /"
     }
     
     private func setupUI() {
         contentView.backgroundColor = .systemBlue
+        contentView.clipsToBounds = true
         layer.backgroundColor = UIColor.clear.cgColor
         layer.shadowColor = UIColor.black.cgColor
         layer.shadowOffset = CGSize(width: 0, height: 1.0)
@@ -72,39 +76,40 @@ class WeatherTableViewCell: UITableViewCell {
     }
     
     private func setupConstraints() {
+        let iconDimension: CGFloat = 50
+        let edgeMargin: CGFloat = 15
+        let tempDistance: CGFloat = 5
+        let labelsDistance: CGFloat = 20
+        let cityLabelsWidth: CGFloat = 150
+
         containerView.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
         containerView.bottomAnchor.constraint(equalTo:self.contentView.bottomAnchor).isActive = true
         containerView.trailingAnchor.constraint(equalTo:self.contentView.trailingAnchor).isActive = true
         containerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor).isActive = true
         
         weatherIcon.centerYAnchor.constraint(equalTo:self.contentView.centerYAnchor).isActive = true
-        weatherIcon.leadingAnchor.constraint(equalTo:self.contentView.leadingAnchor, constant: 15).isActive = true
-        weatherIcon.widthAnchor.constraint(equalToConstant: 50).isActive = true
-        weatherIcon.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        weatherIcon.leadingAnchor.constraint(equalTo:self.contentView.leadingAnchor, constant: edgeMargin).isActive = true
+        weatherIcon.widthAnchor.constraint(equalToConstant: iconDimension).isActive = true
+        weatherIcon.heightAnchor.constraint(equalToConstant: iconDimension).isActive = true
         
         cityLabel.centerYAnchor.constraint(equalTo:self.contentView.centerYAnchor).isActive = true
-        cityLabel.leadingAnchor.constraint(equalTo:self.weatherIcon.trailingAnchor, constant: 20).isActive = true
-        cityLabel.trailingAnchor.constraint(equalTo: self.temperatureView.leadingAnchor, constant: -10).isActive = true
+        cityLabel.leadingAnchor.constraint(equalTo:self.weatherIcon.trailingAnchor, constant: labelsDistance).isActive = true
+        cityLabel.widthAnchor.constraint(equalToConstant: cityLabelsWidth).isActive = true
         
-        temperatureView.trailingAnchor.constraint(equalTo:self.trailingAnchor, constant: -15).isActive = true
         temperatureView.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
         temperatureView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
-        
-        currentTempLabel.topAnchor.constraint(equalTo: self.temperatureView.topAnchor, constant: 20).isActive = true
+        temperatureView.trailingAnchor.constraint(equalTo:self.trailingAnchor, constant: -edgeMargin).isActive = true
+
+        currentTempLabel.topAnchor.constraint(equalTo: self.temperatureView.topAnchor, constant: labelsDistance).isActive = true
         currentTempLabel.leadingAnchor.constraint(equalTo:self.temperatureView.leadingAnchor).isActive = true
         currentTempLabel.trailingAnchor.constraint(equalTo:self.temperatureView.trailingAnchor).isActive = true
-        currentTempLabel.heightAnchor.constraint(equalToConstant: 50).isActive = true
         
-        maxTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: 5).isActive = true
-        maxTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -5).isActive = true
+        maxTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: tempDistance).isActive = true
+        maxTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -tempDistance).isActive = true
         
-        minTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: 5).isActive = true
-        minTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -5).isActive = true
+        minTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: tempDistance).isActive = true
+        minTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -tempDistance).isActive = true
         minTempLabel.trailingAnchor.constraint(equalTo:self.temperatureView.trailingAnchor).isActive = true
-        minTempLabel.leadingAnchor.constraint(equalTo: self.maxTempLabel.trailingAnchor, constant: 2).isActive = true
-    }
-    
-    required init?(coder aDecoder: NSCoder) {
-        super.init(coder: aDecoder)
+        minTempLabel.leadingAnchor.constraint(equalTo: self.maxTempLabel.trailingAnchor, constant: tempDistance).isActive = true
     }
 }

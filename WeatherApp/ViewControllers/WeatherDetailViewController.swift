@@ -24,6 +24,10 @@ class WeatherDetailViewController: UIViewController {
         weatherDetailView.weatherData = weatherData
     }
     
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     private func setupUI() {
         weatherDetailView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(weatherDetailView)
@@ -34,9 +38,5 @@ class WeatherDetailViewController: UIViewController {
         weatherDetailView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         weatherDetailView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         weatherDetailView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
     }
 }

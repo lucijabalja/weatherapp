@@ -9,7 +9,7 @@
 import Foundation
 
 class WeatherApiService {
-    var apiKey = "56151fef235e6cebb33750525932d021"
+    private let apiKey = "56151fef235e6cebb33750525932d021"
     private lazy var apiURL = "https://api.openweathermap.org/data/2.5/weather?appid=\(apiKey)&units=metric"
     
     func fetchWeather(for city: String, completion: @escaping (CityWeather) -> Void) {
@@ -22,14 +22,13 @@ class WeatherApiService {
                 return
             }
             
-            guard let safedata = data else { return }
+            guard let data = data else { return }
             
-            let weather = try? JSONDecoder().decode(Weather.self, from: safedata)
+            guard let weather = try? JSONDecoder().decode(Weather.self, from: data) else { return }
+                        
+            let weatherData = weather.convertToWeatherData(with: city)
+            completion(weatherData)
             
-            if let safeWeather = weather {
-                let weatherData = safeWeather.convertToWeatherData(with: city)
-                completion(weatherData)
-            }
         })
         task.resume()
     }
