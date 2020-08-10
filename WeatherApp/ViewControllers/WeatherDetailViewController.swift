@@ -19,9 +19,9 @@ class WeatherDetailViewController: UIViewController {
         setupConstraints()
     }
     
-    init(with weatherData: CityWeather) {
+    init(with cityWeather: CityWeather) {
         super.init(nibName: nil, bundle: nil)
-        weatherDetailView.weatherData = weatherData
+        weatherDetailView.weatherData = cityWeather
     }
     
     required init?(coder: NSCoder) {

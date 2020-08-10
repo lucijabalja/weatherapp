@@ -68,6 +68,7 @@ class WeatherViewController: UIViewController {
         let errorImageDimension: CGFloat = 60
         let errorsTopAnchor: CGFloat = 50
         let labelsMargin: CGFloat = 20
+        
         tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         tableView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
         tableView.bottomAnchor.constraint(equalTo: view.bottomAnchor).isActive = true
@@ -112,14 +113,18 @@ extension WeatherViewController: UITableViewDataSource {
         return cell
     }
 }
-
+ 
 extension WeatherViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let selectedCity = weatherData[indexPath.row]
-        let nextViewController = WeatherDetailViewController(with: selectedCity)
-        nextViewController.modalPresentationStyle = .fullScreen
-        navigationController?.pushViewController(nextViewController, animated: true)
+        if weatherData.count > indexPath.row {
+            let cityWeather = weatherData[indexPath.row]
+            let nextViewController = WeatherDetailViewController(with: cityWeather)
+            nextViewController.modalPresentationStyle = .fullScreen
+            navigationController?.pushViewController(nextViewController, animated: true)
+        } else {
+            setErrorLabel()
+        }
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
