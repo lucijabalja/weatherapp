@@ -39,7 +39,7 @@ class WeatherViewController: UIViewController {
     }
     
     private func fillTableView() {
-        weatherViewModel.fetchWeatherData() { (status) in
+        weatherViewModel.fetchCityWeather() { (status) in
             DispatchQueue.main.async {
                 self.weatherView.tableView.reloadData()
             }

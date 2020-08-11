@@ -9,6 +9,7 @@
 import Foundation
 
 struct WeatherDescription: Codable {
+    
     let conditionID: Int
     let weatherDescription: String
     

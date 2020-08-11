@@ -18,9 +18,9 @@ class WeatherViewModel {
         self.coordinator = coordinator
     }
     
-    func fetchWeatherData(completionHandler: @escaping (ApiResponseStatus) -> Void) {
+    func fetchCityWeather(completionHandler: @escaping (ApiResponseStatus) -> Void) {
         cities.forEach { (city) in
-            coordinator.getCityWeather(city.rawValue) { (cityWeather, responseStatus) in
+            coordinator.getCityWeather(city.rawValue) { (cityWeather) in
                 guard let cityWeather = cityWeather else {
                     completionHandler(.FAILED)
                     return

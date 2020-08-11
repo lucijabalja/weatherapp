@@ -12,14 +12,17 @@ struct Weather: Codable {
     
     let weatherDescription: [WeatherDescription]
     let weatherParameteres: WeatherParameters
+    let city: String
     
     enum CodingKeys: String, CodingKey {
         case weatherDescription = "weather"
         case weatherParameteres = "main"
+        case city = "name"
     }
     
-    func convertToWeatherData(with city: String) -> CityWeather {
+    func convertToCityWeather(with city: String) -> CityWeather {
         let weatherIcon = Utils.resolveWeatherIcon(weatherDescription[0].conditionID)
+        
         return CityWeather(city: city, parameters: weatherParameteres, icon: weatherIcon, description: weatherDescription[0].weatherDescription)
     }
 }

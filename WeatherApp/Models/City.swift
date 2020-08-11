@@ -9,6 +9,7 @@
 import Foundation
 
 public enum City: String, CaseIterable {
+    
     case zagreb = "Zagreb",
     rijeka = "Rijeka",
     osijek = "Osijek",

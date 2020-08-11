@@ -9,6 +9,7 @@
 import Foundation
 
 struct WeatherParameters: Codable {
+    
     let currentTemperature: Double
     let minTemperature: Double
     let maxTemperature: Double

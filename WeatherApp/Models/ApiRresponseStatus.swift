@@ -9,5 +9,6 @@
 import Foundation
 
 enum ApiResponseStatus {
+    
     case SUCCESSFUL, FAILED, LOADING
 }

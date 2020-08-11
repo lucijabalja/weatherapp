@@ -9,6 +9,7 @@
 import UIKit
 
 class WeatherDetailView: UIView {
+    
     private let dateLabel = UILabel()
     private let timeLabel = UILabel()
     private let weatherIcon = UIImageView()
@@ -19,15 +20,7 @@ class WeatherDetailView: UIView {
     private let maxTempLabel = UILabel()
     private let humidityTitle = UILabel()
     private let humidityLabel = UILabel()
-    
-    //should not be here
-    var weatherData: CityWeather? {
-        didSet {
-            setLabelsText()
-            setDateTime()
-        }
-    }
-    
+
     init() {
         super.init(frame: .zero)
         setupUI()
@@ -38,17 +31,15 @@ class WeatherDetailView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func setLabelsText() {
-        guard let weatherData = weatherData else { return }
-        
-        weatherIcon.image = UIImage(systemName: weatherData.icon)
-        cityLabel.text = weatherData.city
-        weatherDescription.text = weatherData.description
-        currentTempLabel.text = "\(weatherData.parameters.currentTemperature)°C"
-        minTempLabel.text = "\(weatherData.parameters.minTemperature)° min "
-        maxTempLabel.text = "max \(weatherData.parameters.maxTemperature)°"
+    func setLabelsText(cityWeather: CityWeather) {
+        weatherIcon.image = UIImage(systemName: cityWeather.icon)
+        cityLabel.text = cityWeather.city
+        weatherDescription.text = cityWeather.description
+        currentTempLabel.text = "\(cityWeather.parameters.currentTemperature)°C"
+        minTempLabel.text = "\(cityWeather.parameters.minTemperature)° min "
+        maxTempLabel.text = "max \(cityWeather.parameters.maxTemperature)°"
         humidityTitle.text = "HUMIDITY"
-        humidityLabel.text = "\(weatherData.parameters.humidity)%"
+        humidityLabel.text = "\(cityWeather.parameters.humidity)%"
     }
     
     private func setDateTime() {
@@ -64,7 +55,6 @@ class WeatherDetailView: UIView {
     private func setupUI() {
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .systemBlue
-             
         dateLabel.style()
         timeLabel.style(size: 30)
         weatherIcon.styleView()
@@ -133,4 +123,5 @@ class WeatherDetailView: UIView {
         humidityLabel.topAnchor.constraint(equalTo: humidityTitle.bottomAnchor, constant: topMargin).isActive = true
         humidityLabel.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
     }
+    
 }

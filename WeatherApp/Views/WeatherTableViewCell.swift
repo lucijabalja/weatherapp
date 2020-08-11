@@ -9,6 +9,7 @@
 import UIKit
 
 class WeatherTableViewCell: UITableViewCell {
+    
     private let containerView = UIView()
     private let temperatureView = UIView()
     private let weatherIcon = UIImageView()
@@ -19,6 +20,7 @@ class WeatherTableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         setupUI()
         setupConstraints()
     }
@@ -91,6 +93,7 @@ class WeatherTableViewCell: UITableViewCell {
         
         temperatureView.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
         temperatureView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
+        temperatureView.leadingAnchor.constraint(equalTo: self.cityLabel.trailingAnchor, constant: labelsDistance).isActive = true
         temperatureView.trailingAnchor.constraint(equalTo:self.trailingAnchor, constant: -edgeMargin).isActive = true
 
         currentTempLabel.topAnchor.constraint(equalTo: self.temperatureView.topAnchor, constant: labelsDistance).isActive = true
@@ -105,4 +108,5 @@ class WeatherTableViewCell: UITableViewCell {
         minTempLabel.trailingAnchor.constraint(equalTo:self.temperatureView.trailingAnchor).isActive = true
         minTempLabel.leadingAnchor.constraint(equalTo: self.maxTempLabel.trailingAnchor, constant: tempDistance).isActive = true
     }
+    
 }

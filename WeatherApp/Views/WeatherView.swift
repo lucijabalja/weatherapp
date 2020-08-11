@@ -16,6 +16,7 @@ class WeatherView: UIView {
     
     init() {
         super.init(frame: .zero)
+        
         setupUI()
         setupConstraints()
     }

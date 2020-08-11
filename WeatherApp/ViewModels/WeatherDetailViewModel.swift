@@ -10,4 +10,21 @@ import Foundation
 
 class WeatherDetailViewModel {
     
+    private var coordinator: Coordinator
+    var cityWeather: CityWeather
+    
+    init(coordinator: Coordinator, cityWeather: CityWeather) {
+        self.coordinator = coordinator
+        self.cityWeather = cityWeather
+    }
+    
+    func getCurrentCityWeather() -> CityWeather {
+        return cityWeather
+    }
+    
+    func fetchDailyWeather() {
+        coordinator.getDailyWeather("Zagreb") { (dailyWeather) in
+        }
+    }
+    
 }

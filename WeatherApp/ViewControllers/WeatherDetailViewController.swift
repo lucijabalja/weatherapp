@@ -11,17 +11,19 @@ import UIKit
 class WeatherDetailViewController: UIViewController {
     
     private let weatherDetailView = WeatherDetailView()
-    private var weatherData: CityWeather?
+    private var weatherDetailViewModel: WeatherDetailViewModel!
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         setupUI()
         setupConstraints()
     }
     
     init(with cityWeather: CityWeather) {
         super.init(nibName: nil, bundle: nil)
-        weatherDetailView.weatherData = cityWeather
+        
+        weatherDetailView.setLabelsText(cityWeather: cityWeather)
     }
     
     required init?(coder: NSCoder) {
@@ -39,4 +41,5 @@ class WeatherDetailViewController: UIViewController {
         weatherDetailView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         weatherDetailView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }
+    
 }
