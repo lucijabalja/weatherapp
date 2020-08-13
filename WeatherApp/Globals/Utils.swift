@@ -30,4 +30,17 @@ class Utils {
             return "cloud.fill"
         }
     }
+    
+    static func getFormattedDate() -> String {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .full
+        return formatter.string(from: Date())
+    }
+    
+    static func getFormattedTime(with date: Date = Date()) -> String {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "HH:mm"
+        return formatter.string(from: date)
+    }
+    
 }

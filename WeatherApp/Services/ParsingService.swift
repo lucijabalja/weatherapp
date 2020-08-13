@@ -10,7 +10,7 @@ import Foundation
 
 class ParsingService {
     
-    let decoder = JSONDecoder()
+    private let decoder = JSONDecoder()
     
     func parseCityWeather(_ data: Data, city: String) -> CityWeather? {
         guard let currentWeatherResponse = try? decoder.decode(Weather.self, from: data) else {

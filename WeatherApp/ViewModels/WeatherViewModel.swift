@@ -11,7 +11,9 @@ import Foundation
 class WeatherViewModel {
     
     private let cities = City.allCases
-    private var coordinator: Coordinator
+    private let coordinator: Coordinator
+    private let weatherService = WeatherApiService()
+    private let parsingService = ParsingService()
     var weatherData: [CityWeather] = []
     
     init(coordinator: Coordinator) {
@@ -20,8 +22,9 @@ class WeatherViewModel {
     
     func fetchCityWeather(completionHandler: @escaping (ApiResponseStatus) -> Void) {
         cities.forEach { (city) in
-            coordinator.getCityWeather(city.rawValue) { (cityWeather) in
-                guard let cityWeather = cityWeather else {
+            weatherService.fetchCurrentWeather(for: city.rawValue) { (data) in
+                let parsedResponse = self.parsingService.parseCityWeather(data, city: city.rawValue)
+                guard let cityWeather = parsedResponse else {
                     completionHandler(.FAILED)
                     return
                 }
@@ -43,4 +46,5 @@ class WeatherViewModel {
     func checkCount(with index: Int) -> Bool {
         return weatherData.count > index
     }
+    
 }

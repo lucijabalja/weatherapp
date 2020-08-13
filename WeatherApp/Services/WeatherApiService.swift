@@ -13,7 +13,7 @@ class WeatherApiService {
     private let apiURL = "https://api.openweathermap.org/data/2.5"
     private let apiKey = "appid=56151fef235e6cebb33750525932d021"
     private let units = "units=metric"
-
+    
     func fetchCurrentWeather(for city: String, completion: @escaping (Data) -> Void) {
         let urlString = "\(apiURL)/weather?\(apiKey)&\(units)&q=\(city)"
         
@@ -30,7 +30,7 @@ class WeatherApiService {
         }
     }
     
-    func performRequest(with urlString: String, _ city: String, completion: @escaping (Data) -> Void ) {
+    func performRequest(with urlString: String, _ city: String, completion: @escaping (Data) -> Void) {
         guard let url = URL(string: urlString) else { return }
         
         let task = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
