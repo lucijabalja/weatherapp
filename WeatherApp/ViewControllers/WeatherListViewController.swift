@@ -8,10 +8,10 @@
 
 import UIKit
 
-class WeatherViewController: UIViewController {
+class WeatherListViewController: UIViewController {
     
-    private let weatherView = WeatherView()
-    private var weatherViewModel: WeatherViewModel! {
+    private let weatherView = WeatherListView()
+    private var weatherViewModel: WeatherListViewModel! {
         didSet {
             fillTableView()
         }
@@ -76,7 +76,7 @@ class WeatherViewController: UIViewController {
     
 }
 
-extension WeatherViewController: UITableViewDataSource {
+extension WeatherListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         weatherViewModel.weatherData.count
@@ -96,7 +96,7 @@ extension WeatherViewController: UITableViewDataSource {
     
 }
 
-extension WeatherViewController: UITableViewDelegate {
+extension WeatherListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard weatherViewModel.checkCount(with: indexPath.row) else {

@@ -21,7 +21,7 @@ class Coordinator {
     }
     
     func pushRootViewController() {
-        let rootViewController = WeatherViewController(coordinator: self)
+        let rootViewController = WeatherListViewController(coordinator: self)
         rootViewController.modalPresentationStyle = .fullScreen
         navigationController.pushViewController(rootViewController, animated: true)
     }
@@ -32,8 +32,8 @@ class Coordinator {
         navigationController.pushViewController(weatherDetailViewController, animated: true)
     }
     
-    func createWeatherViewModel() -> WeatherViewModel {
-        let viewModel = WeatherViewModel(coordinator: self, apiService: weatherApiService, parsingService: parsingService)
+    func createWeatherViewModel() -> WeatherListViewModel {
+        let viewModel = WeatherListViewModel(coordinator: self, apiService: weatherApiService, parsingService: parsingService)
         return viewModel
     }
     

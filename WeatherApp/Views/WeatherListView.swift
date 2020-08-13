@@ -8,7 +8,7 @@
 
 import UIKit
 
-class WeatherView: UIView {
+class WeatherListView: UIView {
     
     let tableView = UITableView()
     private let errorLabel = UILabel()

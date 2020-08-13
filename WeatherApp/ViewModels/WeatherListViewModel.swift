@@ -8,7 +8,7 @@
 
 import Foundation
 
-class WeatherViewModel {
+class WeatherListViewModel {
     
     private var apiService: WeatherListService
     private var parsingService: ParsingService

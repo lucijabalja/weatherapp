@@ -11,4 +11,5 @@ import Foundation
 class Constants {
     
     static let appName = "Weather forecast"
+    
 }
