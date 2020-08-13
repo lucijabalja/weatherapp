@@ -14,6 +14,8 @@ class WeatherDetailViewController: UIViewController {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
+    @IBOutlet weak var dailyWeatherStackView: UIStackView!
+    
     private var weatherDetailViewModel: WeatherDetailViewModel!
     weak var coordinator: Coordinator?
     
