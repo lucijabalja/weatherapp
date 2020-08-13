@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum ApiResponseStatus {
+enum ApiResponseMessage {
     
     case SUCCESSFUL, FAILED, LOADING
 }

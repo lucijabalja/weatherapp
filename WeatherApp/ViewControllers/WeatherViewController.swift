@@ -16,33 +16,49 @@ class WeatherViewController: UIViewController {
             fillTableView()
         }
     }
+    weak var coordinator: Coordinator?
+    
+    init(coordinator: Coordinator) {
+        super.init(nibName: nil, bundle: nil)
+        self.coordinator = coordinator
+    }
+    
+    required init?(coder: NSCoder) {
+        super.init(coder: coder)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setViewModel()
+        setupViewModel()
         setupTableView()
         setupUI()
         setupConstraints()
     }
     
-    private func setViewModel() {
-        guard let navigationController = navigationController else { return }
-        
-        self.weatherViewModel = WeatherViewModel(coordinator: Coordinator(navigationController))
+    private func setupViewModel() {
+        self.weatherViewModel = coordinator?.createWeatherViewModel()
     }
     
     private func setupTableView() {
         weatherView.tableView.dataSource = self
         weatherView.tableView.delegate = self
-        weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: Constants.weatherCell)
+        weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
     
     private func fillTableView() {
-        weatherViewModel.fetchCityWeather() { (status) in
-            DispatchQueue.main.async {
-                self.weatherView.tableView.reloadData()
+        weatherViewModel.fetchCityWeather() { (apiResponseMessage) in
+            switch apiResponseMessage {
+                case .SUCCESSFUL: self.updateUI()
+                case .FAILED: self.weatherView.setErrorLabel()
+                case .LOADING: print("Something is stuck. Data is still loading.")
             }
+        }
+    }
+    
+    private func updateUI() {
+        DispatchQueue.main.async {
+            self.weatherView.tableView.reloadData()
         }
     }
     
@@ -67,7 +83,7 @@ extension WeatherViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: Constants.weatherCell, for: indexPath) as! WeatherTableViewCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
         
         if weatherViewModel.checkCount(with: indexPath.row) {
             cell.setup(weatherViewModel.weatherData[indexPath.row])
@@ -87,8 +103,7 @@ extension WeatherViewController: UITableViewDelegate {
             weatherView.setErrorLabel()
             return
         }
-        
-        weatherViewModel.pushToDetailView(at: indexPath.row)
+        coordinator?.pushDetailViewController(weatherViewModel.weatherData[indexPath.row])
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {

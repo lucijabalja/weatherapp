@@ -18,6 +18,8 @@ class WeatherTableViewCell: UITableViewCell {
     private let minTempLabel = UILabel()
     private let maxTempLabel = UILabel()
 
+    static let identifier = "weatherCell"
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
         

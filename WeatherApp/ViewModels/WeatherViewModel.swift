@@ -10,19 +10,21 @@ import Foundation
 
 class WeatherViewModel {
     
-    private let cities = City.allCases
+    private var apiService: WeatherListService
+    private var parsingService: ParsingService
     private let coordinator: Coordinator
-    private let weatherService = WeatherApiService()
-    private let parsingService = ParsingService()
+    private let cities = City.allCases
     var weatherData: [CityWeather] = []
     
-    init(coordinator: Coordinator) {
+    init(coordinator: Coordinator, apiService: WeatherListService, parsingService: ParsingService) {
         self.coordinator = coordinator
+        self.apiService = apiService
+        self.parsingService = parsingService
     }
     
-    func fetchCityWeather(completionHandler: @escaping (ApiResponseStatus) -> Void) {
+    func fetchCityWeather(completionHandler: @escaping (ApiResponseMessage) -> Void) {
         cities.forEach { (city) in
-            weatherService.fetchCurrentWeather(for: city.rawValue) { (data) in
+            apiService.fetchCurrentWeather(for: city.rawValue) { (data) in
                 let parsedResponse = self.parsingService.parseCityWeather(data, city: city.rawValue)
                 guard let cityWeather = parsedResponse else {
                     completionHandler(.FAILED)
@@ -35,9 +37,7 @@ class WeatherViewModel {
     }
     
     func pushToDetailView(at index: Int) {
-        guard checkCount(with: index) else {
-            return
-        }
+        guard checkCount(with: index) else { return }
         
         let selectedCity = weatherData[index]
         coordinator.pushDetailViewController(selectedCity)

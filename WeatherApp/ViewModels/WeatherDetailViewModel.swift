@@ -10,11 +10,11 @@ import Foundation
 
 class WeatherDetailViewModel {
     
-    private var coordinator: Coordinator?
-    private let weatherService = WeatherApiService()
-    private let parsingService = ParsingService()
     var cityWeather: CityWeather
     var dailyWeather: DailyWeather?
+    private var apiService: WeatherDetailService
+    private var parsingService: ParsingService
+    private var coordinator: Coordinator
     
     var date: String {
         return Utils.getFormattedDate()
@@ -24,22 +24,21 @@ class WeatherDetailViewModel {
         return Utils.getFormattedTime()
     }
     
-    init(cityWeather: CityWeather) {
-        self.cityWeather = cityWeather
-    }
-    
-    func setCoordinator(coordinator: Coordinator) {
+    init(coordinator: Coordinator, apiService: WeatherDetailService, parsingService: ParsingService, cityWeather: CityWeather) {
         self.coordinator = coordinator
+        self.apiService = apiService
+        self.cityWeather = cityWeather
+        self.parsingService = parsingService
     }
     
-    func getDailyWeather(completion: @escaping (ApiResponseStatus) -> Void) {
-        weatherService.fetchDailyWeather(for: cityWeather.city) { (data) in
+    func getDailyWeather(completion: @escaping (ApiResponseMessage) -> Void) {
+        apiService.fetchDailyWeather(for: cityWeather.city) { (data) in
             let parsedResponse = self.parsingService.parseDailyWeather(data, city: self.cityWeather.city)
-            self.dailyWeather = parsedResponse
-            guard let _ = parsedResponse else {
+            guard let dailyWeather = parsedResponse else {
                 completion(.FAILED)
                 return
             }
+            self.dailyWeather = dailyWeather
             completion(.SUCCESSFUL)
         }
     }

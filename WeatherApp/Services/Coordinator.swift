@@ -9,18 +9,37 @@
 import UIKit
 
 class Coordinator {
-
+    
     private let navigationController: UINavigationController
+    public let weatherApiService: WeatherApiService
+    public let parsingService: ParsingService
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
+        self.weatherApiService = WeatherApiService()
+        self.parsingService = ParsingService()
     }
-
+    
+    func pushRootViewController() {
+        let rootViewController = WeatherViewController(coordinator: self)
+        rootViewController.modalPresentationStyle = .fullScreen
+        navigationController.pushViewController(rootViewController, animated: true)
+    }
     
     func pushDetailViewController(_ selectedCity: CityWeather) {
-        let nextViewController = WeatherDetailViewController(with: selectedCity)
-        nextViewController.modalPresentationStyle = .fullScreen
-        navigationController.pushViewController(nextViewController, animated: true)
+        let weatherDetailViewController = WeatherDetailViewController(with: selectedCity, coordinator: self)
+        weatherDetailViewController.modalPresentationStyle = .fullScreen
+        navigationController.pushViewController(weatherDetailViewController, animated: true)
+    }
+    
+    func createWeatherViewModel() -> WeatherViewModel {
+        let viewModel = WeatherViewModel(coordinator: self, apiService: weatherApiService, parsingService: parsingService)
+        return viewModel
+    }
+    
+    func createWeatherDetailViewModel(with cityWeather: CityWeather) -> WeatherDetailViewModel {
+        let viewModel = WeatherDetailViewModel(coordinator: self, apiService: weatherApiService, parsingService: parsingService, cityWeather: cityWeather)
+        return viewModel
     }
     
 }

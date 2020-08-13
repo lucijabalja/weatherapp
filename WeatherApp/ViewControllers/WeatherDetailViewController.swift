@@ -15,11 +15,13 @@ class WeatherDetailViewController: UIViewController {
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
     private var weatherDetailViewModel: WeatherDetailViewModel!
+    weak var coordinator: Coordinator?
     
-    init(with cityWeather: CityWeather) {
+    init(with cityWeather: CityWeather, coordinator: Coordinator) {
         super.init(nibName: nil, bundle: nil)
+        self.coordinator = coordinator
         
-        weatherDetailViewModel = WeatherDetailViewModel(cityWeather: cityWeather)
+        weatherDetailViewModel = coordinator.createWeatherDetailViewModel(with: cityWeather)
     }
     
     required init?(coder: NSCoder) {
@@ -39,7 +41,6 @@ class WeatherDetailViewController: UIViewController {
         hourlyWeatherCollectionView.register(WeatherCollectionViewCell.nib(), forCellWithReuseIdentifier: WeatherCollectionViewCell.identifier)
         hourlyWeatherCollectionView.delegate = self
         hourlyWeatherCollectionView.dataSource = self
-        
         hourlyWeatherCollectionView.backgroundColor = .systemBlue
     }
     
@@ -51,18 +52,11 @@ class WeatherDetailViewController: UIViewController {
     }
     
     private func setupData() {
-        guard let navigationController = navigationController else { return }
-        
-        weatherDetailViewModel.setCoordinator(coordinator: Coordinator(navigationController))
-        
-        weatherDetailViewModel.getDailyWeather(completion: { (result) in
-            switch result {
-            case .FAILED:
-                print("Error happened")
-            case .SUCCESSFUL:
-                self.updateUI()
-            case .LOADING:
-                print("Data is loading. Please wait.")
+        weatherDetailViewModel.getDailyWeather(completion: { (apiResponseMessage) in
+            switch apiResponseMessage {
+                case .SUCCESSFUL: self.updateUI()
+                case .FAILED: print("Error happened")
+                case .LOADING: print("Data is loading. Please wait.")
             }
         })
     }
@@ -112,5 +106,5 @@ extension WeatherDetailViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         CGSize(width: 70, height: 150)
     }
-
+    
 }

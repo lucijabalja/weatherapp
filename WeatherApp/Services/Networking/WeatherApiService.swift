@@ -8,7 +8,7 @@
 
 import Foundation
 
-class WeatherApiService {
+class WeatherApiService: WeatherListService, WeatherDetailService {
     
     private let apiURL = "https://api.openweathermap.org/data/2.5"
     private let apiKey = "appid=56151fef235e6cebb33750525932d021"
