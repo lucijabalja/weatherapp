@@ -51,7 +51,6 @@ class WeatherListViewController: UIViewController {
             switch apiResponseMessage {
                 case .SUCCESSFUL: self.updateUI()
                 case .FAILED: self.weatherView.setErrorLabel()
-                case .LOADING: print("Something is stuck. Data is still loading.")
             }
         }
     }

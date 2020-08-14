@@ -10,5 +10,5 @@ import Foundation
 
 enum ApiResponseMessage {
     
-    case SUCCESSFUL, FAILED, LOADING
+    case SUCCESSFUL, FAILED
 }

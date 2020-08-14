@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Weather: Codable {
+struct Weather: Decodable {
     
     let weatherDescription: [WeatherDescription]
     let weatherParameteres: WeatherParameters
@@ -22,7 +22,7 @@ struct Weather: Codable {
     
     func convertToCityWeather(with city: String) -> CityWeather {
         let weatherIcon = Utils.resolveWeatherIcon(weatherDescription[0].conditionID)
-        
+
         return CityWeather(city: city, parameters: weatherParameteres, icon: weatherIcon, description: weatherDescription[0].weatherDescription)
     }
 }

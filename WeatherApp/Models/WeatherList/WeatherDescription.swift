@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct WeatherDescription: Codable {
+struct WeatherDescription: Decodable {
     
     let conditionID: Int
     let weatherDescription: String

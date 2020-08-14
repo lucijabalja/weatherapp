@@ -10,6 +10,8 @@ import Foundation
 
 protocol WeatherDetailService {
     
-    func fetchDailyWeather(for city: String, completion: @escaping (Data) -> Void)
+    func fetchHourlyWeather(for city: String, completion: @escaping (Data) -> Void)
+    
+    func fetchDailyWeather(lat: String, lon: String, completion: @escaping (Data) -> Void)
     
 }

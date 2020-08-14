@@ -8,9 +8,9 @@
 
 import Foundation
 
-struct DailyWeather {
+struct HourlyWeather {
     
-    let hourlyWeather: [HourlyWeather]
+    let hourlyForecast: [HourlyForecast]
     let city: String
 
 }

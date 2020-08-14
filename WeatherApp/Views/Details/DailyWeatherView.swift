@@ -9,58 +9,27 @@
 import UIKit
 
 class DailyWeatherView: UIView {
-
-    private let dayLabel = UILabel()
-    private let weatherIcon = UIImageView()
-    private let maxTemperatureLabel = UILabel()
-    private let minTemperatureLabel = UILabel()
     
-    init() {
-        super.init(frame: .zero)
-        
-        setupUI()
-        setupConstraints()
-    }
+    @IBOutlet weak var dayLabel: UILabel!
+    @IBOutlet weak var weatherIcon: UIImageView!
+    @IBOutlet weak var maxTempLabel: UILabel!
+    @IBOutlet weak var minTempLabel: UILabel!
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
+        if let view = UINib(nibName: "DailyWeatherView", bundle: nil).instantiate(withOwner: self, options: nil).first as? UIView {
+            addSubview(view)
+            setupUI()
+        }
+    }
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
     }
     
     private func setupUI() {
-        dayLabel.style()
-        weatherIcon.styleView()
-        maxTemperatureLabel.style(size: 15.0)
-        minTemperatureLabel.style(size: 14)
-        
-        dayLabel.text = "monoday"
-        dayLabel.tintColor =  .black
-        addSubview(dayLabel)
-        addSubview(weatherIcon)
-        addSubview(maxTemperatureLabel)
-        addSubview(minTemperatureLabel)
+        layer.borderColor = UIColor.systemGray5.cgColor
+        layer.borderWidth = 1.0
+        layer.cornerRadius = 4.0
     }
-    
-    private func setupConstraints() {
-        let iconDimension: CGFloat = 50.0
-        
-        dayLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor, constant: 5).isActive = true
-//        dayLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 5).isActive = true
-//        dayLabel.bottomAnchor.constraint(equalTo: self.bottomAnchor, constant: 5).isActive = true
-        dayLabel.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        //dayLabel.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        
-        weatherIcon.centerYAnchor.constraint(equalTo:self.centerYAnchor).isActive = true
-        weatherIcon.leadingAnchor.constraint(equalTo:self.dayLabel.trailingAnchor, constant: 20).isActive = true
-        weatherIcon.widthAnchor.constraint(equalToConstant: iconDimension).isActive = true
-        weatherIcon.heightAnchor.constraint(equalToConstant: iconDimension).isActive = true
-        
-        maxTemperatureLabel.centerYAnchor.constraint(equalTo:self.centerYAnchor).isActive = true
-        maxTemperatureLabel.leadingAnchor.constraint(equalTo:self.weatherIcon.trailingAnchor, constant: 20).isActive = true
-       // maxTemperatureLabel.widthAnchor.constraint(equalToConstant: 30).isActive = true
-
-        minTemperatureLabel.centerYAnchor.constraint(equalTo:self.centerYAnchor).isActive = true
-        minTemperatureLabel.leadingAnchor.constraint(equalTo:self.maxTemperatureLabel.trailingAnchor, constant: 3).isActive = true
-        minTemperatureLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor, constant: -5).isActive = true
-    }
-    
 }

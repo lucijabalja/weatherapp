@@ -11,13 +11,15 @@ import UIKit
 class Coordinator {
     
     private let navigationController: UINavigationController
-    public let weatherApiService: WeatherApiService
-    public let parsingService: ParsingService
+    private let weatherApiService: WeatherApiService
+    private let parsingService: ParsingService
+    private let locationService: LocationService
     
     init(_ navigationController: UINavigationController) {
         self.navigationController = navigationController
         self.weatherApiService = WeatherApiService()
         self.parsingService = ParsingService()
+        self.locationService = LocationService()
     }
     
     func pushRootViewController() {
@@ -38,7 +40,7 @@ class Coordinator {
     }
     
     func createWeatherDetailViewModel(with cityWeather: CityWeather) -> WeatherDetailViewModel {
-        let viewModel = WeatherDetailViewModel(coordinator: self, apiService: weatherApiService, parsingService: parsingService, cityWeather: cityWeather)
+        let viewModel = WeatherDetailViewModel(coordinator: self, apiService: weatherApiService, parsingService: parsingService, locationService: locationService, cityWeather: cityWeather)
         return viewModel
     }
     

@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct WeatherParameters: Codable {
+struct WeatherParameters: Decodable {
     
     let currentTemperature: Double
     let minTemperature: Double

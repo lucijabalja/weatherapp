@@ -15,7 +15,7 @@ class WeatherCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var temperatureLabel: UILabel!
     static let identifier = "WeatherCollectionViewCell"
     
-    public func configure(with hourlyWeather: HourlyWeather) {
+    public func configure(with hourlyWeather: HourlyForecast) {
         let date = Date(timeIntervalSince1970: TimeInterval(hourlyWeather.dateTime))
         let icon = Utils.resolveWeatherIcon((hourlyWeather.weatherDescription[0].conditionID))
         

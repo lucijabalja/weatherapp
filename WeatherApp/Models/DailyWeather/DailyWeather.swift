@@ -1,22 +1,22 @@
 //
-//  HourlyWeather.swift
+//  DailyWeather.swift
 //  WeatherApp
 //
-//  Created by Lucija Balja on 11/08/2020.
+//  Created by Lucija Balja on 14/08/2020.
 //  Copyright © 2020 Lucija Balja. All rights reserved.
 //
 
 import Foundation
 
-struct HourlyWeather: Codable {
+struct DailyWeather: Decodable {
     
     let dateTime: Int
-    let weatherParameteres: WeatherParameters
+    let temperature: Temperature
     let weatherDescription: [WeatherDescription]
     
     enum CodingKeys: String, CodingKey {
         case dateTime = "dt"
-        case weatherParameteres = "main"
+        case temperature = "temp"
         case weatherDescription = "weather"
     }
 }
