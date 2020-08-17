@@ -8,11 +8,8 @@
 
 import Foundation
 
-class DailyWeather: WeatherResponseProtocol {
+struct DailyWeather: WeatherResponseProtocol {
     
     let dailyForecast: [DailyForecast]
     
-    init(dailyForecast: [DailyForecast]) {
-        self.dailyForecast = dailyForecast
-    }
 }
