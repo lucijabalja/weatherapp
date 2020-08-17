@@ -8,7 +8,8 @@
 
 import Foundation
 
-enum ApiResponseMessage {
+enum WeatherApiResponse {
     
-    case SUCCESSFUL, FAILED
+    case SUCCESSFUL(data: WeatherResponseProtocol)
+    case FAILED(error: String)
 }

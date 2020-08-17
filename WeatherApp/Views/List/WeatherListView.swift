@@ -25,11 +25,11 @@ class WeatherListView: UIView {
         super.init(coder: coder)
     }
     
-    func setErrorLabel() {
+    func setErrorLabel(withText error: String) {
         tableView.isHidden = true
         errorLabel.isHidden = false
         errorImage.isHidden = false
-        errorLabel.text = "Error getting data! Please try again."
+        errorLabel.text = error
     }
     
     private func setupUI() {

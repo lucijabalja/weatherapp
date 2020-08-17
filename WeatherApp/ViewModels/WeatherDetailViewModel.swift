@@ -7,17 +7,15 @@
 //
 
 import Foundation
-import CoreLocation
 
 class WeatherDetailViewModel {
     
-    var hourlyWeather: HourlyWeather?
-    var dailyWeather: [DailyWeather] = []
-    private var apiService: WeatherDetailService
-    private var parsingService: ParsingService
-    private var locationService: LocationService
-    private var coordinator: Coordinator
+    private let apiService: WeatherApiService
+    private let locationService: LocationService
+    private let coordinator: Coordinator
     var cityWeather: CityWeather
+    var hourlyWeather: HourlyWeather?
+    var dailyWeather: DailyWeather?
     
     var date: String {
         return Utils.getFormattedDate()
@@ -27,35 +25,37 @@ class WeatherDetailViewModel {
         return Utils.getFormattedTime()
     }
     
-    init(coordinator: Coordinator, apiService: WeatherDetailService, parsingService: ParsingService, locationService: LocationService, cityWeather: CityWeather) {
-        self.coordinator = coordinator
-        self.apiService = apiService
+    init(appDependencies: AppDependencies, cityWeather: CityWeather, coordinator: Coordinator) {
+        self.apiService = appDependencies.weatherApiService
         self.cityWeather = cityWeather
-        self.parsingService = parsingService
-        self.locationService = locationService
+        self.coordinator = coordinator
+        self.locationService = appDependencies.locationService
     }
     
-    func getHourlyWeather(completion: @escaping (ApiResponseMessage) -> Void) {
-        apiService.fetchHourlyWeather(for: cityWeather.city) { (data) in
-            let parsedResponse = self.parsingService.parseHourlyWeather(data, city: self.cityWeather.city)
-            guard let hourlyWeather = parsedResponse else {
-                completion(.FAILED)
-                return
+    func getHourlyWeather(completion: @escaping (WeatherApiResponse) -> Void) {
+        apiService.fetchHourlyWeather(for: cityWeather.city) { (weatherApiResponse) in
+            switch weatherApiResponse {
+                case .SUCCESSFUL(let data):
+                    self.hourlyWeather = data as? HourlyWeather
+                    completion(.SUCCESSFUL(data: data))
+                
+                case .FAILED(let error):
+                completion(.FAILED(error: error))
             }
-            self.hourlyWeather = hourlyWeather
-            completion(.SUCCESSFUL)
         }
     }
     
-    func getDailyWeather(completion: @escaping (ApiResponseMessage) -> Void) {
-        locationService.getLocationCoordinates(location: cityWeather.city) { (latitude, longitude) in
-            self.apiService.fetchDailyWeather(lat: latitude, lon: longitude) { data in
-                let parsedResponse = self.parsingService.parseDailyWeather(data)
-                if parsedResponse.count == 0 {
-                    completion(.FAILED)
+    func getDailyWeather(completion: @escaping (WeatherApiResponse) -> Void) {
+        locationService.getLocationCoordinates(location: cityWeather.city) { (latitude, longitude ) in
+            self.apiService.fetchDailyWeather(with: latitude, longitude) { (weatherApiResponse) in
+                switch weatherApiResponse {
+                    case .SUCCESSFUL(let data):
+                        self.dailyWeather = data as? DailyWeather
+                        completion(.SUCCESSFUL(data: data))
+                    
+                    case .FAILED(let error):
+                    completion(.FAILED(error: error))
                 }
-                self.dailyWeather.append(contentsOf: parsedResponse)
-                completion(.SUCCESSFUL)
             }
         }
     }
@@ -67,6 +67,8 @@ class WeatherDetailViewModel {
     }
     
     func checkDailyForecastCount(with index: Int) -> Bool {
+        guard let dailyWeather = dailyWeather?.dailyForecast else { return false }
+        
         return dailyWeather.count > index
     }
     

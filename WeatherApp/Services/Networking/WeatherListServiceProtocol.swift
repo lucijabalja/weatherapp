@@ -8,8 +8,8 @@
 
 import Foundation
 
-protocol WeatherListService {
+protocol WeatherListServiceProtocol {
     
-    func fetchCurrentWeather(for city: String, completion: @escaping (Data) -> Void)
+    func fetchCurrentWeather(for city: String, completion: @escaping (WeatherApiResponse) -> Void)
 
 }

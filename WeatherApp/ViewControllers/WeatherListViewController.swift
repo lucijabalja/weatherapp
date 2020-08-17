@@ -11,16 +11,12 @@ import UIKit
 class WeatherListViewController: UIViewController {
     
     private let weatherView = WeatherListView()
-    private var weatherViewModel: WeatherListViewModel! {
-        didSet {
-            fillTableView()
-        }
-    }
-    weak var coordinator: Coordinator?
+    private var weatherViewModel: WeatherListViewModel!
     
-    init(coordinator: Coordinator) {
+    init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
-        self.coordinator = coordinator
+
+        self.weatherViewModel = weatherViewModel
     }
     
     required init?(coder: NSCoder) {
@@ -30,14 +26,10 @@ class WeatherListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupViewModel()
         setupTableView()
         setupUI()
         setupConstraints()
-    }
-    
-    private func setupViewModel() {
-        self.weatherViewModel = coordinator?.createWeatherViewModel()
+        fillTableView()
     }
     
     private func setupTableView() {
@@ -49,8 +41,8 @@ class WeatherListViewController: UIViewController {
     private func fillTableView() {
         weatherViewModel.fetchCityWeather() { (apiResponseMessage) in
             switch apiResponseMessage {
-                case .SUCCESSFUL: self.updateUI()
-                case .FAILED: self.weatherView.setErrorLabel()
+                case .SUCCESSFUL(_): self.updateUI()
+                case .FAILED(let error): self.weatherView.setErrorLabel(withText: error)
             }
         }
     }
@@ -78,16 +70,16 @@ class WeatherListViewController: UIViewController {
 extension WeatherListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        weatherViewModel.weatherData.count
+        weatherViewModel.cityWeather.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
         
         if weatherViewModel.checkCount(with: indexPath.row) {
-            cell.setup(weatherViewModel.weatherData[indexPath.row])
+            cell.setup(weatherViewModel.cityWeather[indexPath.row])
         } else {
-            weatherView.setErrorLabel()
+            weatherView.setErrorLabel(withText: "Index out of bounds.")
         }
         
         return cell
@@ -99,14 +91,14 @@ extension WeatherListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         guard weatherViewModel.checkCount(with: indexPath.row) else {
-            weatherView.setErrorLabel()
+            weatherView.setErrorLabel(withText: "Index out of bounds.")
             return
         }
-        coordinator?.pushDetailViewController(weatherViewModel.weatherData[indexPath.row])
+        weatherViewModel.pushToDetailView(at: indexPath.row)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        return 100
+        100
     }
     
 }

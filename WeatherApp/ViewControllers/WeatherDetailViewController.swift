@@ -17,13 +17,11 @@ class WeatherDetailViewController: UIViewController {
     @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
     
     private var weatherDetailViewModel: WeatherDetailViewModel!
-    weak var coordinator: Coordinator?
     
-    init(with cityWeather: CityWeather, coordinator: Coordinator) {
+    init(with weatherDetailViewModel: WeatherDetailViewModel ) {
         super.init(nibName: nil, bundle: nil)
-        self.coordinator = coordinator
         
-        weatherDetailViewModel = coordinator.createWeatherDetailViewModel(with: cityWeather)
+        self.weatherDetailViewModel = weatherDetailViewModel
     }
     
     required init?(coder: NSCoder) {
@@ -56,8 +54,8 @@ class WeatherDetailViewController: UIViewController {
     private func setupHourlyWeatherData() {
         weatherDetailViewModel.getHourlyWeather(completion: { (apiResponseMessage) in
             switch apiResponseMessage {
-                    case .SUCCESSFUL: self.updateCollectionView()
-                    case .FAILED: print("Error happened!")
+                case .SUCCESSFUL(_): self.updateCollectionView()
+                case .FAILED(let error): print(error)
             }
         })
     }
@@ -65,8 +63,8 @@ class WeatherDetailViewController: UIViewController {
     private func setupDailyWeatherData() {
         weatherDetailViewModel.getDailyWeather { (apiResponseMessage) in
             switch apiResponseMessage {
-                case .SUCCESSFUL: self.updateHourlyStackView()
-                case .FAILED: print("Error happened!")
+                case .SUCCESSFUL(_): self.updateHourlyStackView()
+                case .FAILED(let error): print(error)
             }
         }
     }
@@ -88,15 +86,10 @@ class WeatherDetailViewController: UIViewController {
         for (index, dailyViews) in self.dailyWeatherViews.enumerated() {
             guard weatherDetailViewModel.checkDailyForecastCount(with: index) else { return }
             
-            let dayData = self.weatherDetailViewModel.dailyWeather[index]
-            let date = Date(timeIntervalSince1970: TimeInterval(dayData.dateTime))
-            let icon = Utils.resolveWeatherIcon(dayData.weatherDescription[0].conditionID)
+            guard let dayData = self.weatherDetailViewModel.dailyWeather?.dailyForecast[index] else { return }
             
             DispatchQueue.main.async {
-                dailyViews.dayLabel.text = Utils.getWeekDay(with: date)
-                dailyViews.maxTempLabel.text = "\(dayData.temperature.max)°"
-                dailyViews.minTempLabel.text = "\(dayData.temperature.min)°"
-                dailyViews.weatherIcon.image = UIImage(systemName: icon)
+                dailyViews.setupView(with: dayData)
             }
         }
     }

@@ -10,10 +10,14 @@ import Foundation
 
 struct DailyWeatherResponse: Decodable {
     
-    let dailyWeather: [DailyWeather]
+    let dailyForecast: [DailyForecast]
     
     enum CodingKeys: String, CodingKey {
-        case dailyWeather = "daily"
+        case dailyForecast = "daily"
+    }
+    
+    func convertToDailyWeather() -> DailyWeather {
+        DailyWeather(dailyForecast: dailyForecast)
     }
     
 }

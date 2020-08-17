@@ -10,38 +10,31 @@ import UIKit
 
 class Coordinator {
     
+    private let window: UIWindow
     private let navigationController: UINavigationController
-    private let weatherApiService: WeatherApiService
-    private let parsingService: ParsingService
-    private let locationService: LocationService
+    private let appDependencies: AppDependencies
     
-    init(_ navigationController: UINavigationController) {
-        self.navigationController = navigationController
-        self.weatherApiService = WeatherApiService()
-        self.parsingService = ParsingService()
-        self.locationService = LocationService()
+    init(window: UIWindow) {
+        self.window = window
+        self.navigationController = UINavigationController()
+        self.appDependencies = AppDependencies()
     }
     
-    func pushRootViewController() {
-        let rootViewController = WeatherListViewController(coordinator: self)
+    func setRootViewController() {
+        let viewModel = WeatherListViewModel(apiService: appDependencies.weatherApiService, coordinator: self)
+        let rootViewController = WeatherListViewController(with: viewModel)
         rootViewController.modalPresentationStyle = .fullScreen
         navigationController.pushViewController(rootViewController, animated: true)
+
+        window.rootViewController = navigationController
+        window.makeKeyAndVisible()
     }
     
-    func pushDetailViewController(_ selectedCity: CityWeather) {
-        let weatherDetailViewController = WeatherDetailViewController(with: selectedCity, coordinator: self)
+    func pushDetailViewController(with selectedCity: CityWeather) {
+        let viewModel = WeatherDetailViewModel(appDependencies: appDependencies, cityWeather: selectedCity, coordinator: self)
+        let weatherDetailViewController = WeatherDetailViewController(with: viewModel)
         weatherDetailViewController.modalPresentationStyle = .fullScreen
         navigationController.pushViewController(weatherDetailViewController, animated: true)
-    }
-    
-    func createWeatherViewModel() -> WeatherListViewModel {
-        let viewModel = WeatherListViewModel(coordinator: self, apiService: weatherApiService, parsingService: parsingService)
-        return viewModel
-    }
-    
-    func createWeatherDetailViewModel(with cityWeather: CityWeather) -> WeatherDetailViewModel {
-        let viewModel = WeatherDetailViewModel(coordinator: self, apiService: weatherApiService, parsingService: parsingService, locationService: locationService, cityWeather: cityWeather)
-        return viewModel
     }
     
 }

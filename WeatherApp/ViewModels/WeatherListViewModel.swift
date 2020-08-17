@@ -10,28 +10,27 @@ import Foundation
 
 class WeatherListViewModel {
     
-    private var apiService: WeatherListService
-    private var parsingService: ParsingService
+    private var apiService: WeatherListServiceProtocol
     private let coordinator: Coordinator
     private let cities = City.allCases
-    var weatherData: [CityWeather] = []
+    var cityWeather: [CityWeather] = []
     
-    init(coordinator: Coordinator, apiService: WeatherListService, parsingService: ParsingService) {
-        self.coordinator = coordinator
+    init(apiService: WeatherListServiceProtocol, coordinator: Coordinator) {
         self.apiService = apiService
-        self.parsingService = parsingService
+        self.coordinator = coordinator
     }
     
-    func fetchCityWeather(completionHandler: @escaping (ApiResponseMessage) -> Void) {
+    func fetchCityWeather(completionHandler: @escaping (WeatherApiResponse) -> Void) {
         cities.forEach { (city) in
-            apiService.fetchCurrentWeather(for: city.rawValue) { (data) in
-                let parsedResponse = self.parsingService.parseCityWeather(data, city: city.rawValue)
-                guard let cityWeather = parsedResponse else {
-                    completionHandler(.FAILED)
-                    return
+            apiService.fetchCurrentWeather(for: city.rawValue) { (apiResponse) in
+                switch apiResponse {
+                case .SUCCESSFUL(let cityWeather):
+                    self.cityWeather.append(cityWeather as! CityWeather)
+                    completionHandler(.SUCCESSFUL(data: cityWeather))
+                    
+                case .FAILED(let error):
+                    completionHandler(.FAILED(error: error))
                 }
-                self.weatherData.append(cityWeather)
-                completionHandler(.SUCCESSFUL)
             }
         }
     }
@@ -39,12 +38,12 @@ class WeatherListViewModel {
     func pushToDetailView(at index: Int) {
         guard checkCount(with: index) else { return }
         
-        let selectedCity = weatherData[index]
-        coordinator.pushDetailViewController(selectedCity)
+        let selectedCity = cityWeather[index]
+        coordinator.pushDetailViewController(with: selectedCity)
     }
     
     func checkCount(with index: Int) -> Bool {
-        return weatherData.count > index
+        cityWeather.count > index
     }
     
 }

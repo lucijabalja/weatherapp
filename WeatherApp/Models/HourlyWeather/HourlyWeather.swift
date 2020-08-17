@@ -8,9 +8,14 @@
 
 import Foundation
 
-struct HourlyWeather {
+class HourlyWeather: WeatherResponseProtocol {
     
     let hourlyForecast: [HourlyForecast]
     let city: String
-
+    
+    init(hourlyForecast: [HourlyForecast], city: String) {
+        self.hourlyForecast = hourlyForecast
+        self.city = city
+    }
+    
 }

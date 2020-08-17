@@ -18,7 +18,7 @@ struct HourlyWeatherResponse: Decodable {
     
     
     func convertToHourlyWeather(with city: String) -> HourlyWeather {
-        return HourlyWeather(hourlyForecast: hourlyForecast, city: city)
+        HourlyWeather(hourlyForecast: hourlyForecast, city: city)
     }
     
 }

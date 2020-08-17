@@ -8,11 +8,18 @@
 
 import Foundation
 
-struct CityWeather {
+class CityWeather: WeatherResponseProtocol {
     
     let city: String
     let parameters: WeatherParameters
     let icon: String
     let description: String
     
+    init(city: String, parameters: WeatherParameters, icon: String, description: String) {
+        self.city = city
+        self.parameters = parameters
+        self.icon = icon
+        self.description = description
+    }
+
 }

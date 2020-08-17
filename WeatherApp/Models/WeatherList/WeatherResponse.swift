@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Weather: Decodable {
+struct WeatherResponse: Decodable {
     
     let weatherDescription: [WeatherDescription]
     let weatherParameteres: WeatherParameters

@@ -8,34 +8,61 @@
 
 import Foundation
 
-class WeatherApiService: WeatherListService, WeatherDetailService {
+class WeatherApiService: WeatherListServiceProtocol, WeatherDetailServiceProtocol {
     
     private let apiURL = "https://api.openweathermap.org/data/2.5"
     private let apiKey = "appid=56151fef235e6cebb33750525932d021"
     private let units = "units=metric"
     private let exclusions = "exclude=minutely,hourly"
+    private let parsingService: ParsingService
     
-    func fetchCurrentWeather(for city: String, completion: @escaping (Data) -> Void) {
+    init(parsingService: ParsingService) {
+        self.parsingService = parsingService
+    }
+    
+    func fetchCurrentWeather(for city: String, completion: @escaping (WeatherApiResponse) -> Void) {
         let urlString = "\(apiURL)/weather?\(apiKey)&\(units)&q=\(city)"
         
         performRequest(with: urlString) { (data) in
-            completion(data)
+            let parsedResponse = self.parsingService.parseCityWeather(data, city: city)
+            
+            guard let cityWeather = parsedResponse else {
+                completion(.FAILED(error: "Cannot parse data correctly!"))
+                return
+            }
+            
+            completion(.SUCCESSFUL(data: cityWeather))
         }
     }
     
-    func fetchHourlyWeather(for city: String, completion: @escaping (Data) -> Void) {
+    func fetchHourlyWeather(for city: String, completion: @escaping (WeatherApiResponse) -> Void) {
         let urlString = "\(apiURL)/forecast?\(apiKey)&\(units)&q=\(city)"
         
         performRequest(with: urlString) { (data) in
-            completion(data)
+            
+            let parsedResponse = self.parsingService.parseHourlyWeather(data, city: city)
+            
+            guard let hourlyWeather = parsedResponse else {
+                completion(.FAILED(error: "Cannot parse data correctly!"))
+                return
+            }
+            
+            completion(.SUCCESSFUL(data: hourlyWeather))
         }
     }
     
-    func fetchDailyWeather(lat: String, lon: String, completion: @escaping (Data) -> Void) {
-        let urlString = "\(apiURL)/onecall?\(apiKey)&\(units)&lat=\(lat)&lon=\(lon)&\(exclusions)"
+    func fetchDailyWeather(with latitude: String,_ longitude: String, completion: @escaping (WeatherApiResponse) -> Void) {
+        let urlString = "\(apiURL)/onecall?\(apiKey)&\(units)&lat=\(latitude)&lon=\(longitude)&\(exclusions)"
         
         performRequest(with: urlString) { (data) in
-            completion(data)
+            let parsedResponse = self.parsingService.parseDailyWeather(data)
+            
+            guard let dailyWeather = parsedResponse else {
+                completion(.FAILED(error: "Cannot parse data correctly"))
+                return
+            }
+            
+            completion(.SUCCESSFUL(data: dailyWeather))
         }
     }
     

@@ -32,4 +32,14 @@ class DailyWeatherView: UIView {
         layer.borderWidth = 1.0
         layer.cornerRadius = 4.0
     }
+    
+    func setupView(with dayData: DailyForecast) {
+        let date = Date(timeIntervalSince1970: TimeInterval(dayData.dateTime))
+        let icon = Utils.resolveWeatherIcon(dayData.weatherDescription[0].conditionID)
+        
+        dayLabel.text = Utils.getWeekDay(with: date)
+        maxTempLabel.text = "\(dayData.temperature.max)°"
+        minTempLabel.text = "\(dayData.temperature.min)°"
+        weatherIcon.image = UIImage(systemName: icon)
+    }
 }

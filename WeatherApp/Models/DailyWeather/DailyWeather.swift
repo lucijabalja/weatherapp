@@ -2,21 +2,17 @@
 //  DailyWeather.swift
 //  WeatherApp
 //
-//  Created by Lucija Balja on 14/08/2020.
+//  Created by Lucija Balja on 17/08/2020.
 //  Copyright © 2020 Lucija Balja. All rights reserved.
 //
 
 import Foundation
 
-struct DailyWeather: Decodable {
+class DailyWeather: WeatherResponseProtocol {
     
-    let dateTime: Int
-    let temperature: Temperature
-    let weatherDescription: [WeatherDescription]
+    let dailyForecast: [DailyForecast]
     
-    enum CodingKeys: String, CodingKey {
-        case dateTime = "dt"
-        case temperature = "temp"
-        case weatherDescription = "weather"
+    init(dailyForecast: [DailyForecast]) {
+        self.dailyForecast = dailyForecast
     }
 }
