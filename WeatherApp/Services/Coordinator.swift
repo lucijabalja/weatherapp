@@ -10,13 +10,12 @@ import UIKit
 
 class Coordinator {
     
-    private let window: UIWindow
-    private let navigationController: UINavigationController
     private let appDependencies: AppDependencies
+    private let navigationController = UINavigationController()
+    private let window: UIWindow
     
     init(window: UIWindow) {
         self.window = window
-        self.navigationController = UINavigationController()
         self.appDependencies = AppDependencies()
     }
     

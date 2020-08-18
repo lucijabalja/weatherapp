@@ -38,8 +38,8 @@ class DailyWeatherView: UIView {
         let icon = Utils.resolveWeatherIcon(dayData.weatherDescription[0].conditionID)
         
         dayLabel.text = Utils.getWeekDay(with: date)
-        maxTempLabel.text = "\(dayData.temperature.max)°"
-        minTempLabel.text = "\(dayData.temperature.min)°"
+        maxTempLabel.text = Utils.getFormattedTemperature(dayData.temperature.max)
+        minTempLabel.text = Utils.getFormattedTemperature(dayData.temperature.min)
         weatherIcon.image = UIImage(systemName: icon)
     }
 }

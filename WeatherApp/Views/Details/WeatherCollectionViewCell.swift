@@ -21,7 +21,7 @@ class WeatherCollectionViewCell: UICollectionViewCell {
         
         timeLabel.text = Utils.getFormattedTime(with: date)
         weatherIcon.image = UIImage(systemName: icon)
-        temperatureLabel.text = "\(hourlyWeather.weatherParameteres.currentTemperature)°"
+        temperatureLabel.text = Utils.getFormattedTemperature(hourlyWeather.weatherParameteres.currentTemperature)
     }
     
     static func nib() -> UINib {

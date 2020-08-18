@@ -13,12 +13,10 @@ struct WeatherParameters: Decodable {
     let currentTemperature: Double
     let minTemperature: Double
     let maxTemperature: Double
-    let humidity: Int
     
     enum CodingKeys: String, CodingKey {
         case currentTemperature = "temp"
         case minTemperature = "temp_min"
         case maxTemperature = "temp_max"
-        case humidity
     }
 }
