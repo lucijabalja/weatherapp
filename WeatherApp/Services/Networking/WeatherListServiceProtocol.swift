@@ -11,5 +11,6 @@ import Foundation
 protocol WeatherListServiceProtocol {
     
     func fetchCurrentWeather(for city: String, completion: @escaping (WeatherApiResponse) -> Void)
+    func fetchCurrentWeather(for cities: [City], completion: @escaping (WeatherApiResponse) -> Void)
 
 }

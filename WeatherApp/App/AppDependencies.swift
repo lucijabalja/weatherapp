@@ -10,7 +10,16 @@ import Foundation
 
 struct AppDependencies {
     
-    let weatherApiService = WeatherApiService(parsingService: ParsingService())
-    let locationService = LocationService()
+    let weatherApiService: WeatherApiService
+    let locationService: LocationService
+    let coreDataService: CoreDataService
+    let dataRepository: DataRepository
+    
+    init() {
+        weatherApiService = WeatherApiService(parsingService: ParsingService())
+        locationService = LocationService()
+        coreDataService = CoreDataService()
+        dataRepository = DataRepository(weatherApiService: weatherApiService, coreDataService: coreDataService)
+    }
     
 }

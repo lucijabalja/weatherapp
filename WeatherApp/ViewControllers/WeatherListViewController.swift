@@ -26,10 +26,13 @@ class WeatherListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // to locate sqlite file
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        
         setupTableView()
         setupUI()
         setupConstraints()
-        fillTableView()
+        fetchData()
     }
     
     private func setupTableView() {
@@ -38,7 +41,7 @@ class WeatherListViewController: UIViewController {
         weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
     
-    private func fillTableView() {
+    private func fetchData() {
         weatherViewModel.fetchCityWeather() { (apiResponseMessage) in
             switch apiResponseMessage {
                 case .SUCCESSFUL(_): self.updateUI()

@@ -20,6 +20,14 @@ class WeatherApiService: WeatherListServiceProtocol, WeatherDetailServiceProtoco
         self.parsingService = parsingService
     }
     
+    func fetchCurrentWeather(for cities: [City], completion: @escaping (WeatherApiResponse) -> Void) {
+        cities.forEach { (city) in
+            fetchCurrentWeather(for: city.rawValue) { (weatherApiResponse) in
+                completion(weatherApiResponse)
+            }
+        }
+    }
+    
     func fetchCurrentWeather(for city: String, completion: @escaping (WeatherApiResponse) -> Void) {
         let urlString = "\(apiURL)/weather?\(apiKey)&\(units)&q=\(city)"
         

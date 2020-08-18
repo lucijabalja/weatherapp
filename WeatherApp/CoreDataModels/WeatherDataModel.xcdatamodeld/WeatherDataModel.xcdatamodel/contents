@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19G73" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="CityWeatherEntity" representedClassName="CityWeatherEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="city" optional="YES" attributeType="String"/>
+        <attribute name="icon" optional="YES" attributeType="String"/>
+        <attribute name="weatherDescription" optional="YES" attributeType="String"/>
+        <relationship name="parameters" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WeatherParametersEntity" inverseName="cityWeather" inverseEntity="WeatherParametersEntity"/>
+    </entity>
+    <entity name="WeatherParametersEntity" representedClassName="WeatherParametersEntity" syncable="YES" codeGenerationType="class">
+        <attribute name="currentTemperature" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="maxTemperature" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="minTemperature" optional="YES" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="cityWeather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CityWeatherEntity" inverseName="parameters" inverseEntity="CityWeatherEntity"/>
+    </entity>
+    <elements>
+        <element name="CityWeatherEntity" positionX="-63" positionY="-18" width="128" height="103"/>
+        <element name="WeatherParametersEntity" positionX="167.83203125" positionY="-18.37109375" width="128" height="103"/>
+    </elements>
+</model>

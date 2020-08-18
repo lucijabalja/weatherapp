@@ -10,28 +10,19 @@ import Foundation
 
 class WeatherListViewModel {
     
-    private var apiService: WeatherListServiceProtocol
     private let coordinator: Coordinator
+    private let dataRepository: DataRepository
     private let cities = City.allCases
-    var cityWeather: [CityWeather] = []
+    var cityWeather = [CityWeather]()
     
-    init(apiService: WeatherListServiceProtocol, coordinator: Coordinator) {
-        self.apiService = apiService
+    init(coordinator: Coordinator, dataRepository: DataRepository) {
         self.coordinator = coordinator
+        self.dataRepository = dataRepository
     }
     
     func fetchCityWeather(completionHandler: @escaping (WeatherApiResponse) -> Void) {
-        cities.forEach { (city) in
-            apiService.fetchCurrentWeather(for: city.rawValue) { (apiResponse) in
-                switch apiResponse {
-                case .SUCCESSFUL(let cityWeather):
-                    self.cityWeather.append(cityWeather as! CityWeather)
-                    completionHandler(.SUCCESSFUL(data: cityWeather))
-                    
-                case .FAILED(let error):
-                    completionHandler(.FAILED(error: error))
-                }
-            }
+        dataRepository.fetchCurrentWeather(for: cities) { (weatherApiResponse) in
+            
         }
     }
     
