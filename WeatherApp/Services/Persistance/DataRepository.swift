@@ -7,15 +7,28 @@
 //
 
 import Foundation
+import Reachability
 
 class DataRepository {
     
     let weatherApiService: WeatherApiService
     let coreDataService: CoreDataService
+    let reachability = try! Reachability()
+
     
     init(weatherApiService: WeatherApiService, coreDataService: CoreDataService) {
         self.weatherApiService = weatherApiService
         self.coreDataService = coreDataService
+    }
+    
+    func checkReachability() {
+        reachability.whenReachable = { _ in
+        }
+        reachability.whenUnreachable = { _ in
+//            self.loadData()
+        }
+        // for testing purposes
+        print(reachability.connection.description)
     }
     
     func fetchCurrentWeather(for cities: [City], completion: @escaping (WeatherApiResponse) -> Void) {
