@@ -1,1 +1,8 @@
-/xcuserdata
+WeatherApp.xcworkspace/xcuserdata
+
+/Pods
+
+.DS_Store
+
+
+xcuserdata/
