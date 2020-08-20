@@ -45,27 +45,27 @@ class WeatherApiService {
 }
 
 extension WeatherApiService: WeatherListServiceProtocol {
-
-   func fetchCurrentWeather(completion: @escaping (Result<[CurrentWeather], NetworkError>) -> Void) {
-       let ids = City.allCases.map{ $0.rawValue}.map { String($0) }.joined(separator:",")
-       let urlString = "\(apiURL)/group?\(apiKey)&\(exclusions)&\(units)&id=\(ids)"
-
-       performRequest(with: urlString) { (result) in
-        if case let Result.success(data) = result {
-            let parsedResponse = self.parsingService.parseCurrentWeather(data)
-            
-            guard let currentWeather = parsedResponse else {
-                completion(.failure(.decodingError(message: "Cannot parse data correctly.")))
-                return
+    
+    func fetchCurrentWeather(completion: @escaping (Result<[CurrentWeather], NetworkError>) -> Void) {
+        let ids = City.allCases.map{ $0.rawValue}.map { String($0) }.joined(separator:",")
+        let urlString = "\(apiURL)/group?\(apiKey)&\(exclusions)&\(units)&id=\(ids)"
+        
+        performRequest(with: urlString) { (result) in
+            if case let Result.success(data) = result {
+                let parsedResponse = self.parsingService.parseCurrentWeather(data)
+                
+                guard let currentWeather = parsedResponse else {
+                    completion(.failure(.decodingError(message: "Cannot parse data correctly.")))
+                    return
+                }
+                
+                completion(.success(currentWeather.currentWeatherList))
+                
+            } else if case let Result.failure(error) = result {
+                completion(.failure(error))
             }
-            print(currentWeather.currentWeatherList)
-            completion(.success(currentWeather.currentWeatherList))
-            
-        } else if case let Result.failure(error) = result {
-            completion(.failure(error))
         }
-       }
-   }
+    }
     
 }
 

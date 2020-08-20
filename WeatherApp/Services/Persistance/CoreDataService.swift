@@ -18,7 +18,6 @@ class CoreDataService {
         for currentWeather in currentWeatherList {
             CityWeatherEntity.createFrom(currentWeather)
         }
-
     }
     
     func loadCurrentWeatherData() -> [CityWeatherEntity] {

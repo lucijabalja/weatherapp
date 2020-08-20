@@ -31,11 +31,10 @@ class DataRepository {
             self.weatherApiService.fetchCurrentWeather(completion: { (result) in
                 if case let Result.success(currentWeatherList) = result {
                     self.coreDataService.saveCurrentWeatherData(currentWeatherList)
-
+                    cityWeatherEntitiesArray = self.coreDataService.loadCurrentWeatherData()
+                    cityWeatherArray = self.convertToCityWeather(cityWeatherEntities: cityWeatherEntitiesArray)
+                    completion(cityWeatherArray)
                 }
-                cityWeatherEntitiesArray = self.coreDataService.loadCurrentWeatherData()
-                cityWeatherArray = self.convertToCityWeather(cityWeatherEntities: cityWeatherEntitiesArray)
-                completion(cityWeatherArray)
             })
         }
         

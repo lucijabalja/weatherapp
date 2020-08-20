@@ -27,7 +27,7 @@ class WeatherListViewController: UIViewController {
         super.viewDidLoad()
         
         // to locate sqlite file
-        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
+        print(FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask))
         
         setupTableView()
         setupUI()
