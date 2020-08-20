@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct CityWeather: WeatherResponseProtocol {
+struct CityWeather {
     
     let city: String
     let parameters: TemperatureParameters

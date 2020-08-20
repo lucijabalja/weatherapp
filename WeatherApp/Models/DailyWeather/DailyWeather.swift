@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct DailyWeather: WeatherResponseProtocol {
+struct DailyWeather {
     
     let dailyForecast: [DailyForecast]
     
