@@ -11,12 +11,12 @@ import Foundation
 struct HourlyForecast: Decodable {
     
     let dateTime: Int
-    let weatherParameteres: WeatherParameters
-    let weatherDescription: [WeatherDescription]
+    let temperatureParameters: TemperatureParameters
+    let weather: [WeatherDescription]
     
     enum CodingKeys: String, CodingKey {
         case dateTime = "dt"
-        case weatherParameteres = "main"
-        case weatherDescription = "weather"
+        case temperatureParameters = "main"
+        case weather = "weather"
     }
 }

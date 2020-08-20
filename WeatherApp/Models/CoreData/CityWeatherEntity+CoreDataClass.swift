@@ -12,31 +12,31 @@ import UIKit
 
 public class CityWeatherEntity: NSManagedObject {
     
-    class func createFrom(weatherResponse: CurrentWeather) {
+    class func createFrom(_ currentWeather: CurrentWeather) {
         
-        guard let cityWeatherEntity = loadCurrentWeather(weatherResponse.city) else {
-            creteNewEntity(with: weatherResponse)
+        guard let cityWeatherEntity = loadCurrentWeather(currentWeather.city) else {
+            creteNewEntity(with: currentWeather)
             return
         }
-        cityWeatherEntity.parameters?.current = Utils.getFormattedTemperature(weatherResponse.weatherParameters.currentTemperature)
-        cityWeatherEntity.parameters?.max = Utils.getFormattedTemperature(weatherResponse.weatherParameters.maxTemperature)
-        cityWeatherEntity.parameters?.min = Utils.getFormattedTemperature(weatherResponse.weatherParameters.minTemperature)
+        cityWeatherEntity.parameters?.current = Utils.getFormattedTemperature(currentWeather.weatherParameters.currentTemperature)
+        cityWeatherEntity.parameters?.max = Utils.getFormattedTemperature(currentWeather.weatherParameters.maxTemperature)
+        cityWeatherEntity.parameters?.min = Utils.getFormattedTemperature(currentWeather.weatherParameters.minTemperature)
         
         DataController.shared.saveContext()
     }
     
-    class func creteNewEntity(with weatherResponse: CurrentWeather) {
+    class func creteNewEntity(with currentWeather: CurrentWeather) {
         let context = DataController.shared.persistentContainer.viewContext
         let cityWeatherEntity = CityWeatherEntity(context: context)
         let temperatureParams = TemperatureParametersEntity(context: context)
         
-        cityWeatherEntity.city = weatherResponse.city
-        cityWeatherEntity.icon = Utils.resolveWeatherIcon(weatherResponse.weatherDescription[0].conditionID)
-        cityWeatherEntity.weatherDescription = weatherResponse.weatherDescription[0].weatherDescription
+        cityWeatherEntity.city = currentWeather.city
+        cityWeatherEntity.icon = Utils.resolveWeatherIcon(currentWeather.weatherDescription[0].conditionID)
+        cityWeatherEntity.weatherDescription = currentWeather.weatherDescription[0].weatherDescription
         
-        temperatureParams.current = Utils.getFormattedTemperature(weatherResponse.weatherParameters.currentTemperature)
-        temperatureParams.max = Utils.getFormattedTemperature(weatherResponse.weatherParameters.maxTemperature)
-        temperatureParams.min = Utils.getFormattedTemperature(weatherResponse.weatherParameters.minTemperature)
+        temperatureParams.current = Utils.getFormattedTemperature(currentWeather.weatherParameters.currentTemperature)
+        temperatureParams.max = Utils.getFormattedTemperature(currentWeather.weatherParameters.maxTemperature)
+        temperatureParams.min = Utils.getFormattedTemperature(currentWeather.weatherParameters.minTemperature)
         cityWeatherEntity.parameters = temperatureParams
         
         DataController.shared.saveContext()

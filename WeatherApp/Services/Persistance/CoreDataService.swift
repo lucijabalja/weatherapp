@@ -14,8 +14,10 @@ class CoreDataService {
     private let context = DataController.shared.persistentContainer.viewContext
     private var cityWeatherArray = [CityWeatherEntity]()
     
-    func saveCurrentWeatherData(weatherResponse: CurrentWeather) {        
-        CityWeatherEntity.createFrom(weatherResponse: weatherResponse)
+    func saveCurrentWeatherData(_ currentWeatherList: [CurrentWeather]) {
+        for currentWeather in currentWeatherList {
+            CityWeatherEntity.createFrom(currentWeather)
+        }
 
     }
     

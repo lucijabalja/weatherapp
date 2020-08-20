@@ -12,11 +12,11 @@ struct DailyForecast: Decodable {
     
     let dateTime: Int
     let temperature: Temperature
-    let weatherDescription: [WeatherDescription]
+    let weather: [WeatherDescription]
     
     enum CodingKeys: String, CodingKey {
         case dateTime = "dt"
         case temperature = "temp"
-        case weatherDescription = "weather"
+        case weather = "weather"
     }
 }

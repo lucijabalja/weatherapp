@@ -20,22 +20,19 @@ class WeatherListViewModel {
         self.dataRepository = dataRepository
     }
     
-    func getCurrentCityWeather(completion: @escaping (Bool) -> Void) {
-        dataRepository.getCurrentCityWeather(for: cities) { (cityWeather) in
-            self.cityWeather.append(contentsOf: cityWeather)
-            completion(true)
+    func fetchCityWeather(completionHandler: @escaping (Result<Bool,NetworkError>) -> Void) {
+        cities.forEach { (city) in
+            dataRepository.getCurrentCityWeather() { (cityWeather) in
+                self.cityWeather.append(contentsOf: cityWeather)
+                completionHandler(.success(true))
+            }
         }
     }
     
     func pushToDetailView(at index: Int) {
-        guard checkCount(with: index) else { return }
+        guard let selectedCity = cityWeather[safeIndex: index] else { return }
         
-        let selectedCity = cityWeather[index]
         coordinator.pushDetailViewController(with: selectedCity)
-    }
-    
-    func checkCount(with index: Int) -> Bool {
-        cityWeather.count > index
     }
     
 }

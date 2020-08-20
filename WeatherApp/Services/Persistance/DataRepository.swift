@@ -23,16 +23,20 @@ class DataRepository {
         startReachabilityNotifier()
     }
     
-    func getCurrentCityWeather(for cities: [City], completion: @escaping ([CityWeather]) -> Void) {
+    func getCurrentCityWeather(completion: @escaping ([CityWeather]) -> Void) {
         var cityWeatherEntitiesArray = [CityWeatherEntity]()
         var cityWeatherArray = [CityWeather]()
         
         reachability.whenReachable = { _ in
-            self.fetchFromAPI(for: cities) { (finished) in
+            self.weatherApiService.fetchCurrentWeather(completion: { (result) in
+                if case let Result.success(currentWeatherList) = result {
+                    self.coreDataService.saveCurrentWeatherData(currentWeatherList)
+
+                }
                 cityWeatherEntitiesArray = self.coreDataService.loadCurrentWeatherData()
                 cityWeatherArray = self.convertToCityWeather(cityWeatherEntities: cityWeatherEntitiesArray)
                 completion(cityWeatherArray)
-            }
+            })
         }
         
         reachability.whenUnreachable = { _ in
@@ -42,25 +46,12 @@ class DataRepository {
         }
         print(reachability.connection.description)
     }
-    
-    func fetchFromAPI(for cities: [City], completion: @escaping (Bool) -> Void) {
-        self.weatherApiService.fetchCurrentWeather() { (apiResponse) in
-            if case let .SUCCESSFUL(data) = apiResponse {
-                self.coreDataService.saveCurrentWeatherData(weatherResponse: data as! CurrentWeatherResponse)
-                completion(true)
-            }
-        }
-    }
-    
-    func getFromCoreData() {
-        
-    }
-    
+
     func convertToCityWeather(cityWeatherEntities: [CityWeatherEntity]) -> [CityWeather] {
         var cityWeatherArray = [CityWeather]()
         for cityWeatherEntity in cityWeatherEntities {
             let params = cityWeatherEntity.parameters!
-            let temperatureParams = TemperatureParameters(current: params.current!, min: params.min!, max: params.max!)
+            let temperatureParams = CurrentTemperature(current: params.current!, min: params.min!, max: params.max!)
             
             let cityWeather = CityWeather(city: cityWeatherEntity.city!, parameters: temperatureParams, icon: cityWeatherEntity.icon!, description: cityWeatherEntity.weatherDescription!)
             

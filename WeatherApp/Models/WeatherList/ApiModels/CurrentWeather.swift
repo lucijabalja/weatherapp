@@ -11,7 +11,7 @@ import Foundation
 struct CurrentWeather: Decodable {
     
     let weatherDescription: [WeatherDescription]
-    let weatherParameters: WeatherParameters
+    let weatherParameters: TemperatureParameters
     let city: String
     
     enum CodingKeys: String, CodingKey {

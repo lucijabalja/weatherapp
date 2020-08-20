@@ -8,10 +8,10 @@
 
 import Foundation
 
-struct CityWeather: WeatherResponseProtocol {
+struct CityWeather {
     
     let city: String
-    let parameters: TemperatureParameters
+    let parameters: CurrentTemperature
     let icon: String
     let description: String
     

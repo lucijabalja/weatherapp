@@ -16,7 +16,6 @@ struct HourlyWeatherResponse: Decodable {
         case hourlyForecast = "list"
     }
     
-    
     func convertToHourlyWeather(with city: String) -> HourlyWeather {
         HourlyWeather(hourlyForecast: hourlyForecast, city: city)
     }

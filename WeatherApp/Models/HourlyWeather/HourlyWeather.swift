@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct HourlyWeather: WeatherResponseProtocol {
+struct HourlyWeather {
     
     let hourlyForecast: [HourlyForecast]
     let city: String

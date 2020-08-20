@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct CurrentWeatherResponse: Decodable, WeatherResponseProtocol {
+struct CurrentWeatherResponse: Decodable {
     
     let currentWeatherList: [CurrentWeather]
 

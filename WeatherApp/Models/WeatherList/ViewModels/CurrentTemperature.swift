@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct TemperatureParameters {
+struct CurrentTemperature {
     
     let current: String
     let min: String

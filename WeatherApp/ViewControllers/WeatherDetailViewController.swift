@@ -54,8 +54,8 @@ class WeatherDetailViewController: UIViewController {
     private func setupHourlyWeatherData() {
         weatherDetailViewModel.getHourlyWeather(completion: { (apiResponseMessage) in
             switch apiResponseMessage {
-                case .SUCCESSFUL(_): self.updateCollectionView()
-                case .FAILED(let error): print(error)
+                case .success(_): self.updateCollectionView()
+                case .failure(let error): print(error)
             }
         })
     }
@@ -63,8 +63,8 @@ class WeatherDetailViewController: UIViewController {
     private func setupDailyWeatherData() {
         weatherDetailViewModel.getDailyWeather { (apiResponseMessage) in
             switch apiResponseMessage {
-                case .SUCCESSFUL(_): self.updateHourlyStackView()
-                case .FAILED(let error): print(error)
+                case .success(_): self.updateHourlyStackView()
+                case .failure(let error): print(error)
             }
         }
     }
@@ -84,10 +84,8 @@ class WeatherDetailViewController: UIViewController {
     
     private func updateHourlyStackView() {
         for (index, dailyViews) in self.dailyWeatherViews.enumerated() {
-            guard weatherDetailViewModel.checkDailyForecastCount(with: index) else { return }
-            
-            guard let dayData = self.weatherDetailViewModel.dailyWeather?.dailyForecast[index] else { return }
-            
+            guard let dayData = weatherDetailViewModel.dailyWeather?.dailyForecast[safeIndex: index] else { return }
+                        
             DispatchQueue.main.async {
                 dailyViews.setupView(with: dayData)
             }
@@ -112,19 +110,11 @@ extension WeatherDetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell
         
-        if let hourlyWeather = weatherDetailViewModel.hourlyWeather?.hourlyForecast[indexPath.row] {
+        if let hourlyWeather = weatherDetailViewModel.hourlyWeather?.hourlyForecast[safeIndex: indexPath.row] {
             cell.configure(with: hourlyWeather)
         }
         
         return cell
-    }
-    
-}
-
-extension WeatherDetailViewController: UICollectionViewDelegateFlowLayout {
-    
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        CGSize(width: 70, height: 150)
     }
     
 }

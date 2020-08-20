@@ -32,44 +32,32 @@ class WeatherDetailViewModel {
         self.locationService = appDependencies.locationService
     }
     
-    func getHourlyWeather(completion: @escaping (WeatherApiResponse) -> Void) {
-        apiService.fetchHourlyWeather(for: cityWeather.city) { (weatherApiResponse) in
-            switch weatherApiResponse {
-                case .SUCCESSFUL(let data):
-                    self.hourlyWeather = data as? HourlyWeather
-                    completion(.SUCCESSFUL(data: data))
+    func getHourlyWeather(completion: @escaping (Result<HourlyWeather, Error>) -> Void) {
+        apiService.fetchHourlyWeather(for: cityWeather.city) { (result) in
+            switch result {
+            case .success(let hourlyWeather):
+                self.hourlyWeather = hourlyWeather
+                completion(.success(hourlyWeather))
                 
-                case .FAILED(let error):
-                completion(.FAILED(error: error))
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
     }
     
-    func getDailyWeather(completion: @escaping (WeatherApiResponse) -> Void) {
+    func getDailyWeather(completion: @escaping (Result<DailyWeather, Error>) -> Void) {
         locationService.getLocationCoordinates(location: cityWeather.city) { (latitude, longitude ) in
-            self.apiService.fetchDailyWeather(with: latitude, longitude) { (weatherApiResponse) in
-                switch weatherApiResponse {
-                    case .SUCCESSFUL(let data):
-                        self.dailyWeather = data as? DailyWeather
-                        completion(.SUCCESSFUL(data: data))
+            self.apiService.fetchDailyWeather(with: latitude, longitude) { (result) in
+                switch result {
+                case .success(let dailyWeather):
+                    self.dailyWeather = dailyWeather
+                    completion(.success(dailyWeather))
                     
-                    case .FAILED(let error):
-                    completion(.FAILED(error: error))
+                case .failure(let error):
+                    completion(.failure(error))
                 }
             }
         }
-    }
-    
-    func checkHourlyForecastCount(with index: Int) -> Bool {
-        guard let hourlyForecast = hourlyWeather?.hourlyForecast else { return false }
-        
-        return hourlyForecast.count > index
-    }
-    
-    func checkDailyForecastCount(with index: Int) -> Bool {
-        guard let dailyWeather = dailyWeather?.dailyForecast else { return false }
-        
-        return dailyWeather.count > index
     }
     
 }

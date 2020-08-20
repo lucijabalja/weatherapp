@@ -35,7 +35,7 @@ class DailyWeatherView: UIView {
     
     func setupView(with dayData: DailyForecast) {
         let date = Date(timeIntervalSince1970: TimeInterval(dayData.dateTime))
-        let icon = Utils.resolveWeatherIcon(dayData.weatherDescription[0].conditionID)
+        let icon = Utils.resolveWeatherIcon(dayData.weather[0].conditionID)
         
         dayLabel.text = Utils.getWeekDay(with: date)
         maxTempLabel.text = Utils.getFormattedTemperature(dayData.temperature.max)
