@@ -13,39 +13,53 @@ class DataRepository {
     
     let weatherApiService: WeatherApiService
     let coreDataService: CoreDataService
-    let reachability = try! Reachability()
-
+    let reachability: Reachability
     
-    init(weatherApiService: WeatherApiService, coreDataService: CoreDataService) {
+    init(weatherApiService: WeatherApiService, coreDataService: CoreDataService, reachability: Reachability) {
         self.weatherApiService = weatherApiService
         self.coreDataService = coreDataService
+        self.reachability = reachability
+        
+        startReachabilityNotifier()
     }
     
-    func checkReachability() {
+    func getCurrentCityWeather(for cities: [City], completion: @escaping ([CityWeather]) -> Void) {
         reachability.whenReachable = { _ in
-        }
-        reachability.whenUnreachable = { _ in
-//            self.loadData()
-        }
-        // for testing purposes
-        print(reachability.connection.description)
-    }
-    
-    func fetchCurrentWeather(for cities: [City], completion: @escaping (WeatherApiResponse) -> Void) {
-        weatherApiService.fetchCurrentWeather(for: cities) { (apiResponse) in
-            switch apiResponse {
-            case .SUCCESSFUL(let cityWeather):
-                self.coreDataService.saveData(cityWeather: cityWeather as! CityWeather)
-                completion(.SUCCESSFUL(data: cityWeather))
-                
-            case .FAILED(let error):
-                completion(.FAILED(error: error))
+            self.weatherApiService.fetchCurrentWeather(for: cities) { (apiResponse) in
+                if case let .SUCCESSFUL(data) = apiResponse {
+                    self.coreDataService.saveCurrentWeatherData(weatherResponse: data as! CurrentWeatherResponse)
+                }
             }
         }
-    }
-    
-    func fetchCurrentWeather(for city: String, completion: @escaping (WeatherApiResponse) -> Void)  {
+        
+        let cityWeatherEntitiesArray = self.coreDataService.loadCurrentWeatherData()
+        let cityWeatherArray = convertToCityWeather(cityWeatherEntities: cityWeatherEntitiesArray)
+        completion(cityWeatherArray)
+        
+        // for testing purposes only
+        print(reachability.connection.description)
         
     }
     
+    func convertToCityWeather(cityWeatherEntities: [CityWeatherEntity]) -> [CityWeather] {
+        var cityWeatherArray = [CityWeather]()
+        for cityWeatherEntity in cityWeatherEntities {
+            let params = cityWeatherEntity.parameters!
+            let temperatureParams = TemperatureParameters(current: params.current!, min: params.min!, max: params.max!)
+            
+            let cityWeather = CityWeather(city: cityWeatherEntity.city!, parameters: temperatureParams, icon: cityWeatherEntity.icon!, description: cityWeatherEntity.weatherDescription!)
+            
+            cityWeatherArray.append(cityWeather)
+        }
+        
+        return cityWeatherArray
+    }
+    
+    func startReachabilityNotifier() {
+        do {
+            try reachability.startNotifier()
+        } catch {
+            print("Unable to start notifier")
+        }
+    }
 }

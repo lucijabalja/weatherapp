@@ -20,9 +20,10 @@ class WeatherListViewModel {
         self.dataRepository = dataRepository
     }
     
-    func fetchCityWeather(completionHandler: @escaping (WeatherApiResponse) -> Void) {
-        dataRepository.fetchCurrentWeather(for: cities) { (weatherApiResponse) in
-            
+    func getCurrentCityWeather(completion: @escaping (Bool) -> Void) {
+        dataRepository.getCurrentCityWeather(for: cities) { (cityWeather) in
+            self.cityWeather.append(contentsOf: cityWeather)
+            completion(true)
         }
     }
     

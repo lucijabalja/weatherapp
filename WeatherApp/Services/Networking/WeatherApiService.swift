@@ -32,14 +32,14 @@ class WeatherApiService: WeatherListServiceProtocol, WeatherDetailServiceProtoco
         let urlString = "\(apiURL)/weather?\(apiKey)&\(units)&q=\(city)"
         
         performRequest(with: urlString) { (data) in
-            let parsedResponse = self.parsingService.parseCityWeather(data, city: city)
+            let parsedResponse = self.parsingService.parseCurrentWeather(data, city: city)
             
-            guard let cityWeather = parsedResponse else {
+            guard let weatherResponse = parsedResponse else {
                 completion(.FAILED(error: "Cannot parse data correctly!"))
                 return
             }
             
-            completion(.SUCCESSFUL(data: cityWeather))
+            completion(.SUCCESSFUL(data: weatherResponse))
         }
     }
     

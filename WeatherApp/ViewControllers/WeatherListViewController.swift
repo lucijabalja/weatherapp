@@ -42,10 +42,10 @@ class WeatherListViewController: UIViewController {
     }
     
     private func fetchData() {
-        weatherViewModel.fetchCityWeather() { (apiResponseMessage) in
-            switch apiResponseMessage {
-                case .SUCCESSFUL(_): self.updateUI()
-                case .FAILED(let error): self.weatherView.setErrorLabel(withText: error)
+        weatherViewModel.getCurrentCityWeather() { (finished) in
+            switch finished {
+                case true: self.updateUI()
+                case false: self.weatherView.setErrorLabel(withText: "error")
             }
         }
     }

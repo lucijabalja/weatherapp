@@ -35,9 +35,9 @@ class WeatherTableViewCell: UITableViewCell {
         let params = weather.parameters
         weatherIcon.image = UIImage(systemName: weather.icon)
         cityLabel.text = weather.city
-        currentTempLabel.text = Utils.getFormattedTemperature(params.currentTemperature)
-        minTempLabel.text = Utils.getFormattedTemperature(params.minTemperature)
-        maxTempLabel.text = Utils.getFormattedTemperature(params.maxTemperature)
+        currentTempLabel.text = params.current
+        minTempLabel.text = params.min
+        maxTempLabel.text = params.max
     }
     
     private func setupUI() {

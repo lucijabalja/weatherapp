@@ -11,21 +11,27 @@ import CoreData
 
 class CoreDataService {
     
-    private let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
+    private let context = DataController.shared.persistentContainer.viewContext
     private var cityWeatherArray = [CityWeatherEntity]()
     
-    func saveData(cityWeather: CityWeather) {
-        let cityWeatherEntity = CityWeatherEntity(context: context)
-        let weatherParameters = WeatherParametersEntity(context: context)
+    func saveCurrentWeatherData(weatherResponse: CurrentWeatherResponse) {
+        let currentTemperature = Utils.getFormattedTemperature(weatherResponse.weatherParameters.currentTemperature)
         
-        cityWeatherEntity.city = cityWeather.city
-        cityWeatherEntity.icon = cityWeather.icon
-        cityWeatherEntity.weatherDescription = cityWeather.description
-        
-        weatherParameters.currentTemperature = cityWeather.parameters.currentTemperature
-        weatherParameters.maxTemperature = cityWeather.parameters.maxTemperature
-        weatherParameters.minTemperature = cityWeather.parameters.minTemperature
-        cityWeatherEntity.parameters = weatherParameters
+        if !CityWeatherEntity.firstOrCreate(weatherResponse.city, currentTemperature) {
+            let cityWeatherEntity = CityWeatherEntity(context: context)
+            let temperatureParams = TemperatureParametersEntity(context: context)
+            
+            cityWeatherEntity.city = weatherResponse.city
+            cityWeatherEntity.icon = Utils.resolveWeatherIcon(weatherResponse.weatherDescription[0].conditionID)
+            cityWeatherEntity.weatherDescription = weatherResponse.weatherDescription[0].weatherDescription
+            
+            temperatureParams.current = Utils.getFormattedTemperature(weatherResponse.weatherParameters.currentTemperature)
+            temperatureParams.max = Utils.getFormattedTemperature(weatherResponse.weatherParameters.maxTemperature)
+            temperatureParams.min = Utils.getFormattedTemperature(weatherResponse.weatherParameters.minTemperature)
+            cityWeatherEntity.parameters = temperatureParams
+        }
+      
+
     }
     
     func saveContext() {
@@ -36,17 +42,15 @@ class CoreDataService {
         }
     }
     
-    func loadData() {
+    func loadCurrentWeatherData() -> [CityWeatherEntity] {
         let request: NSFetchRequest<CityWeatherEntity> = CityWeatherEntity.fetchRequest()
         do {
             cityWeatherArray = try context.fetch(request)
+            //print(cityWeatherArray)
         } catch {
             print("Error fetching data from context \(error)")
         }
-    }
-    
-    private func convertData() {
-        
+        return cityWeatherArray
     }
     
 }
