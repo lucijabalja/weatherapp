@@ -24,20 +24,35 @@ class DataRepository {
     }
     
     func getCurrentCityWeather(for cities: [City], completion: @escaping ([CityWeather]) -> Void) {
+        var cityWeatherEntitiesArray = [CityWeatherEntity]()
+        var cityWeatherArray = [CityWeather]()
+        
         reachability.whenReachable = { _ in
-            self.weatherApiService.fetchCurrentWeather(for: cities) { (apiResponse) in
-                if case let .SUCCESSFUL(data) = apiResponse {
-                    self.coreDataService.saveCurrentWeatherData(weatherResponse: data as! CurrentWeatherResponse)
-                }
+            self.fetchFromAPI(for: cities) { (finished) in
+                cityWeatherEntitiesArray = self.coreDataService.loadCurrentWeatherData()
+                cityWeatherArray = self.convertToCityWeather(cityWeatherEntities: cityWeatherEntitiesArray)
+                completion(cityWeatherArray)
             }
         }
         
-        let cityWeatherEntitiesArray = self.coreDataService.loadCurrentWeatherData()
-        let cityWeatherArray = convertToCityWeather(cityWeatherEntities: cityWeatherEntitiesArray)
-        completion(cityWeatherArray)
-        
-        // for testing purposes only
+        reachability.whenUnreachable = { _ in
+            cityWeatherEntitiesArray = self.coreDataService.loadCurrentWeatherData()
+            cityWeatherArray = self.convertToCityWeather(cityWeatherEntities: cityWeatherEntitiesArray)
+            completion(cityWeatherArray)
+        }
         print(reachability.connection.description)
+    }
+    
+    func fetchFromAPI(for cities: [City], completion: @escaping (Bool) -> Void) {
+        self.weatherApiService.fetchCurrentWeather() { (apiResponse) in
+            if case let .SUCCESSFUL(data) = apiResponse {
+                self.coreDataService.saveCurrentWeatherData(weatherResponse: data as! CurrentWeatherResponse)
+                completion(true)
+            }
+        }
+    }
+    
+    func getFromCoreData() {
         
     }
     

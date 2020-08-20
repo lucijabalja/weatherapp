@@ -12,35 +12,53 @@ import UIKit
 
 public class CityWeatherEntity: NSManagedObject {
     
-    
-    class func checkIfExiists() {
+    class func createFrom(weatherResponse: CurrentWeather) {
         
+        guard let cityWeatherEntity = loadCurrentWeather(weatherResponse.city) else {
+            creteNewEntity(with: weatherResponse)
+            return
+        }
+        cityWeatherEntity.parameters?.current = Utils.getFormattedTemperature(weatherResponse.weatherParameters.currentTemperature)
+        cityWeatherEntity.parameters?.max = Utils.getFormattedTemperature(weatherResponse.weatherParameters.maxTemperature)
+        cityWeatherEntity.parameters?.min = Utils.getFormattedTemperature(weatherResponse.weatherParameters.minTemperature)
         
-        
+        DataController.shared.saveContext()
     }
     
-    class func firstOrCreate(_ city: String,_ currentWeather: String) -> Bool {
+    class func creteNewEntity(with weatherResponse: CurrentWeather) {
+        let context = DataController.shared.persistentContainer.viewContext
+        let cityWeatherEntity = CityWeatherEntity(context: context)
+        let temperatureParams = TemperatureParametersEntity(context: context)
+        
+        cityWeatherEntity.city = weatherResponse.city
+        cityWeatherEntity.icon = Utils.resolveWeatherIcon(weatherResponse.weatherDescription[0].conditionID)
+        cityWeatherEntity.weatherDescription = weatherResponse.weatherDescription[0].weatherDescription
+        
+        temperatureParams.current = Utils.getFormattedTemperature(weatherResponse.weatherParameters.currentTemperature)
+        temperatureParams.max = Utils.getFormattedTemperature(weatherResponse.weatherParameters.maxTemperature)
+        temperatureParams.min = Utils.getFormattedTemperature(weatherResponse.weatherParameters.minTemperature)
+        cityWeatherEntity.parameters = temperatureParams
+        
+        DataController.shared.saveContext()
+
+    }
+
+    class func loadCurrentWeather(_ city: String) -> CityWeatherEntity? {
         let context = DataController.shared.persistentContainer.viewContext
         
         let request: NSFetchRequest<CityWeatherEntity> = CityWeatherEntity.fetchRequest()
         let cityPredicate = NSPredicate(format: "city == %@", city)
-        let temperaturePredicate = NSPredicate(format: "parameters.current == %@", currentWeather)
-        let andPredicate = NSCompoundPredicate(type: .and, subpredicates: [cityPredicate, temperaturePredicate])
-        request.predicate = andPredicate
+        request.predicate = cityPredicate
         
         do {
-            let count = try context.count(for: request)
-            if count > 0 {
-                return true
+            let cityWeatherEntity = try context.fetch(request)
+            if let first = cityWeatherEntity.first {
+                return first
             }
         } catch {
             print("\(error)")
-            return false
         }
-        return false
+        return nil
     }
     
-    class func updateData( ) {
-        
-    }
 }

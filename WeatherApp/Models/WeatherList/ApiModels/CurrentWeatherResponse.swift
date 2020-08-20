@@ -10,14 +10,9 @@ import Foundation
 
 struct CurrentWeatherResponse: Decodable, WeatherResponseProtocol {
     
-    let weatherDescription: [WeatherDescription]
-    let weatherParameters: WeatherParameters
-    let city: String
-    
-    enum CodingKeys: String, CodingKey {
-        case weatherDescription = "weather"
-        case weatherParameters = "main"
-        case city = "name"
-    }
+    let currentWeatherList: [CurrentWeather]
 
+    enum CodingKeys: String, CodingKey {
+        case currentWeatherList = "list"
+    }
 }

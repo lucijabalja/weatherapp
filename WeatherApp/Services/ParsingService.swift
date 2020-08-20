@@ -12,12 +12,11 @@ class ParsingService {
     
     private let decoder = JSONDecoder()
     
-    func parseCurrentWeather(_ data: Data, city: String) -> CurrentWeatherResponse? {
+    func parseCurrentWeather(_ data: Data) -> CurrentWeatherResponse? {
         guard let currentWeatherResponse = try? decoder.decode(CurrentWeatherResponse.self, from: data) else {
             return nil
         }
 
-       // let cityWeather = currentWeatherResponse.convertToCityWeather(with: city)
         return currentWeatherResponse
     }
     

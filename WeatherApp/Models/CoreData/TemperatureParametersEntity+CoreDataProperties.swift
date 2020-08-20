@@ -22,4 +22,11 @@ extension TemperatureParametersEntity {
     @NSManaged public var min: String?
     @NSManaged public var cityWeather: CityWeatherEntity?
 
+    
+    func update(with temperatureParams: TemperatureParameters) {
+        self.current = temperatureParams.current
+        self.max = temperatureParams.max
+        self.min = temperatureParams.min
+         
+    }
 }

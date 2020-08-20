@@ -8,7 +8,7 @@
 
 import Foundation
 
-class WeatherApiService: WeatherListServiceProtocol, WeatherDetailServiceProtocol {
+class WeatherApiService {
     
     private let apiURL = "https://api.openweathermap.org/data/2.5"
     private let apiKey = "appid=56151fef235e6cebb33750525932d021"
@@ -20,22 +20,15 @@ class WeatherApiService: WeatherListServiceProtocol, WeatherDetailServiceProtoco
         self.parsingService = parsingService
     }
     
-    func fetchCurrentWeather(for cities: [City], completion: @escaping (WeatherApiResponse) -> Void) {
-        cities.forEach { (city) in
-            fetchCurrentWeather(for: city.rawValue) { (weatherApiResponse) in
-                completion(weatherApiResponse)
-            }
-        }
-    }
-    
-    func fetchCurrentWeather(for city: String, completion: @escaping (WeatherApiResponse) -> Void) {
-        let urlString = "\(apiURL)/weather?\(apiKey)&\(units)&q=\(city)"
-        
+    func fetchCurrentWeather(completion: @escaping (Result<[CurrentWeather], Error>) -> Void) {
+        let ids = City.allCases.map{ $0.rawValue}.map { String($0) }.joined(separator:",")
+        let urlString = "\(apiURL)/group?\(apiKey)&\(exclusions)&\(units)&id=\(ids)"
+
         performRequest(with: urlString) { (data) in
-            let parsedResponse = self.parsingService.parseCurrentWeather(data, city: city)
+        let parsedResponse = self.parsingService.parseCurrentWeather(data)
             
             guard let weatherResponse = parsedResponse else {
-                completion(.FAILED(error: "Cannot parse data correctly!"))
+                completion(.failure())
                 return
             }
             

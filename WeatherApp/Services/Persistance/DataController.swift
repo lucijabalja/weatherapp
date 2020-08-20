@@ -28,7 +28,6 @@ class DataController {
     
     func saveContext() {
         let context = persistentContainer.viewContext
-
         do {
             try context.save()
         } catch {
