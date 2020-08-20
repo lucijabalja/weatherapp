@@ -11,7 +11,7 @@ import Foundation
 struct CityWeather: WeatherResponseProtocol {
     
     let city: String
-    let parameters: WeatherParameters
+    let parameters: TemperatureParameters
     let icon: String
     let description: String
     

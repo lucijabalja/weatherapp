@@ -20,30 +20,25 @@ class WeatherListViewModel {
         self.coordinator = coordinator
     }
     
-    func fetchCityWeather(completionHandler: @escaping (WeatherApiResponse) -> Void) {
+    func fetchCityWeather(completionHandler: @escaping (Result<CityWeather, NetworkError>) -> Void) {
         cities.forEach { (city) in
-            apiService.fetchCurrentWeather(for: city.rawValue) { (apiResponse) in
-                switch apiResponse {
-                case .SUCCESSFUL(let cityWeather):
-                    self.cityWeather.append(cityWeather as! CityWeather)
-                    completionHandler(.SUCCESSFUL(data: cityWeather))
+            apiService.fetchCurrentWeather(for: city.rawValue) { (result) in
+                switch result {
+                case .success(let cityWeather):
+                    self.cityWeather.append(cityWeather)
+                    completionHandler(.success(cityWeather))
                     
-                case .FAILED(let error):
-                    completionHandler(.FAILED(error: error))
+                case .failure(let error):
+                    completionHandler(.failure(error))
                 }
             }
         }
     }
     
     func pushToDetailView(at index: Int) {
-        guard checkCount(with: index) else { return }
+        guard let selectedCity = cityWeather[safeIndex: index] else { return }
         
-        let selectedCity = cityWeather[index]
         coordinator.pushDetailViewController(with: selectedCity)
-    }
-    
-    func checkCount(with index: Int) -> Bool {
-        cityWeather.count > index
     }
     
 }

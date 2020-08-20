@@ -12,4 +12,5 @@ struct Temperature: Decodable {
     
     let min: Double
     let max: Double
+    
 }
