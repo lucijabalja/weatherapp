@@ -6,7 +6,6 @@ target 'WeatherApp' do
   use_frameworks!
 
   # Pods for WeatherApp
-    pod 'ReachabilitySwift'
 
   target 'WeatherAppTests' do
     inherit! :search_paths
