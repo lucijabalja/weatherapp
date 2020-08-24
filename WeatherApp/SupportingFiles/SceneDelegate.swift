@@ -11,14 +11,14 @@ import UIKit
 class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
-    var navigationController: UINavigationController?
-    
+    var coordinator: Coordinator?
+
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         guard let winScene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: winScene)
-        navigationController = UINavigationController(rootViewController: WeatherViewController())
-        window?.rootViewController = navigationController
+        coordinator = Coordinator(window: window!)
+        coordinator?.setRootViewController()
         window?.makeKeyAndVisible()
     }
     
@@ -49,5 +49,6 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         // Use this method to save data, release shared resources, and store enough scene-specific state information
         // to restore the scene back to its current state.
     }
+    
 }
 

@@ -10,33 +10,111 @@ import UIKit
 
 class WeatherDetailViewController: UIViewController {
     
-    private let weatherDetailView = WeatherDetailView()
-    private var weatherData: CityWeather?
+    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var cityLabel: UILabel!
+    @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
+    @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        setupUI()
-        setupConstraints()
-    }
+    private var weatherDetailViewModel: WeatherDetailViewModel!
     
-    init(with cityWeather: CityWeather) {
+    init(with weatherDetailViewModel: WeatherDetailViewModel ) {
         super.init(nibName: nil, bundle: nil)
-        weatherDetailView.weatherData = cityWeather
+        
+        self.weatherDetailViewModel = weatherDetailViewModel
     }
     
     required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        super.init(coder: coder)
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        setupCollectionView()
+        setupDailyWeatherData()
+        setupHourlyWeatherData()
+        setupUI()
+        configureCollectionLayout()
+    }
+    
+    private func setupCollectionView() {
+        hourlyWeatherCollectionView.register(WeatherCollectionViewCell.nib(), forCellWithReuseIdentifier: WeatherCollectionViewCell.identifier)
+        hourlyWeatherCollectionView.delegate = self
+        hourlyWeatherCollectionView.dataSource = self
+    }
+    
+    private func configureCollectionLayout() {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 70, height: 150)
+        layout.scrollDirection = .horizontal
+        hourlyWeatherCollectionView.collectionViewLayout = layout
+    }
+    
+    private func setupHourlyWeatherData() {
+        weatherDetailViewModel.getHourlyWeather(completion: { (apiResponseMessage) in
+            switch apiResponseMessage {
+                case .success(_): self.updateCollectionView()
+                case .failure(let error): print(error)
+            }
+        })
+    }
+    
+    private func setupDailyWeatherData() {
+        weatherDetailViewModel.getDailyWeather { (apiResponseMessage) in
+            switch apiResponseMessage {
+                case .success(_): self.updateHourlyStackView()
+                case .failure(let error): print(error)
+            }
+        }
     }
     
     private func setupUI() {
-        weatherDetailView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(weatherDetailView)
+        cityLabel.text = weatherDetailViewModel.cityWeather.city
+        dateLabel.text = weatherDetailViewModel.date
+        timeLabel.text = weatherDetailViewModel.time
+        hourlyWeatherCollectionView.backgroundColor = .systemBlue
     }
     
-    private func setupConstraints() {
-        weatherDetailView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        weatherDetailView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        weatherDetailView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        weatherDetailView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+    private func updateCollectionView() {
+        DispatchQueue.main.async {
+            self.hourlyWeatherCollectionView.reloadData()
+        }
     }
+    
+    private func updateHourlyStackView() {
+        for (index, dailyViews) in self.dailyWeatherViews.enumerated() {
+            guard let dayData = weatherDetailViewModel.dailyWeather?.dailyForecast[safeIndex: index] else { return }
+                        
+            DispatchQueue.main.async {
+                dailyViews.setupView(with: dayData)
+            }
+        }
+    }
+    
+}
+
+extension WeatherDetailViewController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        collectionView.deselectItem(at: indexPath, animated: true)
+    }
+    
+}
+
+extension WeatherDetailViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        weatherDetailViewModel.hourlyWeather?.hourlyForecast.count ?? 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell
+        
+        if let hourlyWeather = weatherDetailViewModel.hourlyWeather?.hourlyForecast[safeIndex: indexPath.row] {
+            cell.configure(with: hourlyWeather)
+        }
+        
+        return cell
+    }
+    
 }

@@ -9,6 +9,7 @@
 import UIKit
 
 class WeatherTableViewCell: UITableViewCell {
+    
     private let containerView = UIView()
     private let temperatureView = UIView()
     private let weatherIcon = UIImageView()
@@ -16,14 +17,12 @@ class WeatherTableViewCell: UITableViewCell {
     private let currentTempLabel = UILabel()
     private let minTempLabel = UILabel()
     private let maxTempLabel = UILabel()
-    var weather: CityWeather? {
-        didSet {
-            setLabelsText()
-        }
-    }
 
+    static let identifier = "weatherCell"
+    
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        
         setupUI()
         setupConstraints()
     }
@@ -32,9 +31,7 @@ class WeatherTableViewCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
     
-    private func setLabelsText() {
-        guard let weather = weather else { return }
-        
+    func setup(_ weather: CityWeather) {
         weatherIcon.image = UIImage(systemName: weather.icon)
         cityLabel.text = weather.city
         currentTempLabel.text = "\(weather.parameters.currentTemperature)°"
@@ -98,6 +95,7 @@ class WeatherTableViewCell: UITableViewCell {
         
         temperatureView.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
         temperatureView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
+        temperatureView.leadingAnchor.constraint(equalTo: self.cityLabel.trailingAnchor, constant: labelsDistance).isActive = true
         temperatureView.trailingAnchor.constraint(equalTo:self.trailingAnchor, constant: -edgeMargin).isActive = true
 
         currentTempLabel.topAnchor.constraint(equalTo: self.temperatureView.topAnchor, constant: labelsDistance).isActive = true
@@ -112,4 +110,5 @@ class WeatherTableViewCell: UITableViewCell {
         minTempLabel.trailingAnchor.constraint(equalTo:self.temperatureView.trailingAnchor).isActive = true
         minTempLabel.leadingAnchor.constraint(equalTo: self.maxTempLabel.trailingAnchor, constant: tempDistance).isActive = true
     }
+    
 }
