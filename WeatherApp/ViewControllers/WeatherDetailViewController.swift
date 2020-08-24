@@ -52,8 +52,8 @@ class WeatherDetailViewController: UIViewController {
     }
     
     private func setupHourlyWeatherData() {
-        weatherDetailViewModel.getHourlyWeather(completion: { (apiResponseMessage) in
-            switch apiResponseMessage {
+        weatherDetailViewModel.getHourlyWeather(completion: { (result) in
+            switch result {
                 case .success(_): self.updateCollectionView()
                 case .failure(let error): print(error)
             }
@@ -61,16 +61,16 @@ class WeatherDetailViewController: UIViewController {
     }
     
     private func setupDailyWeatherData() {
-        weatherDetailViewModel.getDailyWeather { (apiResponseMessage) in
-            switch apiResponseMessage {
-                case .success(_): self.updateHourlyStackView()
+        weatherDetailViewModel.getDailyWeather { (result) in
+            switch result {
+                case .success(_): self.updateDailyStackView()
                 case .failure(let error): print(error)
             }
         }
     }
     
     private func setupUI() {
-        cityLabel.text = weatherDetailViewModel.cityWeather.city
+        cityLabel.text = weatherDetailViewModel.currentWeather.city
         dateLabel.text = weatherDetailViewModel.date
         timeLabel.text = weatherDetailViewModel.time
         hourlyWeatherCollectionView.backgroundColor = .systemBlue
@@ -82,9 +82,9 @@ class WeatherDetailViewController: UIViewController {
         }
     }
     
-    private func updateHourlyStackView() {
+    private func updateDailyStackView() {
         for (index, dailyViews) in self.dailyWeatherViews.enumerated() {
-            guard let dayData = weatherDetailViewModel.dailyWeather?.dailyForecast[safeIndex: index] else { return }
+            guard let dayData = weatherDetailViewModel.dailyWeatherList[safeIndex: index] else { return }
                         
             DispatchQueue.main.async {
                 dailyViews.setupView(with: dayData)
@@ -104,13 +104,13 @@ extension WeatherDetailViewController: UICollectionViewDelegate {
 
 extension WeatherDetailViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        weatherDetailViewModel.hourlyWeather?.hourlyForecast.count ?? 0
+        weatherDetailViewModel.hourlyWeatherList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell
         
-        if let hourlyWeather = weatherDetailViewModel.hourlyWeather?.hourlyForecast[safeIndex: indexPath.row] {
+        if let hourlyWeather = weatherDetailViewModel.hourlyWeatherList[safeIndex: indexPath.row] {
             cell.configure(with: hourlyWeather)
         }
         

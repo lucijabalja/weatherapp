@@ -43,7 +43,7 @@ class WeatherListViewController: UIViewController {
     
 
     private func fillTableView() {
-        weatherViewModel.fetchCityWeather() { (result) in
+        weatherViewModel.getCurrentWeather() { (result) in
             switch result {
             case .success(_): self.updateUI()
             case .failure(let error):
@@ -77,13 +77,13 @@ class WeatherListViewController: UIViewController {
 extension WeatherListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        weatherViewModel.cityWeather.count
+        weatherViewModel.currentWeatherList.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
         
-        if let cityWeather = weatherViewModel.cityWeather[safeIndex: indexPath.row] {
+        if let cityWeather = weatherViewModel.currentWeatherList[safeIndex: indexPath.row] {
             cell.setup(cityWeather)
         } else {
             weatherView.setErrorLabel(withText: "Index out of bounds.")

@@ -20,21 +20,20 @@ class ParsingService {
         return currentWeatherResponse
     }
     
-    func parseHourlyWeather(_ data: Data, city: String) -> HourlyWeather? {
+    func parseHourlyWeather(_ data: Data, city: String) -> HourlyWeatherResponse? {
         guard let hourlyWeatherResponse = try? decoder.decode(HourlyWeatherResponse.self, from: data) else {
             return nil
         }
         
-        let dailyCityWeather = hourlyWeatherResponse.convertToHourlyWeather(with: city)
-        return dailyCityWeather
+        return hourlyWeatherResponse
     }
     
-    func parseDailyWeather(_ data: Data) -> DailyWeather? {
+    func parseDailyWeather(_ data: Data) -> DailyWeatherResponse? {
         guard let dailyWeatherResponse = try? decoder.decode(DailyWeatherResponse.self, from: data) else {
             return nil
         }
-                
-        return dailyWeatherResponse.convertToDailyWeather()
+    
+        return dailyWeatherResponse
     }
     
 }

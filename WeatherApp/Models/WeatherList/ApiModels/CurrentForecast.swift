@@ -8,15 +8,15 @@
 
 import Foundation
 
-struct CurrentWeather: Decodable {
+struct CurrentForecast: Decodable {
     
     let weatherDescription: [WeatherDescription]
-    let weatherParameters: TemperatureParameters
+    let temperatureParameters: TemperatureParameters
     let city: String
     
     enum CodingKeys: String, CodingKey {
         case weatherDescription = "weather"
-        case weatherParameters = "main"
+        case temperatureParameters = "main"
         case city = "name"
     }
     

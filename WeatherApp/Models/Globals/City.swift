@@ -8,10 +8,10 @@
 
 import Foundation
 
-public enum City: Int, CaseIterable {
+public enum City: String, CaseIterable {
     
-    case zagreb = 3186886
-    case rijeka = 3191648
-    case osijek = 3193935
-    case split = 3190261
+    case zagreb = "3186886"
+    case rijeka = "3191648"
+    case osijek = "3193935"
+    case split = "3190261"
 }

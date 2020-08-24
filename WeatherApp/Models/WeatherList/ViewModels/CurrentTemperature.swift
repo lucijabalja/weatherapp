@@ -10,7 +10,7 @@ import Foundation
 
 struct CurrentTemperature {
     
-    let current: String
+    let now: String?
     let min: String
     let max: String
     

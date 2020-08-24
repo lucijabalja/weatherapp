@@ -10,24 +10,29 @@ import UIKit
 import CoreData
 
 class CoreDataService {
-    
-    private let context = DataController.shared.persistentContainer.viewContext
-    private var cityWeatherArray = [CityWeatherEntity]()
-    
-    func saveCurrentWeatherData(_ currentWeatherList: [CurrentWeather]) {
-        for currentWeather in currentWeatherList {
-            CityWeatherEntity.createFrom(currentWeather)
-        }
+
+    func saveCurrentWeatherData(_ currentWeatherResponse: CurrentWeatherResponse) {
+        CurrentForecastEntity.createFrom(currentWeatherResponse)
     }
     
-    func loadCurrentWeatherData() -> [CityWeatherEntity] {
-        let request: NSFetchRequest<CityWeatherEntity> = CityWeatherEntity.fetchRequest()
-        do {
-            cityWeatherArray = try context.fetch(request)
-        } catch {
-            print("Error fetching data from context \(error)")
-        }
-        return cityWeatherArray
+    func loadCurrentForecastData() -> CurrentForecastEntity? {
+        CurrentForecastEntity.loadCurrentForecast()
+    }
+    
+    func saveDailyForecast(_ dailyWeatherResponse: DailyWeatherResponse) {
+        DailyForecastEntity.createFrom(dailyWeatherResponse)
+    }
+    
+    func loadDailyForecast(withCoordinates latitude: Double, _ longitude: Double) -> DailyForecastEntity? {
+        DailyForecastEntity.loadDailyForecast(with: latitude, longitude)
+    }
+    
+    func loadHourlyForecast(forCity city: String) -> HourlyForecastEntity? {
+        HourlyForecastEntity.loadHourlyForecast(for: city)
+    }
+    
+    func saveHourlyForecast(_ hourlyWeatherResponse: HourlyWeatherResponse,_ city: String) {
+        HourlyForecastEntity.createFrom(hourlyWeatherResponse, city)
     }
     
 }

@@ -11,13 +11,13 @@ import Foundation
 struct DailyWeatherResponse: Decodable {
     
     let dailyForecast: [DailyForecast]
+    let latitude: Double
+    let longitude: Double
     
     enum CodingKeys: String, CodingKey {
         case dailyForecast = "daily"
-    }
-    
-    func convertToDailyWeather() -> DailyWeather {
-        DailyWeather(dailyForecast: dailyForecast)
+        case latitude = "lat"
+        case longitude = "lon"
     }
     
 }

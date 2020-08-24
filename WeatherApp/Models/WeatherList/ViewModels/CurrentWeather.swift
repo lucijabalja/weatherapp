@@ -8,11 +8,10 @@
 
 import Foundation
 
-struct CityWeather {
+struct CurrentWeather {
     
     let city: String
     let parameters: CurrentTemperature
-    let icon: String
-    let description: String
+    let condition: Condition
     
 }

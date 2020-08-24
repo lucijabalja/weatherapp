@@ -29,8 +29,8 @@ class Coordinator {
         window.makeKeyAndVisible()
     }
     
-    func pushDetailViewController(with selectedCity: CityWeather) {
-        let viewModel = WeatherDetailViewModel(appDependencies: appDependencies, cityWeather: selectedCity, coordinator: self)
+    func pushDetailViewController(with selectedCity: CurrentWeather) {
+        let viewModel = WeatherDetailViewModel(appDependencies: appDependencies, currentWeather: selectedCity, coordinator: self)
         let weatherDetailViewController = WeatherDetailViewController(with: viewModel)
         weatherDetailViewController.modalPresentationStyle = .fullScreen
         navigationController.pushViewController(weatherDetailViewController, animated: true)

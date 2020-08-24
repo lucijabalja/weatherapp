@@ -46,22 +46,21 @@ class WeatherApiService {
 
 extension WeatherApiService: WeatherListServiceProtocol {
     
-    func fetchCurrentWeather(completion: @escaping (Result<[CurrentWeather], NetworkError>) -> Void) {
-        let ids = City.allCases.map{ $0.rawValue}.map { String($0) }.joined(separator:",")
+    func fetchCurrentWeather(completion: @escaping (Result<CurrentWeatherResponse, NetworkError>) -> Void) {
+        let ids = City.allCases.map{ $0.rawValue}.map { $0 }.joined(separator:",")
         let urlString = "\(apiURL)/group?\(apiKey)&\(exclusions)&\(units)&id=\(ids)"
         
         performRequest(with: urlString) { (result) in
-            if case let Result.success(data) = result {
+            switch result {
+            case .success(let data):
                 let parsedResponse = self.parsingService.parseCurrentWeather(data)
                 
                 guard let currentWeather = parsedResponse else {
                     completion(.failure(.decodingError(message: "Cannot parse data correctly.")))
                     return
                 }
-                
-                completion(.success(currentWeather.currentWeatherList))
-                
-            } else if case let Result.failure(error) = result {
+                completion(.success(currentWeather))
+            case .failure(let error):
                 completion(.failure(error))
             }
         }
@@ -71,12 +70,12 @@ extension WeatherApiService: WeatherListServiceProtocol {
 
 extension WeatherApiService: WeatherDetailServiceProtocol {
     
-    func fetchHourlyWeather(for city: String, completion: @escaping (Result<HourlyWeather, NetworkError>) -> Void) {
+    func fetchHourlyWeather(for city: String, completion: @escaping (Result<HourlyWeatherResponse, NetworkError>) -> Void) {
         let urlString = "\(apiURL)/forecast?\(apiKey)&\(units)&q=\(city)"
         
         performRequest(with: urlString) { (result) in
-            
-            if case let Result.success(data) = result {
+            switch result {
+            case .success(let data):
                 let parsedResponse = self.parsingService.parseHourlyWeather(data, city: city)
                 
                 guard let hourlyWeather = parsedResponse else {
@@ -85,18 +84,19 @@ extension WeatherApiService: WeatherDetailServiceProtocol {
                 } 
                 
                 completion(.success(hourlyWeather))
-            } else if case let Result.failure(error) = result {
+            case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
     
-    func fetchDailyWeather(with latitude: String,_ longitude: String, completion: @escaping (Result<DailyWeather, NetworkError>) -> Void) {
+    func fetchDailyWeather(with latitude: Double,_ longitude: Double, completion: @escaping (Result<DailyWeatherResponse, NetworkError>) -> Void) {
         let urlString = "\(apiURL)/onecall?\(apiKey)&\(units)&lat=\(latitude)&lon=\(longitude)&\(exclusions)"
         
         performRequest(with: urlString) { (result) in
             
-            if case let Result.success(data) = result {
+            switch result {
+            case .success(let data):
                 let parsedResponse = self.parsingService.parseDailyWeather(data)
                 
                 guard let dailyWeather = parsedResponse else {
@@ -105,7 +105,8 @@ extension WeatherApiService: WeatherDetailServiceProtocol {
                 }
                 
                 completion(.success(dailyWeather))
-            } else if case let Result.failure(error) = result {
+                
+            case .failure(let error):
                 completion(.failure(error))
             }
         }

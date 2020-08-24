@@ -10,9 +10,9 @@ import Foundation
 
 struct CurrentWeatherResponse: Decodable {
     
-    let currentWeatherList: [CurrentWeather]
+    let currentForecastList: [CurrentForecast]
 
     enum CodingKeys: String, CodingKey {
-        case currentWeatherList = "list"
+        case currentForecastList = "list"
     }
 }

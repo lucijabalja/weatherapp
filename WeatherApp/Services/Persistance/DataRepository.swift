@@ -7,64 +7,66 @@
 //
 
 import Foundation
-import Reachability
 
 class DataRepository {
     
     let weatherApiService: WeatherApiService
     let coreDataService: CoreDataService
-    let reachability: Reachability
     
-    init(weatherApiService: WeatherApiService, coreDataService: CoreDataService, reachability: Reachability) {
+    init(weatherApiService: WeatherApiService, coreDataService: CoreDataService) {
         self.weatherApiService = weatherApiService
         self.coreDataService = coreDataService
-        self.reachability = reachability
-        
-        startReachabilityNotifier()
     }
     
-    func getCurrentCityWeather(completion: @escaping ([CityWeather]) -> Void) {
-        var cityWeatherEntitiesArray = [CityWeatherEntity]()
-        var cityWeatherArray = [CityWeather]()
-        
-        reachability.whenReachable = { _ in
-            self.weatherApiService.fetchCurrentWeather(completion: { (result) in
-                if case let Result.success(currentWeatherList) = result {
-                    self.coreDataService.saveCurrentWeatherData(currentWeatherList)
-                    cityWeatherEntitiesArray = self.coreDataService.loadCurrentWeatherData()
-                    cityWeatherArray = self.convertToCityWeather(cityWeatherEntities: cityWeatherEntitiesArray)
-                    completion(cityWeatherArray)
+    func getCurrentWeatherData(completion: @escaping (Result<CurrentForecastEntity, Error>) -> Void) {
+        weatherApiService.fetchCurrentWeather(completion: { (result) in
+            switch result {
+            case .success(let currentWeatherResponse):
+                self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+                guard let currentWeatherEntity = self.coreDataService.loadCurrentForecastData() else { return }
+                
+                completion(.success(currentWeatherEntity))
+            case .failure(_):
+                guard let currentWeatherEntity = self.coreDataService.loadCurrentForecastData() else { return }
+                
+                completion(.success(currentWeatherEntity))
+            }
+        })
+    }
+    
+    func getDailyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<DailyForecastEntity, Error>) -> Void) {
+        weatherApiService.fetchDailyWeather(with: latitude, longitude) { (result) in
+            switch result {
+            case .success(let dailyWeatherResponse):
+                self.coreDataService.saveDailyForecast(dailyWeatherResponse)
+                guard let dailyForecastEntity = self.coreDataService.loadDailyForecast(withCoordinates: dailyWeatherResponse.latitude, dailyWeatherResponse.longitude) else { return }
+                
+                completion(.success(dailyForecastEntity))
+            case .failure(_):
+                guard let dailyForecastEntity = self.coreDataService.loadDailyForecast(withCoordinates: latitude, longitude) else {
+                    return
                 }
-            })
+                
+                completion(.success(dailyForecastEntity))
+            }
         }
-        
-        reachability.whenUnreachable = { _ in
-            cityWeatherEntitiesArray = self.coreDataService.loadCurrentWeatherData()
-            cityWeatherArray = self.convertToCityWeather(cityWeatherEntities: cityWeatherEntitiesArray)
-            completion(cityWeatherArray)
-        }
-        print(reachability.connection.description)
-    }
-
-    func convertToCityWeather(cityWeatherEntities: [CityWeatherEntity]) -> [CityWeather] {
-        var cityWeatherArray = [CityWeather]()
-        for cityWeatherEntity in cityWeatherEntities {
-            let params = cityWeatherEntity.parameters!
-            let temperatureParams = CurrentTemperature(current: params.current!, min: params.min!, max: params.max!)
-            
-            let cityWeather = CityWeather(city: cityWeatherEntity.city!, parameters: temperatureParams, icon: cityWeatherEntity.icon!, description: cityWeatherEntity.weatherDescription!)
-            
-            cityWeatherArray.append(cityWeather)
-        }
-        
-        return cityWeatherArray
     }
     
-    func startReachabilityNotifier() {
-        do {
-            try reachability.startNotifier()
-        } catch {
-            print("Unable to start notifier")
+    func getHourlyWeather(city: String, completion: @escaping (Result<HourlyForecastEntity, Error>) -> Void) {
+        weatherApiService.fetchHourlyWeather(for: city) { (result) in
+            switch result {
+            case .success(let hourlyWeather):
+                self.coreDataService.saveHourlyForecast(hourlyWeather, city)
+                guard let hourlyForecastEntity = self.coreDataService.loadHourlyForecast(forCity: city) else { return }
+                
+                completion(.success(hourlyForecastEntity))
+                
+            case .failure(_):
+                guard let hourlyForecastEntity = self.coreDataService.loadHourlyForecast(forCity: city) else { return }
+                
+                completion(.success(hourlyForecastEntity))
+            }
         }
     }
+    
 }
