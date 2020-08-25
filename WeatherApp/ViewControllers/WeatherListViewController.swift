@@ -11,6 +11,7 @@ import UIKit
 class WeatherListViewController: UIViewController {
     
     private let weatherView = WeatherListView()
+    private let errorView = ErrorView()
     private var weatherViewModel: WeatherListViewModel!
     
     init(with weatherViewModel: WeatherListViewModel) {
@@ -29,9 +30,18 @@ class WeatherListViewController: UIViewController {
         // to locate sqlite file
         print(FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask))
         
+        setupEvents()
         setupTableView()
         setupUI()
         setupConstraints()
+        fillTableView()
+    }
+    
+    private func setupEvents() {
+        errorView.refreshButton.addTarget(self, action: #selector(refreshButtonPressed), for: .touchUpInside)
+    }
+    
+    @objc func refreshButtonPressed() {
         fillTableView()
     }
     
@@ -48,7 +58,9 @@ class WeatherListViewController: UIViewController {
             case .success(_): self.updateUI()
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.weatherView.setErrorLabel(withText: "\(error)")
+                    self.weatherView.tableView.isHidden = true
+                    self.errorView.isHidden = false
+                    self.errorView.setErrorLabel(with: error)
                 }
             }
         }
@@ -56,13 +68,20 @@ class WeatherListViewController: UIViewController {
     
     private func updateUI() {
         DispatchQueue.main.async {
+            self.errorView.isHidden = true
+            self.weatherView.tableView.isHidden = false
             self.weatherView.tableView.reloadData()
         }
     }
     
     private func setupUI() {
         weatherView.translatesAutoresizingMaskIntoConstraints = false
+        errorView.translatesAutoresizingMaskIntoConstraints = false
+        weatherView.isHidden = false
+        errorView.isHidden = true
+        
         view.addSubview(weatherView)
+        view.addSubview(errorView)
     }
     
     private func setupConstraints() {
@@ -70,6 +89,11 @@ class WeatherListViewController: UIViewController {
         weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        
+        errorView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
+        errorView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
+        errorView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
+        errorView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
     }
     
 }
@@ -85,9 +109,9 @@ extension WeatherListViewController: UITableViewDataSource {
         
         if let cityWeather = weatherViewModel.currentWeatherList[safeIndex: indexPath.row] {
             cell.setup(cityWeather)
-        } else {
-            weatherView.setErrorLabel(withText: "Index out of bounds.")
+            return cell
         }
+        
         return cell
     }
     

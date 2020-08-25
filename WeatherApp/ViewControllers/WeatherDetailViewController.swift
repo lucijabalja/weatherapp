@@ -16,6 +16,7 @@ class WeatherDetailViewController: UIViewController {
     @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
     @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
     
+    private let errorView = ErrorView()
     private var weatherDetailViewModel: WeatherDetailViewModel!
     
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {
@@ -54,8 +55,8 @@ class WeatherDetailViewController: UIViewController {
     private func setupHourlyWeatherData() {
         weatherDetailViewModel.getHourlyWeather(completion: { (result) in
             switch result {
-                case .success(_): self.updateCollectionView()
-                case .failure(let error): print(error)
+            case .success(_): self.updateCollectionView()
+            case .failure(let error): print(error)
             }
         })
     }
@@ -63,8 +64,8 @@ class WeatherDetailViewController: UIViewController {
     private func setupDailyWeatherData() {
         weatherDetailViewModel.getDailyWeather { (result) in
             switch result {
-                case .success(_): self.updateDailyStackView()
-                case .failure(let error): print(error)
+            case .success(_): self.updateDailyStackView()
+            case .failure(let error): print(error)
             }
         }
     }
@@ -85,7 +86,7 @@ class WeatherDetailViewController: UIViewController {
     private func updateDailyStackView() {
         for (index, dailyViews) in self.dailyWeatherViews.enumerated() {
             guard let dayData = weatherDetailViewModel.dailyWeatherList[safeIndex: index] else { return }
-                        
+            
             DispatchQueue.main.async {
                 dailyViews.setupView(with: dayData)
             }

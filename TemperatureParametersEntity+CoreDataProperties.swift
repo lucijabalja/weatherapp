@@ -2,7 +2,7 @@
 //  TemperatureParametersEntity+CoreDataProperties.swift
 //  WeatherApp
 //
-//  Created by Lucija Balja on 23/08/2020.
+//  Created by Lucija Balja on 25/08/2020.
 //  Copyright © 2020 Lucija Balja. All rights reserved.
 //
 //
@@ -20,6 +20,6 @@ extension TemperatureParametersEntity {
     @NSManaged public var current: Double
     @NSManaged public var max: Double
     @NSManaged public var min: Double
-    @NSManaged public var currentWeather: CurrentWeatherEntity
+    @NSManaged public var currentWeather: CurrentWeatherEntity?
 
 }

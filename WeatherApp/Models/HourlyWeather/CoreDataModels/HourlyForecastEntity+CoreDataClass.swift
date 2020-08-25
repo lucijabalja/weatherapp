@@ -23,7 +23,7 @@ public class HourlyForecastEntity: NSManagedObject {
         
         let hourlyWeatherEntities = hourlyForecastEntity.hourlyWeather
         hourlyForecastEntity.removeFromHourlyWeather(hourlyWeatherEntities)
-        createNewEntity(hourlyWeatherResponse, for: hourlyForecastEntity,context: context)
+        createNewEntity(hourlyWeatherResponse, for: hourlyForecastEntity, context: context)
         
     }
     

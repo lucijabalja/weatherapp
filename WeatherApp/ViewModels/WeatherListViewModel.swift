@@ -30,7 +30,6 @@ class WeatherListViewModel {
             case .failure(let error):
                 completionHandler(.failure(error))
             }
-            
         }
     }
     
