@@ -12,8 +12,7 @@ import UIKit
 
 public class CurrentWeatherEntity: NSManagedObject {
     
-    class func createFrom(_ currentForecast: CurrentForecast) -> CurrentWeatherEntity {
-        let context = DataController.shared.persistentContainer.viewContext
+    class func createFrom(_ currentForecast: CurrentForecast, context: NSManagedObjectContext) -> CurrentWeatherEntity {
         let currentWeatherEntity = CurrentWeatherEntity(context: context)
         currentWeatherEntity.city = currentForecast.city
 
@@ -21,9 +20,7 @@ public class CurrentWeatherEntity: NSManagedObject {
     }
     
     
-    class func loadCurrentWeather(forCity city: String) -> CurrentWeatherEntity? {
-        let context = DataController.shared.persistentContainer.viewContext
-        
+    class func loadCurrentWeather(forCity city: String, context: NSManagedObjectContext) -> CurrentWeatherEntity? {
         let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
         let cityPredicate = NSPredicate(format: "city == %@", city)
         request.predicate = cityPredicate

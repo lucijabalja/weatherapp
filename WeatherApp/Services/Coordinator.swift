@@ -10,7 +10,7 @@ import UIKit
 
 class Coordinator {
     
-    private let appDependencies: AppDependencies
+    private var appDependencies: AppDependencies
     private let navigationController = UINavigationController()
     private let window: UIWindow
     

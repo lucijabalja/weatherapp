@@ -10,10 +10,9 @@ import Foundation
 
 class WeatherDetailViewModel {
     
-    private let apiService: WeatherApiService
     private let locationService: LocationService
     private let coordinator: Coordinator
-    private let dataRepository: DataRepository
+    private var dataRepository: DataRepository
     var currentWeather: CurrentWeather
     var hourlyWeatherList = [HourlyWeather]()
     var dailyWeatherList = [DailyWeather]()
@@ -27,7 +26,6 @@ class WeatherDetailViewModel {
     }
     
     init(appDependencies: AppDependencies, currentWeather: CurrentWeather, coordinator: Coordinator) {
-        self.apiService = appDependencies.weatherApiService
         self.currentWeather = currentWeather
         self.coordinator = coordinator
         self.locationService = appDependencies.locationService
@@ -45,6 +43,20 @@ class WeatherDetailViewModel {
                 completion(.failure(error))
             }
         }
+    }
+    
+    func saveToHourlyWeather(with hourlyForecastEntity: HourlyForecastEntity) {
+        for hourlyWeatherEntity in hourlyForecastEntity.hourlyWeather {
+            let hourly = hourlyWeatherEntity as! HourlyWeatherEntity
+            
+            let hourlyWeather = HourlyWeather(city: hourlyForecastEntity.city,
+                                              time: Int(hourly.time),
+                                              temperature: Utils.getFormattedTemperature(hourly.temperature),
+                                              icon: Utils.resolveWeatherIcon(Int(hourly.conditionID)))
+            
+            hourlyWeatherList.append(hourlyWeather)
+        }
+        hourlyWeatherList.sort { $0.time < $1.time }
     }
     
     func getDailyWeather(completion: @escaping (Result<Bool, Error>) -> Void) {
@@ -73,24 +85,10 @@ class WeatherDetailViewModel {
         }
     }
     
-    
-    func saveToHourlyWeather(with hourlyForecastEntity: HourlyForecastEntity) {
-        for hourlyWeatherEntity in hourlyForecastEntity.hourlyWeather {
-            let hourly = hourlyWeatherEntity as! HourlyWeatherEntity
-
-            let hourlyWeather = HourlyWeather(city: hourlyForecastEntity.city,
-                                              time: Int(hourly.time),
-                                              temperature: Utils.getFormattedTemperature(hourly.temperature),
-                                              icon: Utils.resolveWeatherIcon(Int(hourly.conditionID)))
-            
-            hourlyWeatherList.append(hourlyWeather)
-        }
-        hourlyWeatherList.sort { $0.time < $1.time }
-    }
-    
     func convertToCurrentTemperature(_ temperature: TemperatureEntity) -> CurrentTemperature {
         CurrentTemperature(now: nil,
                            min: Utils.getFormattedTemperature(temperature.min),
                            max: Utils.getFormattedTemperature(temperature.max))
     }
+    
 }

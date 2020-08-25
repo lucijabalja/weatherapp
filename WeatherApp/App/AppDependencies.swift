@@ -8,18 +8,25 @@
 
 import Foundation
 
-struct AppDependencies {
+class AppDependencies {
     
-    let weatherApiService: WeatherApiService
-    let locationService: LocationService
-    let coreDataService: CoreDataService
-    let dataRepository: DataRepository
+    lazy var weatherApiService: WeatherApiService = {
+        WeatherApiService(parsingService: parsingService)
+    }()
     
-    init() {
-        weatherApiService = WeatherApiService(parsingService: ParsingService())
-        locationService = LocationService()
-        coreDataService = CoreDataService()
-        dataRepository = DataRepository(weatherApiService: weatherApiService, coreDataService: coreDataService)
-    }
+    lazy var coreDataService: CoreDataService = {
+        CoreDataService(coreDataManager: coreDataManager)
+    }()
+    
+    lazy var dataRepository: DataRepository = {
+        DataRepository(weatherApiService: weatherApiService, coreDataService: coreDataService)
+    }()
+    
+    lazy var coreDataManager: CoreDataManager = {
+        CoreDataManager(modelName: "WeatherDataModel", completion: {})
+    }()
+    
+    lazy var parsingService = ParsingService()
+    lazy var locationService = LocationService()
     
 }

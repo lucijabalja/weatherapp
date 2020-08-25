@@ -12,8 +12,7 @@ import CoreData
 
 public class HourlyWeatherEntity: NSManagedObject {
     
-    class func createFrom(_ hourlyForecast: HourlyForecast) -> HourlyWeatherEntity {
-        let context = DataController.shared.persistentContainer.viewContext
+    class func createFrom(_ hourlyForecast: HourlyForecast, context: NSManagedObjectContext) -> HourlyWeatherEntity {
         let hourlyWeatherEntity = HourlyWeatherEntity(context: context)
         
         hourlyWeatherEntity.time = Int64(hourlyForecast.dateTime)
@@ -22,9 +21,7 @@ public class HourlyWeatherEntity: NSManagedObject {
         return hourlyWeatherEntity
     }
     
-    class func loadHourlyWeather(with city: String) -> [HourlyWeatherEntity] {
-        let context = DataController.shared.persistentContainer.viewContext
-        
+    class func loadHourlyWeather(with city: String, context: NSManagedObjectContext) -> [HourlyWeatherEntity] {
         let request: NSFetchRequest<HourlyWeatherEntity> = HourlyWeatherEntity.fetchRequest()
         let dailyForecastPredicate = NSPredicate(format: "hourlyForecast.city = %@", city)
         let timeSort = NSSortDescriptor(key: "time", ascending: true)

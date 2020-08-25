@@ -13,9 +13,7 @@ import CoreData
 
 public class DailyWeatherEntity: NSManagedObject {
     
-    class func createfrom(_ dateTime: Int, _ conditionID: Int) -> DailyWeatherEntity {
-        let context = DataController.shared.persistentContainer.viewContext
-        
+    class func createfrom(_ dateTime: Int, _ conditionID: Int, context: NSManagedObjectContext) -> DailyWeatherEntity {
         let date = Date(timeIntervalSince1970: TimeInterval(dateTime))
         let dailyWeather = DailyWeatherEntity(context: context)
         
@@ -25,15 +23,7 @@ public class DailyWeatherEntity: NSManagedObject {
         return dailyWeather
     }
     
-    func update(with dailyForecast: DailyForecast) {
-        self.temperature.max = dailyForecast.temperature.max
-        self.temperature.min = dailyForecast.temperature.min
-        self.icon = Utils.resolveWeatherIcon(dailyForecast.weather[0].conditionID)
-    }
-    
-    class func loadDailyWeather(with weekDay: String,_ dailyForecastEntity: DailyForecastEntity) -> DailyWeatherEntity? {
-         let context = DataController.shared.persistentContainer.viewContext
-         
+    class func loadDailyWeather(with weekDay: String,_ dailyForecastEntity: DailyForecastEntity, context: NSManagedObjectContext) -> DailyWeatherEntity? {         
          let request: NSFetchRequest<DailyWeatherEntity> = DailyWeatherEntity.fetchRequest()
          let dailyForecastPredicate = NSPredicate(format: "weekDay = %@ AND dailyForecast = %@", weekDay, dailyForecastEntity)
          request.predicate = dailyForecastPredicate
@@ -48,4 +38,10 @@ public class DailyWeatherEntity: NSManagedObject {
          }
          return nil
      }
+    
+    func update(with dailyForecast: DailyForecast) {
+        self.temperature.max = dailyForecast.temperature.max
+        self.temperature.min = dailyForecast.temperature.min
+        self.icon = Utils.resolveWeatherIcon(dailyForecast.weather[0].conditionID)
+    }
 }

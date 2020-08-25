@@ -13,44 +13,36 @@ import CoreData
 
 public class CurrentForecastEntity: NSManagedObject {
 
-    class func createFrom(_ currentWeatherResponse: CurrentWeatherResponse) {
-        guard let _ = loadCurrentForecast() else {
-            creteNewEntity(with: currentWeatherResponse)
+    class func createFrom(_ currentWeatherResponse: CurrentWeatherResponse, context: NSManagedObjectContext) {
+        guard let _ = loadCurrentForecast(context: context) else {
+            creteNewEntity(with: currentWeatherResponse, context: context)
             return
         }
         
         for currentForecast in currentWeatherResponse.currentForecastList {
-            guard let currentWeatherEntity = CurrentWeatherEntity.loadCurrentWeather(forCity: currentForecast.city) else {
+            guard let currentWeatherEntity = CurrentWeatherEntity.loadCurrentWeather(forCity: currentForecast.city, context: context) else {
                 return
             }
             
             currentWeatherEntity.weatherDescription.update(with: currentForecast.weatherDescription[0])
             currentWeatherEntity.parameters.update(with: currentForecast.temperatureParameters)
         }
-
-        DataController.shared.saveContext()
     }
     
-    class func creteNewEntity(with currentWeatherResponse: CurrentWeatherResponse) {
-        let context = DataController.shared.persistentContainer.viewContext
-
+    class func creteNewEntity(with currentWeatherResponse: CurrentWeatherResponse, context: NSManagedObjectContext) {
         let cityForecastEntity = CurrentForecastEntity(context: context)
         cityForecastEntity.dateTime = Int64(Date().timeIntervalSince1970)
         
         for currentForecast in currentWeatherResponse.currentForecastList {
-            let currentWeather = CurrentWeatherEntity.createFrom(currentForecast)
-            currentWeather.parameters = TemperatureParametersEntity.createFrom(currentForecast.temperatureParameters)
-            currentWeather.weatherDescription = WeatherDescriptionEntity.createFrom(currentForecast.weatherDescription[0])
+            let currentWeather = CurrentWeatherEntity.createFrom(currentForecast, context: context)
+            currentWeather.parameters = TemperatureParametersEntity.createFrom(currentForecast.temperatureParameters, context: context)
+            currentWeather.weatherDescription = WeatherDescriptionEntity.createFrom(currentForecast.weatherDescription[0], context: context)
 
             cityForecastEntity.addToCurrentWeather(currentWeather)
         }
-        
-        DataController.shared.saveContext()
     }
     
-    class func loadCurrentForecast() -> CurrentForecastEntity? {
-        let context = DataController.shared.persistentContainer.viewContext
-        
+    class func loadCurrentForecast(context: NSManagedObjectContext) -> CurrentForecastEntity? {
         let request: NSFetchRequest<CurrentForecastEntity> = CurrentForecastEntity.fetchRequest()
         
         do {
@@ -63,5 +55,5 @@ public class CurrentForecastEntity: NSManagedObject {
         }
         return nil
     }
-    
+
 }

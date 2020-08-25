@@ -13,9 +13,7 @@ import CoreData
 
 public class TemperatureEntity: NSManagedObject {
     
-    class func createFrom(temperature: Temperature) -> TemperatureEntity {
-        let context = DataController.shared.persistentContainer.viewContext
-
+    class func createFrom(temperature: Temperature, context: NSManagedObjectContext) -> TemperatureEntity {
         let temperatureEntity = TemperatureEntity(context: context)
         temperatureEntity.max = temperature.max
         temperatureEntity.min = temperature.min

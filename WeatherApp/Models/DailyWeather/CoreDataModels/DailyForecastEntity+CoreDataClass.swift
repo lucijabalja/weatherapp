@@ -13,44 +13,36 @@ import CoreData
 
 public class DailyForecastEntity: NSManagedObject {
     
-    class func createFrom(_ dailyWeatherResponse: DailyWeatherResponse) {
-        guard let dailyForecastEntity = loadDailyForecast(with: dailyWeatherResponse.latitude, dailyWeatherResponse.longitude) else {
-            creteNewEntity(with: dailyWeatherResponse)
+    class func createFrom(_ dailyWeatherResponse: DailyWeatherResponse, context: NSManagedObjectContext) {
+        guard let dailyForecastEntity = loadDailyForecast(with: dailyWeatherResponse.latitude, dailyWeatherResponse.longitude, context: context) else {
+            creteNewEntity(with: dailyWeatherResponse, context: context)
             return
         }
         
         for dailyForecast in dailyWeatherResponse.dailyForecast {
             let date = Date(timeIntervalSince1970: TimeInterval(dailyForecast.dateTime))
-            guard let dailyWeather = DailyWeatherEntity.loadDailyWeather(with: Utils.getWeekDay(with: date), dailyForecastEntity) else { return }
+            guard let dailyWeather = DailyWeatherEntity.loadDailyWeather(with: Utils.getWeekDay(with: date), dailyForecastEntity, context: context) else { return }
             
             dailyWeather.update(with: dailyForecast)
             
         }
-
-        DataController.shared.saveContext()
     }
     
-    class func creteNewEntity(with dailyWeatherResponse: DailyWeatherResponse) {
-        let context = DataController.shared.persistentContainer.viewContext
-
+    class func creteNewEntity(with dailyWeatherResponse: DailyWeatherResponse, context: NSManagedObjectContext) {
         let dailyForecastEntity = DailyForecastEntity(context: context)
         dailyForecastEntity.latitude = dailyWeatherResponse.latitude
         dailyForecastEntity.longitude = dailyWeatherResponse.longitude
         
         for dailyForecast in dailyWeatherResponse.dailyForecast {
-            let temperature = TemperatureEntity.createFrom(temperature: dailyForecast.temperature)
-            let dailyWeather = DailyWeatherEntity.createfrom(dailyForecast.dateTime, dailyForecast.weather[0].conditionID)
+            let temperature = TemperatureEntity.createFrom(temperature: dailyForecast.temperature, context: context)
+            let dailyWeather = DailyWeatherEntity.createfrom(dailyForecast.dateTime, dailyForecast.weather[0].conditionID, context: context)
             
             dailyWeather.temperature = temperature
             dailyForecastEntity.addToDailyWeather(dailyWeather)
         }
-        
-        DataController.shared.saveContext()
     }
     
-    class func loadDailyForecast(with latitude: Double, _ longitude: Double) -> DailyForecastEntity? {
-        let context = DataController.shared.persistentContainer.viewContext
-        
+    class func loadDailyForecast(with latitude: Double, _ longitude: Double, context: NSManagedObjectContext) -> DailyForecastEntity? {
         let request: NSFetchRequest<DailyForecastEntity> = DailyForecastEntity.fetchRequest()
         let epsilon = 0.000001;
         let coordinatesPredicate = NSPredicate(format: "latitude > %lf AND latitude < %lf AND longitude > %lf AND longitude < %lf",

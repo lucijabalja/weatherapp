@@ -26,6 +26,7 @@ class DataRepository {
                 guard let currentWeatherEntity = self.coreDataService.loadCurrentForecastData() else { return }
                 
                 completion(.success(currentWeatherEntity))
+                
             case .failure(_):
                 guard let currentWeatherEntity = self.coreDataService.loadCurrentForecastData() else { return }
                 
@@ -42,6 +43,7 @@ class DataRepository {
                 guard let dailyForecastEntity = self.coreDataService.loadDailyForecast(withCoordinates: dailyWeatherResponse.latitude, dailyWeatherResponse.longitude) else { return }
                 
                 completion(.success(dailyForecastEntity))
+                
             case .failure(_):
                 guard let dailyForecastEntity = self.coreDataService.loadDailyForecast(withCoordinates: latitude, longitude) else {
                     return

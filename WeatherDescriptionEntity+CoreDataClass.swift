@@ -13,8 +13,7 @@ import CoreData
 
 public class WeatherDescriptionEntity: NSManagedObject {
 
-    class func createFrom(_ weatherDescription: WeatherDescription) -> WeatherDescriptionEntity {
-        let context = DataController.shared.persistentContainer.viewContext
+    class func createFrom(_ weatherDescription: WeatherDescription, context: NSManagedObjectContext) -> WeatherDescriptionEntity {
         let weatherDescriptionEntity = WeatherDescriptionEntity(context: context)
         
         weatherDescriptionEntity.conditionID = Int64(weatherDescription.conditionID)

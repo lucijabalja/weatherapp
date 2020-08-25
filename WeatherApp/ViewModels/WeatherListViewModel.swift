@@ -30,7 +30,7 @@ class WeatherListViewModel {
             case .failure(let error):
                 completionHandler(.failure(error))
             }
-
+            
         }
     }
     
@@ -61,5 +61,5 @@ class WeatherListViewModel {
                                   min: Utils.getFormattedTemperature(temperatureParameters.min),
                                   max: Utils.getFormattedTemperature(temperatureParameters.max))
     }
-
+    
 }

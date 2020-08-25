@@ -13,8 +13,7 @@ import CoreData
 
 public class TemperatureParametersEntity: NSManagedObject {
     
-    class func createFrom(_ temperatureParameters: TemperatureParameters) -> TemperatureParametersEntity {
-        let context = DataController.shared.persistentContainer.viewContext
+    class func createFrom(_ temperatureParameters: TemperatureParameters, context: NSManagedObjectContext) -> TemperatureParametersEntity {
         let temperatureParams = TemperatureParametersEntity(context: context)
         
         temperatureParams.current = temperatureParameters.currentTemperature
