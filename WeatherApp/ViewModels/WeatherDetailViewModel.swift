@@ -33,10 +33,10 @@ class WeatherDetailViewModel {
     }
     
     func getHourlyWeather(completion: @escaping (Result<Bool, Error>) -> Void) {
-        dataRepository.getHourlyWeather(city: currentWeather.city) { (result) in
+        dataRepository.getHourlyWeather(city: currentWeather.city) { [weak self] (result) in
             switch result {
             case .success(let hourlyForecastEntity):
-                self.saveToHourlyWeather(with: hourlyForecastEntity)
+                self?.saveToHourlyWeather(with: hourlyForecastEntity)
                 completion(.success(true))
                 
             case .failure(let error):
@@ -60,11 +60,11 @@ class WeatherDetailViewModel {
     }
     
     func getDailyWeather(completion: @escaping (Result<Bool, Error>) -> Void) {
-        locationService.getLocationCoordinates(location: currentWeather.city) { (latitude, longitude ) in
-            self.dataRepository.getDailyWeather(latitude: latitude, longitude: longitude) { (result) in
+        locationService.getLocationCoordinates(location: currentWeather.city) { [weak self] (latitude, longitude ) in
+            self?.dataRepository.getDailyWeather(latitude: latitude, longitude: longitude) { [weak self] (result) in
                 switch result {
                 case .success(let dailyForecastEntity):
-                    self.saveToDailyWeather(with: dailyForecastEntity)
+                    self?.saveToDailyWeather(with: dailyForecastEntity)
                     
                     completion(.success(true))
                 case .failure(let error):

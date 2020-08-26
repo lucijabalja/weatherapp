@@ -33,8 +33,7 @@ class DailyWeatherView: UIView {
         layer.cornerRadius = 4.0
     }
     
-    func setupView(with dayData: DailyWeather) {
-        
+    func setupView(with dayData: DailyWeather) {        
         dayLabel.text = dayData.weekDay
         maxTempLabel.text = dayData.temperature.max
         minTempLabel.text = dayData.temperature.min

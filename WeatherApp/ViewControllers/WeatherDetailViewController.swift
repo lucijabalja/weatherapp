@@ -52,18 +52,18 @@ class WeatherDetailViewController: UIViewController {
     }
     
     private func setupHourlyWeatherData() {
-        weatherDetailViewModel.getHourlyWeather(completion: { (result) in
+        weatherDetailViewModel.getHourlyWeather(completion: { [weak self] (result) in
             switch result {
-                case .success(_): self.updateCollectionView()
+                case .success(_): self?.updateCollectionView()
                 case .failure(let error): print(error)
             }
         })
     }
     
     private func setupDailyWeatherData() {
-        weatherDetailViewModel.getDailyWeather { (result) in
+        weatherDetailViewModel.getDailyWeather { [weak self] (result) in
             switch result {
-                case .success(_): self.updateDailyStackView()
+                case .success(_): self?.updateDailyStackView()
                 case .failure(let error): print(error)
             }
         }

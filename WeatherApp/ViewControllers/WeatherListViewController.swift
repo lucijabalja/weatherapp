@@ -40,12 +40,12 @@ class WeatherListViewController: UIViewController {
     
 
     private func fillTableView() {
-        weatherViewModel.getCurrentWeather() { (result) in
+        weatherViewModel.getCurrentWeather() { [weak self] (result) in
             switch result {
-            case .success(_): self.updateUI()
+            case .success(_): self?.updateUI()
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.weatherView.setErrorLabel(withText: "\(error)")
+                    self?.weatherView.setErrorLabel(withText: "\(error)")
                 }
             }
         }
