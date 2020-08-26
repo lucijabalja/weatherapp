@@ -14,7 +14,7 @@ import CoreData
 public class CurrentForecastEntity: NSManagedObject {
 
     class func createFrom(_ currentWeatherResponse: CurrentWeatherResponse, context: NSManagedObjectContext) {
-        guard let _ = loadCurrentForecast(context: context) else {
+        guard loadCurrentForecast(context: context) != nil else {
             creteNewEntity(with: currentWeatherResponse, context: context)
             return
         }
@@ -47,13 +47,11 @@ public class CurrentForecastEntity: NSManagedObject {
         
         do {
             let currentForecast = try context.fetch(request)
-            guard let first = currentForecast.first else { return nil }
-        
-            return first
+            return currentForecast.first
         } catch {
             print("\(error)")
+            return nil
         }
-        return nil
     }
 
 }

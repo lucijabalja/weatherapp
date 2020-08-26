@@ -24,20 +24,18 @@ public class DailyWeatherEntity: NSManagedObject {
     }
     
     class func loadDailyWeather(with weekDay: String,_ dailyForecastEntity: DailyForecastEntity, context: NSManagedObjectContext) -> DailyWeatherEntity? {         
-         let request: NSFetchRequest<DailyWeatherEntity> = DailyWeatherEntity.fetchRequest()
-         let dailyForecastPredicate = NSPredicate(format: "weekDay = %@ AND dailyForecast = %@", weekDay, dailyForecastEntity)
-         request.predicate = dailyForecastPredicate
-         
-         do {
-             let dailyWeather = try context.fetch(request)
-             if let first = dailyWeather.first {
-                 return first
-             }
-         } catch {
-             print("\(error)")
-         }
-         return nil
-     }
+        let request: NSFetchRequest<DailyWeatherEntity> = DailyWeatherEntity.fetchRequest()
+        let dailyForecastPredicate = NSPredicate(format: "weekDay = %@ AND dailyForecast = %@", weekDay, dailyForecastEntity)
+        request.predicate = dailyForecastPredicate
+        
+        do {
+            let dailyWeather = try context.fetch(request)
+            return dailyWeather.first
+        } catch {
+            print("\(error)")
+            return nil
+        }
+    }
     
     func update(with dailyForecast: DailyForecast) {
         self.temperature.max = dailyForecast.temperature.max

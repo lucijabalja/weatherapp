@@ -50,7 +50,7 @@ class Utils {
     }
     
     static func getFormattedTemperature(_ temperature: Double) -> String {
-        return "\(Int(round(temperature)))°"
+        "\(Int(round(temperature)))°"
     }
     
 }

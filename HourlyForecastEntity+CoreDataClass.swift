@@ -13,7 +13,7 @@ import CoreData
 
 public class HourlyForecastEntity: NSManagedObject {
     
-    class func createFrom(_ hourlyWeatherResponse: HourlyWeatherResponse, _ city: String, context: NSManagedObjectContext) {
+    class func createFrom(_ hourlyWeatherResponse: HourlyWeatherResponse,_ city: String, context: NSManagedObjectContext) {
         guard let hourlyForecastEntity = loadHourlyForecast(for: city, context: context) else {
             let newHourlyForecastEntity = HourlyForecastEntity(context: context)
             newHourlyForecastEntity.city = city
@@ -24,7 +24,6 @@ public class HourlyForecastEntity: NSManagedObject {
         let hourlyWeatherEntities = hourlyForecastEntity.hourlyWeather
         hourlyForecastEntity.removeFromHourlyWeather(hourlyWeatherEntities)
         createNewEntity(hourlyWeatherResponse, for: hourlyForecastEntity,context: context)
-        
     }
     
     class func createNewEntity(_ hourlyWeatherResponse: HourlyWeatherResponse, for hourlyForecastEntity: HourlyForecastEntity, context: NSManagedObjectContext) {
@@ -42,13 +41,11 @@ public class HourlyForecastEntity: NSManagedObject {
 
         do {
             let hourlyForecast = try context.fetch(request)
-            if let first = hourlyForecast.first {
-                return first
-            }
+            return hourlyForecast.first
         } catch {
             print("\(error)")
+            return nil
         }
-        return nil
     }
     
 }

@@ -15,7 +15,7 @@ public class CurrentWeatherEntity: NSManagedObject {
     class func createFrom(_ currentForecast: CurrentForecast, context: NSManagedObjectContext) -> CurrentWeatherEntity {
         let currentWeatherEntity = CurrentWeatherEntity(context: context)
         currentWeatherEntity.city = currentForecast.city
-
+        
         return currentWeatherEntity
     }
     
@@ -27,13 +27,11 @@ public class CurrentWeatherEntity: NSManagedObject {
         
         do {
             let cityWeatherEntity = try context.fetch(request)
-            guard let first = cityWeatherEntity.first else { return nil }
-            
-            return first
+            return cityWeatherEntity.first
         } catch {
             print("\(error)")
+            return nil
         }
-        return nil
     }
     
 }

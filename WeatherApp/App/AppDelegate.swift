@@ -13,6 +13,8 @@ import CoreData
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        // to locate sqlite file
+        print(FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask))
         setNavigationBarUI()
         return true
     }

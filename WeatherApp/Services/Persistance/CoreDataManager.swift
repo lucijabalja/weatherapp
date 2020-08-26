@@ -50,7 +50,7 @@ class CoreDataManager {
             self.addPersistentStore(to: persistentStoreCoordinator)
             
             // Invoke Completion On Main Queue
-            DispatchQueue.main.async { self.completion() }
+            self.completion()
         }
     }
     
