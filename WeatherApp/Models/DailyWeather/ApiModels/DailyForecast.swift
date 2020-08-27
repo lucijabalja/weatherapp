@@ -19,4 +19,5 @@ struct DailyForecast: Decodable {
         case temperature = "temp"
         case weather = "weather"
     }
+    
 }

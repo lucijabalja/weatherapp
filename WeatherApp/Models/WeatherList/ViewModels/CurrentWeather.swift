@@ -14,4 +14,14 @@ struct CurrentWeather {
     let parameters: CurrentTemperature
     let condition: Condition
     
+    init(from currentWeatherEntity: CurrentWeatherEntity) {
+        self.city = currentWeatherEntity.city
+        self.condition = Condition(icon:  Utils.resolveWeatherIcon(Int(currentWeatherEntity.weatherDescription.conditionID)),
+                                   conditionDescription: currentWeatherEntity.weatherDescription.conditionDescription)
+        
+        self.parameters = CurrentTemperature(now: Utils.getFormattedTemperature(currentWeatherEntity.parameters.current),
+                                             min: Utils.getFormattedTemperature(currentWeatherEntity.parameters.min),
+                                             max: Utils.getFormattedTemperature(currentWeatherEntity.parameters.max))
+    }
+    
 }

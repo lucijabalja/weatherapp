@@ -17,10 +17,9 @@ struct DailyWeather {
     init(from dailyWeatherEntity: DailyWeatherEntity) {
         self.dateTime = Int(dailyWeatherEntity.dateTime)
         self.temperature = CurrentTemperature(now: nil,
-                                             min: Utils.getFormattedTemperature(dailyWeatherEntity.temperature.min),
-                                             max: Utils.getFormattedTemperature(dailyWeatherEntity.temperature.max))
+                                              min: Utils.getFormattedTemperature(dailyWeatherEntity.temperature.min),
+                                              max: Utils.getFormattedTemperature(dailyWeatherEntity.temperature.max))
         self.icon = Utils.resolveWeatherIcon(Int(dailyWeatherEntity.conditionID))
-        
     }
     
 }

@@ -40,25 +40,12 @@ class WeatherListViewModel {
     }
     
     func saveCurrentWeather(from currentForecastEntity: CurrentForecastEntity) {
-        for currentWeatherEntity in currentForecastEntity.currentWeather {
-            let currentWeather = currentWeatherEntity as! CurrentWeatherEntity
-            let condition = convertToCondition(currentWeather.weatherDescription)
-            let temperature = convertToTemperature(currentWeather.parameters)
+        for currentWeather in currentForecastEntity.currentWeather {
+            let currentWeatherEntity = currentWeather as! CurrentWeatherEntity
             
-            let current = CurrentWeather(city: currentWeather.city, parameters: temperature, condition: condition)
+            let current = CurrentWeather(from: currentWeatherEntity)
             self.currentWeatherList.append(current)
         }
     }
-    
-    func convertToCondition(_ weatherDescription: WeatherDescriptionEntity) -> Condition {
-        Condition(icon:  Utils.resolveWeatherIcon(Int(weatherDescription.conditionID)),
-                  conditionDescription: weatherDescription.conditionDescription)
-    }
-    
-    func convertToTemperature(_ temperatureParameters: TemperatureParametersEntity) -> CurrentTemperature {
-        return CurrentTemperature(now: Utils.getFormattedTemperature(temperatureParameters.current),
-                                  min: Utils.getFormattedTemperature(temperatureParameters.min),
-                                  max: Utils.getFormattedTemperature(temperatureParameters.max))
-    }
-    
+
 }

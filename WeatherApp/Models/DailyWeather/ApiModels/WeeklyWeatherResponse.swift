@@ -10,16 +10,16 @@ import Foundation
 
 struct WeeklyWeatherResponse: Decodable {
     
-    let dailyForecast: [DailyForecast]
-    let hourlyForecast: [HourlyForecast]
     let latitude: Double
     let longitude: Double
+    let dailyForecast: [DailyForecast]
+    let hourlyForecast: [HourlyForecast]
     
     enum CodingKeys: String, CodingKey {
-        case dailyForecast = "daily"
-        case hourlyForecast = "hourly"
         case latitude = "lat"
         case longitude = "lon"
+        case dailyForecast = "daily"
+        case hourlyForecast = "hourly"
     }
     
 }

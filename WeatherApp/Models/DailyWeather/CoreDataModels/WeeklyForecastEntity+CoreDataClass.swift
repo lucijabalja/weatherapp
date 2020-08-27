@@ -23,17 +23,17 @@ public class WeeklyForecastEntity: NSManagedObject {
             guard let dailyWeatherEntity = DailyWeatherEntity.loadDailyWeather(withParent: weeklyForecastEntity, index: index, context: context) else {
                 return
             }
+            
             dailyWeatherEntity.update(with: dailyForecast, index: index)
         }
         
         for (index, hourlyForecast) in weeklyWeatherResponse.hourlyForecast.enumerated() {
             guard let hourlyWeatherEntity = HourlyWeatherEntity.loadHourlyWeather(withParent: weeklyForecastEntity, index: index, context: context) else {
-                return 
+                return
             }
             
             hourlyWeatherEntity.update(with: hourlyForecast, index: index)
         }
-
     }
     
     class func createNewEntity(with weeklyWeatherResponse: WeeklyWeatherResponse, context: NSManagedObjectContext) {

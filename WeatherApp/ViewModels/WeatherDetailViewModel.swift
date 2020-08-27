@@ -43,7 +43,6 @@ class WeatherDetailViewModel {
                 case .failure(let error):
                     completion(.failure(error))
                 }
-                
             }
         }
     }
