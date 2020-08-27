@@ -17,6 +17,7 @@ extension DailyWeatherEntity {
         return NSFetchRequest<DailyWeatherEntity>(entityName: "DailyWeatherEntity")
     }
 
+    @NSManaged public var id: Int64
     @NSManaged public var conditionID: Int64
     @NSManaged public var dateTime: Int64
     @NSManaged public var weeklyForecast: WeeklyForecastEntity

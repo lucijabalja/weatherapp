@@ -21,4 +21,9 @@ public class TemperatureEntity: NSManagedObject {
         return temperatureEntity
     }
     
+    func update(with temperature: Temperature) {
+        self.min = temperature.min
+        self.max = temperature.max
+    }
+    
 }

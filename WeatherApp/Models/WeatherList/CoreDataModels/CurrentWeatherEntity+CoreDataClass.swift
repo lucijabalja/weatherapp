@@ -22,7 +22,7 @@ public class CurrentWeatherEntity: NSManagedObject {
     
     class func loadCurrentWeather(forCity city: String, context: NSManagedObjectContext) -> CurrentWeatherEntity? {
         let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
-        let cityPredicate = NSPredicate(format: "city == %@", city)
+        let cityPredicate = NSPredicate(format: "city = %@", city)
         request.predicate = cityPredicate
         
         do {

@@ -13,11 +13,13 @@
     <entity name="DailyWeatherEntity" representedClassName=".DailyWeatherEntity" syncable="YES">
         <attribute name="conditionID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="dateTime" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="temperature" maxCount="1" deletionRule="Nullify" destinationEntity="TemperatureEntity" inverseName="weather" inverseEntity="TemperatureEntity"/>
         <relationship name="weeklyForecast" maxCount="1" deletionRule="Nullify" destinationEntity="WeeklyForecastEntity" inverseName="dailyWeather" inverseEntity="WeeklyForecastEntity"/>
     </entity>
     <entity name="HourlyWeatherEntity" representedClassName=".HourlyWeatherEntity" syncable="YES">
         <attribute name="conditionID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="temperature" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="time" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="weeklyForecast" maxCount="1" deletionRule="Nullify" destinationEntity="WeeklyForecastEntity" inverseName="hourlyWeather" inverseEntity="WeeklyForecastEntity"/>
@@ -48,8 +50,8 @@
         <element name="CurrentForecastEntity" positionX="-109.50390625" positionY="-176.609375" width="128" height="28"/>
         <element name="CurrentWeatherEntity" positionX="-43.96875" positionY="-92.11328125" width="128" height="103"/>
         <element name="WeeklyForecastEntity" positionX="-166.10546875" positionY="260.0703125" width="128" height="103"/>
-        <element name="DailyWeatherEntity" positionX="128.8515625" positionY="265.453125" width="128" height="103"/>
-        <element name="HourlyWeatherEntity" positionX="312.04296875" positionY="-109.4375" width="128" height="28"/>
+        <element name="DailyWeatherEntity" positionX="128.8515625" positionY="265.453125" width="128" height="118"/>
+        <element name="HourlyWeatherEntity" positionX="312.04296875" positionY="-109.4375" width="128" height="118"/>
         <element name="TemperatureEntity" positionX="394.33984375" positionY="279.6171875" width="128" height="88"/>
         <element name="TemperatureParametersEntity" positionX="241.7578125" positionY="4.34765625" width="128" height="103"/>
         <element name="WeatherDescriptionEntity" positionX="-289.23046875" positionY="107.16796875" width="128" height="88"/>

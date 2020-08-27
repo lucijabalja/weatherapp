@@ -17,6 +17,7 @@ extension HourlyWeatherEntity {
         return NSFetchRequest<HourlyWeatherEntity>(entityName: "HourlyWeatherEntity")
     }
 
+    @NSManaged public var id: Int64
     @NSManaged public var conditionID: Int64
     @NSManaged public var temperature: Double
     @NSManaged public var time: Int64

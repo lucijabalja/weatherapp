@@ -18,6 +18,21 @@ public class WeeklyForecastEntity: NSManagedObject {
             createNewEntity(with: weeklyWeatherResponse, context: context)
             return
         }
+        
+        for (index, dailyForecast) in weeklyWeatherResponse.dailyForecast.enumerated() {
+            guard let dailyWeatherEntity = DailyWeatherEntity.loadDailyWeather(withParent: weeklyForecastEntity, index: index, context: context) else {
+                return
+            }
+            dailyWeatherEntity.update(with: dailyForecast, index: index)
+        }
+        
+        for (index, hourlyForecast) in weeklyWeatherResponse.hourlyForecast.enumerated() {
+            guard let hourlyWeatherEntity = HourlyWeatherEntity.loadHourlyWeather(withParent: weeklyForecastEntity, index: index, context: context) else {
+                return 
+            }
+            
+            hourlyWeatherEntity.update(with: hourlyForecast, index: index)
+        }
 
     }
     
@@ -25,14 +40,15 @@ public class WeeklyForecastEntity: NSManagedObject {
         let weeklyForecastEntity = WeeklyForecastEntity(context: context)
         weeklyForecastEntity.latitude = weeklyWeatherResponse.latitude
         weeklyForecastEntity.longitude = weeklyWeatherResponse.longitude
-        for dailyForecast in weeklyWeatherResponse.dailyForecast {
-            let dailyWeatherEntity = DailyWeatherEntity.createFrom(dailyForecast, context: context)
+        
+        for (index, dailyForecast) in weeklyWeatherResponse.dailyForecast.enumerated() {
+            let dailyWeatherEntity = DailyWeatherEntity.createFrom(dailyForecast, index, context: context)
             dailyWeatherEntity.weeklyForecast = weeklyForecastEntity
             weeklyForecastEntity.addToDailyWeather(dailyWeatherEntity)
         }
         
-        for hourlyForecast in weeklyWeatherResponse.hourlyForecast {
-            let hourlyWeatherEntity = HourlyWeatherEntity.createFrom(hourlyForecast, context: context)
+        for (index, hourlyForecast) in weeklyWeatherResponse.hourlyForecast.enumerated() {
+            let hourlyWeatherEntity = HourlyWeatherEntity.createFrom(hourlyForecast, index, context: context)
             hourlyWeatherEntity.weeklyForecast = weeklyForecastEntity
             weeklyForecastEntity.addToHourlyWeather(hourlyWeatherEntity)
         }
