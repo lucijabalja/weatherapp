@@ -34,8 +34,8 @@ class DailyWeatherView: UIView {
     }
     
     func setupView(with dayData: DailyWeather) {
-        
-        dayLabel.text = dayData.weekDay
+        let date = Date(timeIntervalSince1970: TimeInterval(dayData.dateTime))
+        dayLabel.text = Utils.getWeekDay(with: date)
         maxTempLabel.text = dayData.temperature.max
         minTempLabel.text = dayData.temperature.min
         weatherIcon.image = UIImage(systemName: dayData.icon)

@@ -20,4 +20,5 @@ public class TemperatureEntity: NSManagedObject {
         
         return temperatureEntity
     }
+    
 }

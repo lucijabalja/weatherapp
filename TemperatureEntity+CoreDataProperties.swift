@@ -2,7 +2,7 @@
 //  TemperatureEntity+CoreDataProperties.swift
 //  WeatherApp
 //
-//  Created by Lucija Balja on 21/08/2020.
+//  Created by Lucija Balja on 27/08/2020.
 //  Copyright © 2020 Lucija Balja. All rights reserved.
 //
 //

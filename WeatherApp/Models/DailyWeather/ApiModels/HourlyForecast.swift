@@ -8,12 +8,15 @@
 
 import Foundation
 
-struct HourlyWeatherResponse: Decodable {
+struct HourlyForecast: Decodable {
     
-    let hourlyForecast: [HourlyForecast]
+    let dateTime: Int
+    let temperature: Double
+    let weather: [WeatherDescription]
     
     enum CodingKeys: String, CodingKey {
-        case hourlyForecast = "list"
+        case dateTime = "dt"
+        case temperature = "temp"
+        case weather = "weather"
     }
-    
 }

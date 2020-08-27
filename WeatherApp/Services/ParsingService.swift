@@ -15,13 +15,9 @@ class ParsingService {
     func parseCurrentWeather(_ data: Data) -> CurrentWeatherResponse? {
         try? decoder.decode(CurrentWeatherResponse.self, from: data)
     }
-    
-    func parseHourlyWeather(_ data: Data, city: String) -> HourlyWeatherResponse? {
-        try? decoder.decode(HourlyWeatherResponse.self, from: data)
-    }
-    
-    func parseDailyWeather(_ data: Data) -> DailyWeatherResponse? {
-        try? decoder.decode(DailyWeatherResponse.self, from: data)
+
+    func parseWeeklyWeather(_ data: Data) -> WeeklyWeatherResponse? {
+        try? decoder.decode(WeeklyWeatherResponse.self, from: data)
     }
     
 }

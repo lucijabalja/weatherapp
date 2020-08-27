@@ -16,7 +16,8 @@ class WeatherCollectionViewCell: UICollectionViewCell {
     static let identifier = "WeatherCollectionViewCell"
     
     public func configure(with hourlyWeather: HourlyWeather) {
-        timeLabel.text = Utils.getFormattedTime(with: Date(timeIntervalSince1970: TimeInterval(hourlyWeather.time)))
+        let date = Date(timeIntervalSince1970: TimeInterval(hourlyWeather.dateTime))
+        timeLabel.text = Utils.getFormattedTime(with: date)
         weatherIcon.image = UIImage(systemName: hourlyWeather.icon)
         temperatureLabel.text = hourlyWeather.temperature
     }

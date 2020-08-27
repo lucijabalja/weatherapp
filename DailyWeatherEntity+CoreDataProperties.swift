@@ -2,7 +2,7 @@
 //  DailyWeatherEntity+CoreDataProperties.swift
 //  WeatherApp
 //
-//  Created by Lucija Balja on 21/08/2020.
+//  Created by Lucija Balja on 27/08/2020.
 //  Copyright © 2020 Lucija Balja. All rights reserved.
 //
 //
@@ -17,9 +17,9 @@ extension DailyWeatherEntity {
         return NSFetchRequest<DailyWeatherEntity>(entityName: "DailyWeatherEntity")
     }
 
-    @NSManaged public var icon: String
-    @NSManaged public var weekDay: String
-    @NSManaged public var dailyForecast: DailyForecastEntity
+    @NSManaged public var conditionID: Int64
+    @NSManaged public var dateTime: Int64
+    @NSManaged public var weeklyForecast: WeeklyForecastEntity
     @NSManaged public var temperature: TemperatureEntity
-
+    
 }
