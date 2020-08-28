@@ -29,15 +29,15 @@ class WeatherDetailViewModel {
         self.coordinator = coordinator
         self.locationService = appDependencies.locationService
         self.dataRepository = appDependencies.dataRepository
-        self.weeklyWeather = WeeklyWeather(city: currentWeather.city, dailyWeather: [], hourlyWeather: [])
+        self.weeklyWeather = WeeklyWeather(city: currentWeather.city, dailyWeatherList: [], hourlyWeatherList: [])
     }
     
     func getWeeklyWeather(completion: @escaping (Result<Bool, Error>) -> Void) {
         locationService.getLocationCoordinates(location: currentWeather.city) { (latitude, longitude ) in
             self.dataRepository.getWeeklyWeather(latitude: latitude, longitude: longitude) { (result) in
                 switch result {
-                case .success(let dailyForecastEntity):
-                    self.saveToWeeklyWeather(with: dailyForecastEntity)
+                case .success(let weeklyForecastEntity):
+                    self.saveToWeeklyWeather(with: weeklyForecastEntity)
                     
                     completion(.success(true))
                 case .failure(let error):
@@ -51,18 +51,18 @@ class WeatherDetailViewModel {
         for dailyWeatherEntity in weeklyForecastEntity.dailyWeather {
             let dailyWeather = dailyWeatherEntity as! DailyWeatherEntity
             let daily = DailyWeather(from: dailyWeather)
-            weeklyWeather.dailyWeather.append(daily)
+            weeklyWeather.dailyWeatherList.append(daily)
         }
         
         for hourlyWeatherEntity in weeklyForecastEntity.hourlyWeather {
             let hourlyWeather = hourlyWeatherEntity as! HourlyWeatherEntity
   
             let hourly = HourlyWeather(from: hourlyWeather)
-            weeklyWeather.hourlyWeather.append(hourly)
+            weeklyWeather.hourlyWeatherList.append(hourly)
         }
         
-        weeklyWeather.dailyWeather.sort { $0.dateTime < $1.dateTime }
-        weeklyWeather.hourlyWeather.sort { $0.dateTime < $1.dateTime }
+        weeklyWeather.dailyWeatherList.sort { $0.dateTime < $1.dateTime }
+        weeklyWeather.hourlyWeatherList.sort { $0.dateTime < $1.dateTime }
     }
     
 }

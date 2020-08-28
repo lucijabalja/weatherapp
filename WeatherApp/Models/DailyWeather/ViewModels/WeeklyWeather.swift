@@ -11,7 +11,7 @@ import Foundation
 struct WeeklyWeather {
 
     let city: String
-    var dailyWeather: [DailyWeather]
-    var hourlyWeather: [HourlyWeather]
+    var dailyWeatherList: [DailyWeather]
+    var hourlyWeatherList: [HourlyWeather]
     
 }

@@ -40,16 +40,16 @@ class DataRepository {
             switch result {
             case .success(let dailyWeatherResponse):
                 self.coreDataService.saveWeeklyForecast(dailyWeatherResponse)
-                guard let dailyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: dailyWeatherResponse.latitude, dailyWeatherResponse.longitude) else { return }
+                guard let weeklyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else { return }
                 
-                completion(.success(dailyForecastEntity))
+                completion(.success(weeklyForecastEntity))
                 
             case .failure(_):
-                guard let dailyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else {
+                guard let weeklyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else {
                     return
                 }
                 
-                completion(.success(dailyForecastEntity))
+                completion(.success(weeklyForecastEntity))
             }
         }
     }

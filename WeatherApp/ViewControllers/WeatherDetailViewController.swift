@@ -76,7 +76,7 @@ class WeatherDetailViewController: UIViewController {
     
     private func updateDailyStackView() {
         for (index, dailyViews) in self.dailyWeatherViews.enumerated() {
-            guard let dayData = weatherDetailViewModel.weeklyWeather.dailyWeather[safeIndex: index] else { return }
+            guard let dayData = weatherDetailViewModel.weeklyWeather.dailyWeatherList[safeIndex: index] else { return }
                         
             DispatchQueue.main.async {
                 dailyViews.setupView(with: dayData)
@@ -97,13 +97,13 @@ extension WeatherDetailViewController: UICollectionViewDelegate {
 extension WeatherDetailViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        weatherDetailViewModel.weeklyWeather.hourlyWeather.count
+        weatherDetailViewModel.weeklyWeather.hourlyWeatherList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell
         
-        if let hourlyWeather = weatherDetailViewModel.weeklyWeather.hourlyWeather[safeIndex: indexPath.row] {
+        if let hourlyWeather = weatherDetailViewModel.weeklyWeather.hourlyWeatherList[safeIndex: indexPath.row] {
             cell.configure(with: hourlyWeather)
         }
         

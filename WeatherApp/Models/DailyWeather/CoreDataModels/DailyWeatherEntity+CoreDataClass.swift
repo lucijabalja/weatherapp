@@ -35,12 +35,14 @@ public class DailyWeatherEntity: NSManagedObject {
         let dailyPredicate = NSPredicate(format: "weeklyForecast = %@ AND id = %d", weeklyForecastEntity, index)
         request.predicate = dailyPredicate
         
-        do {
-            let dailyWeather = try context.fetch(request)
-            return dailyWeather.first
-        } catch {
-            print("\(error)")
-            return nil
+        var dailyWeather: DailyWeatherEntity?
+        context.performAndWait {
+            do {
+                dailyWeather = try context.fetch(request).first
+            } catch {
+                print("\(error)")
+            }
         }
+        return dailyWeather
     }
 }
