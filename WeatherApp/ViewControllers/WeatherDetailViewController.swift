@@ -15,8 +15,6 @@ class WeatherDetailViewController: UIViewController {
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
     @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
-    
-    private let errorView = ErrorView()
     private var weatherDetailViewModel: WeatherDetailViewModel!
     
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {

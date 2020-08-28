@@ -40,14 +40,14 @@ class ErrorView: UIView {
     private func setupUI() {
         backgroundColor = .systemBlue
         
-        errorImage.styleView()
+        errorImage.applyDefaultStyleView()
         errorImage.image = UIImage(named: "error-icon")
         errorImage.layer.cornerRadius = 0
         
-        errorLabel.style(size: 25)
+        errorLabel.style(fontSize: 25)
         errorLabel.numberOfLines = 0
         
-        refreshButton.style(title: "Try again")
+        refreshButton.applyDefaultStyle(title: "Try again")
         
         addSubview(errorImage)
         addSubview(errorLabel)
