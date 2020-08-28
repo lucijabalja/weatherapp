@@ -10,18 +10,17 @@ import UIKit
 
 class Coordinator {
     
+    private var appDependencies: AppDependencies
+    private let navigationController = UINavigationController()
     private let window: UIWindow
-    private let navigationController: UINavigationController
-    private let appDependencies: AppDependencies
     
     init(window: UIWindow) {
         self.window = window
-        self.navigationController = UINavigationController()
         self.appDependencies = AppDependencies()
     }
     
     func setRootViewController() {
-        let viewModel = WeatherListViewModel(apiService: appDependencies.weatherApiService, coordinator: self)
+        let viewModel = WeatherListViewModel(coordinator: self, dataRepository: appDependencies.dataRepository)
         let rootViewController = WeatherListViewController(with: viewModel)
         rootViewController.modalPresentationStyle = .fullScreen
         navigationController.pushViewController(rootViewController, animated: true)
@@ -30,8 +29,8 @@ class Coordinator {
         window.makeKeyAndVisible()
     }
     
-    func pushDetailViewController(with selectedCity: CityWeather) {
-        let viewModel = WeatherDetailViewModel(appDependencies: appDependencies, cityWeather: selectedCity, coordinator: self)
+    func pushDetailViewController(with selectedCity: CurrentWeather) {
+        let viewModel = WeatherDetailViewModel(appDependencies: appDependencies, currentWeather: selectedCity, coordinator: self)
         let weatherDetailViewController = WeatherDetailViewController(with: viewModel)
         weatherDetailViewController.modalPresentationStyle = .fullScreen
         navigationController.pushViewController(weatherDetailViewController, animated: true)

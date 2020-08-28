@@ -11,10 +11,10 @@ import Foundation
 struct WeatherDescription: Decodable {
     
     let conditionID: Int
-    let weatherDescription: String
+    let conditionDescription: String
     
     enum CodingKeys: String, CodingKey {
         case conditionID = "id"
-        case weatherDescription = "description"
+        case conditionDescription = "description"
     }
 }

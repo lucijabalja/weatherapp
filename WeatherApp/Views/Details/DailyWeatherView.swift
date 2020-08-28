@@ -22,7 +22,7 @@ class DailyWeatherView: UIView {
             setupUI()
         }
     }
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
@@ -33,13 +33,11 @@ class DailyWeatherView: UIView {
         layer.cornerRadius = 4.0
     }
     
-    func setupView(with dayData: DailyForecast) {
-        let date = Date(timeIntervalSince1970: TimeInterval(dayData.dateTime))
-        let icon = Utils.resolveWeatherIcon(dayData.weather[0].conditionID)
+    func setupView(with dayData: DailyWeather) {
         
-        dayLabel.text = Utils.getWeekDay(with: date)
-        maxTempLabel.text = "\(dayData.temperature.max)°"
-        minTempLabel.text = "\(dayData.temperature.min)°"
-        weatherIcon.image = UIImage(systemName: icon)
+        dayLabel.text = dayData.weekDay
+        maxTempLabel.text = dayData.temperature.max
+        minTempLabel.text = dayData.temperature.min
+        weatherIcon.image = UIImage(systemName: dayData.icon)
     }
 }

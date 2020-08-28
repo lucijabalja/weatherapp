@@ -71,8 +71,8 @@
                                         <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                     </collectionViewFlowLayout>
                                 </collectionView>
-                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" translatesAutoresizingMaskIntoConstraints="NO" id="lAP-wb-IAe" userLabel="Daily Weather Stack View">
-                                    <rect key="frame" x="5" y="388" width="304" height="350"/>
+                                <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="lAP-wb-IAe" userLabel="Daily Weather Stack View">
+                                    <rect key="frame" x="5" y="388" width="304" height="398"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b0P-Ob-q8b" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="304" height="50"/>
@@ -82,42 +82,42 @@
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eZt-ni-sfp" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="50" width="304" height="50"/>
+                                            <rect key="frame" x="0.0" y="58" width="304" height="50"/>
                                             <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="P56-Ow-T1B"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YkS-z9-WxO" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="100" width="304" height="50"/>
+                                            <rect key="frame" x="0.0" y="116" width="304" height="50"/>
                                             <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="QFn-eb-YeE"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gsi-Zj-nOT" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="150" width="304" height="50"/>
+                                            <rect key="frame" x="0.0" y="174" width="304" height="50"/>
                                             <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="Gm7-2R-d88"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jLv-uu-A2Z" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="200" width="304" height="50"/>
+                                            <rect key="frame" x="0.0" y="232" width="304" height="50"/>
                                             <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="eqG-eA-Ygb"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oeI-7z-MY4" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="250" width="304" height="50"/>
+                                            <rect key="frame" x="0.0" y="290" width="304" height="50"/>
                                             <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="9ut-ez-f1r"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tuO-GX-c0F" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="300" width="304" height="50"/>
+                                            <rect key="frame" x="0.0" y="348" width="304" height="50"/>
                                             <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="5E1-Sc-gAi"/>

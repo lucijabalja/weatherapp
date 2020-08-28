@@ -10,6 +10,6 @@ import Foundation
 
 protocol WeatherListServiceProtocol {
     
-    func fetchCurrentWeather(for city: String, completion: @escaping (Result<CityWeather, NetworkError>) -> Void)
+    func fetchCurrentWeather(completion: @escaping (Result<CurrentWeatherResponse, NetworkError>) -> Void)
 
 }

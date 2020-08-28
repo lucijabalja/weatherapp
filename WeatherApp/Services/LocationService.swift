@@ -13,14 +13,17 @@ class LocationService {
     
     private let geoCoder = CLGeocoder()
     
-    func getLocationCoordinates(location: String, completion: @escaping (String, String) -> Void) {
+    func getLocationCoordinates(location: String, completion: @escaping (Double, Double) -> Void) {
         geoCoder.geocodeAddressString(location) { (placemarks, error) in
             if error == nil {
                 guard let placemark = placemarks?[0] else { return }
                 
                 guard let location = placemark.location else { return }
             
-                completion("\(location.coordinate.latitude)", "\(location.coordinate.longitude)")
+                let latitude = location.coordinate.latitude.rounded(digits: 2)
+                let longitude = location.coordinate.longitude.rounded(digits: 2)
+                
+                completion(latitude, longitude)
             }
         }
     }

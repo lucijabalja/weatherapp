@@ -10,6 +10,8 @@ import Foundation
 
 struct DailyWeather {
     
-    let dailyForecast: [DailyForecast]
+    let weekDay: String
+    let temperature: CurrentTemperature
+    let icon: String
     
 }

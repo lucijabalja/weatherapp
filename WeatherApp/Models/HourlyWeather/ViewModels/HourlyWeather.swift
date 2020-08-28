@@ -10,7 +10,9 @@ import Foundation
 
 struct HourlyWeather {
     
-    let hourlyForecast: [HourlyForecast]
     let city: String
+    let time: Int
+    let temperature: String
+    let icon: String
     
 }

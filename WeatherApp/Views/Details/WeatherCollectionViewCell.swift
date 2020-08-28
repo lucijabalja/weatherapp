@@ -15,13 +15,10 @@ class WeatherCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var temperatureLabel: UILabel!
     static let identifier = "WeatherCollectionViewCell"
     
-    public func configure(with hourlyWeather: HourlyForecast) {
-        let date = Date(timeIntervalSince1970: TimeInterval(hourlyWeather.dateTime))
-        let icon = Utils.resolveWeatherIcon((hourlyWeather.weather[0].conditionID))
-        
-        timeLabel.text = Utils.getFormattedTime(with: date)
-        weatherIcon.image = UIImage(systemName: icon)
-        temperatureLabel.text = "\(hourlyWeather.temperatureParameters.currentTemperature)°"
+    public func configure(with hourlyWeather: HourlyWeather) {
+        timeLabel.text = Utils.getFormattedTime(with: Date(timeIntervalSince1970: TimeInterval(hourlyWeather.time)))
+        weatherIcon.image = UIImage(systemName: hourlyWeather.icon)
+        temperatureLabel.text = hourlyWeather.temperature
     }
     
     static func nib() -> UINib {

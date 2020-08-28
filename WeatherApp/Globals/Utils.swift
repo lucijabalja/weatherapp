@@ -49,4 +49,8 @@ class Utils {
         return formatter.string(from: date)
     }
     
+    static func getFormattedTemperature(_ temperature: Double) -> String {
+        "\(Int(round(temperature)))°"
+    }
+    
 }
