@@ -26,10 +26,7 @@ class WeatherListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // to locate sqlite file
-        print(FileManager.default.urls(for: .applicationSupportDirectory, in: .userDomainMask))
-        
+              
         setupEvents()
         setupTableView()
         setupUI()

@@ -24,7 +24,6 @@ public class DailyForecastEntity: NSManagedObject {
             guard let dailyWeather = DailyWeatherEntity.loadDailyWeather(with: Utils.getWeekDay(with: date), dailyForecastEntity, context: context) else { return }
             
             dailyWeather.update(with: dailyForecast)
-            
         }
     }
     
@@ -46,18 +45,16 @@ public class DailyForecastEntity: NSManagedObject {
         let request: NSFetchRequest<DailyForecastEntity> = DailyForecastEntity.fetchRequest()
         let epsilon = 0.000001;
         let coordinatesPredicate = NSPredicate(format: "latitude > %lf AND latitude < %lf AND longitude > %lf AND longitude < %lf",
-                                        latitude - epsilon,  latitude + epsilon, longitude - epsilon, longitude + epsilon)
+                                               latitude - epsilon,  latitude + epsilon, longitude - epsilon, longitude + epsilon)
         request.predicate = coordinatesPredicate
         
         do {
             let dailyForecast = try context.fetch(request)
-            if let first = dailyForecast.first {
-                return first
-            }
+            return dailyForecast.first
         } catch {
             print("\(error)")
+            return nil
         }
-        return nil
     }
     
 }

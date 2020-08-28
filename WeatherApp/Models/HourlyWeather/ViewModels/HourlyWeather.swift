@@ -9,7 +9,7 @@
 import Foundation
 
 struct HourlyWeather {
-
+    
     let city: String
     let time: Int
     let temperature: String

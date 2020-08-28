@@ -34,8 +34,8 @@ public class HourlyWeatherEntity: NSManagedObject {
             return hourlyWeather
         } catch {
             print("\(error)")
+            return []
         }
-        return []
     }
     
     func update(with hourlyForecast: HourlyForecast) {
