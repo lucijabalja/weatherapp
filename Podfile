@@ -6,6 +6,8 @@ target 'WeatherApp' do
   use_frameworks!
 
   # Pods for WeatherApp
+    pod 'RxSwift', '~> 5'
+    pod 'RxCocoa', '~> 5'
 
   target 'WeatherAppTests' do
     inherit! :search_paths

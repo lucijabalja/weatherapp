@@ -7,32 +7,40 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
+
+enum LoadError: Error {
+    case loadingError
+}
 
 class DataRepository {
     
     let weatherApiService: WeatherApiService
     let coreDataService: CoreDataService
+    let disposeBag = DisposeBag()
     
     init(weatherApiService: WeatherApiService, coreDataService: CoreDataService) {
         self.weatherApiService = weatherApiService
         self.coreDataService = coreDataService
     }
     
-    func getCurrentWeatherData(completion: @escaping (Result<CurrentForecastEntity, Error>) -> Void) {
-        weatherApiService.fetchCurrentWeather(completion: { (result) in
-            switch result {
-            case .success(let currentWeatherResponse):
-                self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
-                guard let currentWeatherEntity = self.coreDataService.loadCurrentForecastData() else { return }
-                
-                completion(.success(currentWeatherEntity))
-                
-            case .failure(_):
-                guard let currentWeatherEntity = self.coreDataService.loadCurrentForecastData() else { return }
-                
-                completion(.success(currentWeatherEntity))
-            }
-        })
+    func getCurrentWeatherData() -> Observable<[CurrentWeather]> {
+        let weatherData: Observable<CurrentWeatherResponse> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
+
+        return weatherData.do(onNext: { [weak self] (currentWeatherResponse) in
+            guard let self = self else { return }
+            
+            self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+        }).flatMap { [weak self] (currentWeatherResponse) -> Observable<[CurrentWeather]> in
+            guard let self = self else { return Observable.of() }
+            
+            let loadedEntities = self.coreDataService.loadCurrentForecastData()
+            guard let entities = loadedEntities else { return Observable.of() }
+            
+            let curentWeatherList = entities.currentWeather.map { CurrentWeather(from: $0 as! CurrentWeatherEntity )}
+            return Observable.of(curentWeatherList)
+        }
     }
     
     func getWeeklyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<WeeklyForecastEntity, Error>) -> Void) {

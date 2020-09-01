@@ -7,11 +7,14 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
 
 class WeatherListViewController: UIViewController {
     
     private let weatherView = WeatherListView()
     private var weatherViewModel: WeatherListViewModel!
+    private let disposeBag = DisposeBag()
     
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -26,10 +29,10 @@ class WeatherListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        bindDataToTableView()
         setupTableView()
         setupUI()
         setupConstraints()
-        fillTableView()
     }
     
     private func setupTableView() {
@@ -38,17 +41,12 @@ class WeatherListViewController: UIViewController {
         weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
     
-
-    private func fillTableView() {
-        weatherViewModel.getCurrentWeather() { (result) in
-            switch result {
-            case .success(_): self.updateUI()
-            case .failure(let error):
-                DispatchQueue.main.async {
-                    self.weatherView.setErrorLabel(withText: "\(error)")
-                }
-            }
-        }
+    private func bindDataToTableView() {
+        weatherViewModel.currentWeatherList.subscribe(onNext: { [weak self] (currentWeatherList) in
+            guard let self = self else { return }
+            
+            self.updateUI()
+        }).disposed(by: disposeBag)
     }
     
     private func updateUI() {
@@ -74,16 +72,16 @@ class WeatherListViewController: UIViewController {
 extension WeatherListViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        weatherViewModel.currentWeatherList.count
+        weatherViewModel.currentWeatherList.value.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
         
-        if let cityWeather = weatherViewModel.currentWeatherList[safeIndex: indexPath.row] {
+        if let cityWeather = weatherViewModel.currentWeatherList.value[safeIndex: indexPath.row] {
             cell.setup(cityWeather)
         } else {
-            weatherView.setErrorLabel(withText: "Index out of bounds.")
+             weatherView.setErrorLabel(withText: "Index out of bounds.")
         }
         return cell
     }

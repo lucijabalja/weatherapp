@@ -24,14 +24,14 @@ class WeatherListView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-    
+
     func setErrorLabel(withText error: String) {
         tableView.isHidden = true
         errorLabel.isHidden = false
         errorImage.isHidden = false
         errorLabel.text = error
     }
-    
+
     private func setupUI() {
         backgroundColor = .systemBlue
         
@@ -39,7 +39,7 @@ class WeatherListView: UIView {
         errorImage.image = UIImage(named: "error-icon")
         errorImage.isHidden = true
         errorImage.layer.cornerRadius = 0
-        
+
         errorLabel.style(size: 25)
         errorLabel.isHidden = true
         errorLabel.numberOfLines = 0
