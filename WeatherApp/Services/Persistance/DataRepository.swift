@@ -25,21 +25,22 @@ class DataRepository {
         self.coreDataService = coreDataService
     }
     
-    func getCurrentWeatherData() -> Observable<[CurrentWeather]> {
+    func getCurrentWeatherData() -> Observable<CurrentForecastEntity> {
         let weatherData: Observable<CurrentWeatherResponse> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
-
-        return weatherData.do(onNext: { [weak self] (currentWeatherResponse) in
-            guard let self = self else { return }
-            
-            self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
-        }).flatMap { [weak self] (currentWeatherResponse) -> Observable<[CurrentWeather]> in
-            guard let self = self else { return Observable.of() }
-            
-            let loadedEntities = self.coreDataService.loadCurrentForecastData()
-            guard let entities = loadedEntities else { return Observable.of() }
-            
-            let curentWeatherList = entities.currentWeather.map { CurrentWeather(from: $0 as! CurrentWeatherEntity )}
-            return Observable.of(curentWeatherList)
+        
+        return weatherData
+            .do(onNext: { [weak self] (currentWeatherResponse) in
+                guard let self = self else { return }
+                
+                self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+            })
+            .flatMap { [weak self] (_) -> Observable<CurrentForecastEntity> in
+                guard let self = self else { return Observable.of() }
+                
+                let loadedEntities = self.coreDataService.loadCurrentForecastData()
+                guard let entities = loadedEntities else { return Observable.of() }
+                
+                return Observable.of(entities)
         }
     }
     
