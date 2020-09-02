@@ -34,9 +34,7 @@ class WeatherListViewModel {
         }).disposed(by: disposeBag)
     }
     
-    func pushToDetailView(at index: Int) {
-        guard let selectedCity = currentWeatherList.value[safeIndex: index] else { return }
-        
+    func pushToDetailView(with selectedCity: CurrentWeather) {
         coordinator.pushDetailViewController(with: selectedCity)
     }
     
