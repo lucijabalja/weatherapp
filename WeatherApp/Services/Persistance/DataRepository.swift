@@ -10,10 +10,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-enum LoadError: Error {
-    case loadingError
-}
-
 class DataRepository {
     
     let weatherApiService: WeatherApiService
