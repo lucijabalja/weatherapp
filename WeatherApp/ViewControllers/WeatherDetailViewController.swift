@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RxSwift
 
 class WeatherDetailViewController: UIViewController {
     
@@ -17,6 +18,7 @@ class WeatherDetailViewController: UIViewController {
     @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
     
     private var weatherDetailViewModel: WeatherDetailViewModel!
+    private let disposeBag = DisposeBag()
     
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {
         super.init(nibName: nil, bundle: nil)
@@ -51,14 +53,15 @@ class WeatherDetailViewController: UIViewController {
     }
     
     private func setupWeeklyWeatherData() {
-        weatherDetailViewModel.getWeeklyWeather(completion: { (result) in
-            switch result {
-                case .success(_):
-                    self.updateCollectionView()
-                    self.updateDailyStackView()
-                case .failure(let error): print(error)
-            }
-        })
+        weatherDetailViewModel.weeklyWeather.subscribe(
+            onNext: { (_) in
+                self.updateCollectionView()
+                self.updateDailyStackView()
+        },
+            onError: { (error) in
+                print(error)
+                
+        }).disposed(by: disposeBag)
     }
     
     private func setupUI() {
@@ -76,8 +79,8 @@ class WeatherDetailViewController: UIViewController {
     
     private func updateDailyStackView() {
         for (index, dailyViews) in self.dailyWeatherViews.enumerated() {
-            guard let dayData = weatherDetailViewModel.weeklyWeather.dailyWeatherList[safeIndex: index] else { return }
-                        
+            guard let dayData = weatherDetailViewModel.weeklyWeather.value.dailyWeatherList[safeIndex: index] else { return }
+            
             DispatchQueue.main.async {
                 dailyViews.setupView(with: dayData)
             }
@@ -97,13 +100,13 @@ extension WeatherDetailViewController: UICollectionViewDelegate {
 extension WeatherDetailViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        weatherDetailViewModel.weeklyWeather.hourlyWeatherList.count
+        weatherDetailViewModel.weeklyWeather.value.hourlyWeatherList.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell
         
-        if let hourlyWeather = weatherDetailViewModel.weeklyWeather.hourlyWeatherList[safeIndex: indexPath.row] {
+        if let hourlyWeather = weatherDetailViewModel.weeklyWeather.value.hourlyWeatherList[safeIndex: indexPath.row] {
             cell.configure(with: hourlyWeather)
         }
         

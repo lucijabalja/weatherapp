@@ -27,7 +27,7 @@ class DataRepository {
     
     func getCurrentWeatherData() -> Observable<[CurrentWeather]> {
         let weatherData: Observable<CurrentWeatherResponse> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
-
+        
         return weatherData.do(onNext: { [weak self] (currentWeatherResponse) in
             guard let self = self else { return }
             
@@ -43,23 +43,22 @@ class DataRepository {
         }
     }
     
-    func getWeeklyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<WeeklyForecastEntity, Error>) -> Void) {
-        weatherApiService.fetchWeeklyWeather(with: latitude, longitude) { (result) in
-            switch result {
-            case .success(let dailyWeatherResponse):
-                self.coreDataService.saveWeeklyForecast(dailyWeatherResponse)
-                guard let weeklyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else { return }
+    func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<WeeklyForecastEntity> {
+        let weeeklyWeatherResponse: Observable<WeeklyWeatherResponse> = weatherApiService.fetchData(urlString: URLGenerator.weeklyWeather(latitude: latitude, longitude: longitude))
+        
+        return weeeklyWeatherResponse
+            .do(onNext: { [weak self] (weeeklyWeatherResponse) in
+                guard let self = self else { return }
                 
-                completion(.success(weeklyForecastEntity))
+                self.coreDataService.saveWeeklyForecast(weeeklyWeatherResponse)
+            })
+            .flatMap { [weak self ] (_) -> Observable<WeeklyForecastEntity> in
+                guard let self = self else { return Observable.of() }
                 
-            case .failure(_):
-                guard let weeklyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else {
-                    return
-                }
+                let loadedEntities = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude)
+                guard let entities = loadedEntities else { return Observable.of() }
                 
-                completion(.success(weeklyForecastEntity))
-            }
+                return Observable.of(entities)
         }
     }
-    
 }

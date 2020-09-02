@@ -11,7 +11,7 @@ import Foundation
 class AppDependencies {
     
     lazy var weatherApiService: WeatherApiService = {
-        WeatherApiService(parsingService: parsingService)
+        WeatherApiService()
     }()
     
     lazy var coreDataService: CoreDataService = {
