@@ -13,6 +13,7 @@ import RxCocoa
 class WeatherListViewController: UIViewController {
     
     private let weatherView = WeatherListView()
+    private let errorView = ErrorView()
     private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
     
@@ -20,6 +21,7 @@ class WeatherListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.weatherViewModel = weatherViewModel
+        bindTableView()
     }
     
     required init?(coder: NSCoder) {
@@ -29,30 +31,31 @@ class WeatherListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        bindDataToTableView()
-        setupTableView()
         setupUI()
         setupConstraints()
+        setupTableView()
     }
-    
+
     private func setupTableView() {
-        weatherView.tableView.dataSource = self
-        weatherView.tableView.delegate = self
+        weatherView.tableView.rx.setDelegate(self).disposed(by: disposeBag)
         weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
     
-    private func bindDataToTableView() {
-        weatherViewModel.currentWeatherList.subscribe(onNext: { [weak self] (currentWeatherList) in
-            guard let self = self else { return }
-            
-            self.updateUI()
-        }).disposed(by: disposeBag)
-    }
-    
-    private func updateUI() {
-        DispatchQueue.main.async {
-            self.weatherView.tableView.reloadData()
-        }
+    private func bindTableView() {
+        weatherViewModel.currentWeatherList
+            .bind(to: weatherView.tableView.rx
+                .items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) {
+                    (row, currentWeather, cell) in
+                    cell.setup(currentWeather)
+        }.disposed(by: disposeBag)
+        
+        weatherView.tableView.rx.modelSelected(CurrentWeather.self)
+            .subscribe(
+                onNext: { [weak self] (currentWeather) in
+                    guard let self = self else { return }
+                    
+                    self.weatherViewModel.pushToDetailView(with: currentWeather)
+            }).disposed(by: disposeBag)
     }
     
     private func setupUI() {
@@ -65,34 +68,12 @@ class WeatherListViewController: UIViewController {
         weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-    }
-    
-}
 
-extension WeatherListViewController: UITableViewDataSource {
-    
-    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        weatherViewModel.currentWeatherList.value.count
-    }
-    
-    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
-        
-        if let cityWeather = weatherViewModel.currentWeatherList.value[safeIndex: indexPath.row] {
-            cell.setup(cityWeather)
-        } else {
-             weatherView.setErrorLabel(withText: "Index out of bounds.")
-        }
-        return cell
     }
     
 }
 
 extension WeatherListViewController: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        weatherViewModel.pushToDetailView(at: indexPath.row)
-    }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         100

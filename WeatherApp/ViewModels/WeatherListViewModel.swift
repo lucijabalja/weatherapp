@@ -28,15 +28,13 @@ class WeatherListViewModel {
         dataRepository.getCurrentWeatherData().subscribe(
             onNext: { [weak self] (currentForecastEntity) in
                 guard let self = self else { return }
-                
+
                 let curentWeatherList = currentForecastEntity.currentWeather.map { CurrentWeather(from: $0 as! CurrentWeatherEntity )}
                 self.currentWeatherList.accept(curentWeatherList)
         }).disposed(by: disposeBag)
     }
     
-    func pushToDetailView(at index: Int) {
-        guard let selectedCity = currentWeatherList.value[safeIndex: index] else { return }
-        
+    func pushToDetailView(with selectedCity: CurrentWeather) {
         coordinator.pushDetailViewController(with: selectedCity)
     }
     

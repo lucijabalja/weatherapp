@@ -16,7 +16,6 @@ class WeatherDetailViewController: UIViewController {
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
     @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
-    
     private var weatherDetailViewModel: WeatherDetailViewModel!
     private let disposeBag = DisposeBag()
     
@@ -54,7 +53,9 @@ class WeatherDetailViewController: UIViewController {
     
     private func setupWeeklyWeatherData() {
         weatherDetailViewModel.weeklyWeather.subscribe(
-            onNext: { (_) in
+            onNext: { [weak self] (_) in
+                guard let self = self else { return }
+                
                 self.updateCollectionView()
                 self.updateDailyStackView()
         },
@@ -86,7 +87,6 @@ class WeatherDetailViewController: UIViewController {
             }
         }
     }
-    
 }
 
 extension WeatherDetailViewController: UICollectionViewDelegate {

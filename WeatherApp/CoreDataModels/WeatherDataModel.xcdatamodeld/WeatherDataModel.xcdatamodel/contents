@@ -55,5 +55,6 @@
         <element name="TemperatureEntity" positionX="394.33984375" positionY="279.6171875" width="128" height="88"/>
         <element name="TemperatureParametersEntity" positionX="241.7578125" positionY="4.34765625" width="128" height="103"/>
         <element name="WeatherDescriptionEntity" positionX="-289.23046875" positionY="107.16796875" width="128" height="88"/>
+        <element name="WeeklyForecastEntity" positionX="-166.10546875" positionY="260.0703125" width="128" height="103"/>
     </elements>
 </model>

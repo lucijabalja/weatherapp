@@ -10,10 +10,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-enum LoadError: Error {
-    case loadingError
-}
-
 class DataRepository {
     
     let weatherApiService: WeatherApiService
@@ -28,19 +24,26 @@ class DataRepository {
     func getCurrentWeatherData() -> Observable<CurrentForecastEntity> {
         let weatherData: Observable<CurrentWeatherResponse> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
         
-        return weatherData
-            .do(onNext: { [weak self] (currentWeatherResponse) in
+        return weatherData.do(
+            onNext: { [weak self] (currentWeatherResponse) in
                 guard let self = self else { return }
                 
                 self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
-            })
-            .flatMap { [weak self] (_) -> Observable<CurrentForecastEntity> in
-                guard let self = self else { return Observable.of() }
+        }).flatMap { (_) -> Observable<CurrentForecastEntity> in
+            return  Observable.create({ [weak self] (observer) in
+                guard let self = self else { return Disposables.create() }
                 
                 let loadedEntities = self.coreDataService.loadCurrentForecastData()
-                guard let entities = loadedEntities else { return Observable.of() }
+                guard let entities = loadedEntities else {
+                    observer.onError(PersistanceError.loadingError)
+                    return Disposables.create()
+                }
                 
-                return Observable.of(entities)
+                observer.onNext(entities)
+                observer.onCompleted()
+                
+                return Disposables.create()
+                })
         }
     }
     
@@ -62,4 +65,5 @@ class DataRepository {
                 return Observable.of(entities)
         }
     }
+    
 }
