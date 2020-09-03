@@ -53,11 +53,11 @@ class WeatherTableViewCell: UITableViewCell {
         containerView.layer.masksToBounds = true
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
-        weatherIcon.styleView()
-        cityLabel.style(size: 30, textAlignment: .left)
-        currentTempLabel.style(size: 40, textAlignment: .right)
-        maxTempLabel.style(size: 15, textAlignment: .right)
-        minTempLabel.style(size: 15, textAlignment: .left)
+        weatherIcon.applyDefaultStyleView()
+        cityLabel.style(fontSize: 30, textAlignment: .left)
+        currentTempLabel.style(fontSize: 40, textAlignment: .right)
+        maxTempLabel.style(fontSize: 15, textAlignment: .right)
+        minTempLabel.style(fontSize: 15, textAlignment: .left)
         
         cityLabel.numberOfLines = 0
         minTempLabel.textColor =  .systemGray4

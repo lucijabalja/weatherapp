@@ -2,7 +2,7 @@
 //  HourlyWeatherEntity+CoreDataProperties.swift
 //  WeatherApp
 //
-//  Created by Lucija Balja on 27/08/2020.
+//  Created by Lucija Balja on 03/09/2020.
 //  Copyright © 2020 Lucija Balja. All rights reserved.
 //
 //
@@ -21,6 +21,6 @@ extension HourlyWeatherEntity {
     @NSManaged public var conditionID: Int64
     @NSManaged public var temperature: Double
     @NSManaged public var time: Int64
-    @NSManaged public var weeklyForecast: WeeklyForecastEntity
+    @NSManaged public var weeklyForecast: WeeklyForecastEntity?
 
 }

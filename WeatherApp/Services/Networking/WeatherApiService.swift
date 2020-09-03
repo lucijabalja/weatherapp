@@ -42,18 +42,18 @@ class WeatherApiService {
     
     private func performRequest(with urlString: String, completion: @escaping (Result<Data, NetworkError>) -> Void) {
         guard let url = URL(string: urlString) else {
-            completion(.failure(.invalidURLError(message: "Invalid URL passed.")))
+            completion(.failure(.invalidURLError))
             return
         }
         
         let task = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
             if let _ = error {
-                completion(.failure(.URLSessionError(message: "URL session failed. Try again.")))
+                completion(.failure(.URLSessionError))
                 return
             }
             
             guard let data = data else {
-                completion(.failure(.decodingError(message: "Unwrapping data failed.")))
+                completion(.failure(.unwrappingError))
                 return
             }
             
@@ -69,14 +69,14 @@ extension WeatherApiService: WeatherDetailServiceProtocol {
     func fetchWeeklyWeather(with latitude: Double,_ longitude: Double, completion: @escaping (Result<WeeklyWeatherResponse, NetworkError>) -> Void) {
         let urlString = "\(baseURL)/onecall?\(apiKey)&\(units)&lat=\(latitude)&lon=\(longitude)&\(exclusions)"
         
-        performRequest(with: urlString) { (result) in
+        performRequest(with: urlString) { [weak self] (result) in
             
             switch result {
             case .success(let data):
-                let parsedResponse = self.parsingService.parseWeeklyWeather(data)
+                let parsedResponse = self?.parsingService.parseWeeklyWeather(data)
                 
                 guard let weeklyWeather = parsedResponse else {
-                    completion(.failure(.decodingError(message: "Cannot parse data correctly.")))
+                    completion(.failure(.decodingError))
                     return
                 }
                 

@@ -13,6 +13,7 @@ import RxCocoa
 class WeatherListViewController: UIViewController {
     
     private let weatherView = WeatherListView()
+    private let errorView = ErrorView()
     private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
     
@@ -20,6 +21,7 @@ class WeatherListViewController: UIViewController {
         super.init(nibName: nil, bundle: nil)
         
         self.weatherViewModel = weatherViewModel
+        bindTableView()
     }
     
     required init?(coder: NSCoder) {
@@ -32,9 +34,8 @@ class WeatherListViewController: UIViewController {
         setupUI()
         setupConstraints()
         setupTableView()
-        bindTableView()
     }
-    
+
     private func setupTableView() {
         weatherView.tableView.rx.setDelegate(self).disposed(by: disposeBag)
         weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
@@ -67,6 +68,7 @@ class WeatherListViewController: UIViewController {
         weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+
     }
     
 }

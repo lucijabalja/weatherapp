@@ -40,6 +40,7 @@ class WeatherDetailViewModel {
                     self.saveToWeeklyWeather(with: weeklyForecastEntity)
                     
                     completion(.success(true))
+                    
                 case .failure(let error):
                     completion(.failure(error))
                 }
@@ -48,18 +49,11 @@ class WeatherDetailViewModel {
     }
     
     func saveToWeeklyWeather(with weeklyForecastEntity: WeeklyForecastEntity) {
-        for dailyWeatherEntity in weeklyForecastEntity.dailyWeather {
-            let dailyWeather = dailyWeatherEntity as! DailyWeatherEntity
-            let daily = DailyWeather(from: dailyWeather)
-            weeklyWeather.dailyWeatherList.append(daily)
-        }
+        let dailyList = weeklyForecastEntity.dailyWeather.map { DailyWeather(from: $0 as! DailyWeatherEntity) }
+        weeklyWeather.dailyWeatherList.append(contentsOf: dailyList)
         
-        for hourlyWeatherEntity in weeklyForecastEntity.hourlyWeather {
-            let hourlyWeather = hourlyWeatherEntity as! HourlyWeatherEntity
-  
-            let hourly = HourlyWeather(from: hourlyWeather)
-            weeklyWeather.hourlyWeatherList.append(hourly)
-        }
+        let hourlyList = weeklyForecastEntity.hourlyWeather.map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
+        weeklyWeather.hourlyWeatherList.append(contentsOf: hourlyList)
         
         weeklyWeather.dailyWeatherList.sort { $0.dateTime < $1.dateTime }
         weeklyWeather.hourlyWeatherList.sort { $0.dateTime < $1.dateTime }

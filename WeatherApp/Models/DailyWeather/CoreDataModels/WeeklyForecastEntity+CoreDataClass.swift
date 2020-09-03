@@ -34,6 +34,7 @@ public class WeeklyForecastEntity: NSManagedObject {
             
             hourlyWeatherEntity.update(with: hourlyForecast, index: index)
         }
+
     }
     
     class func createNewEntity(with weeklyWeatherResponse: WeeklyWeatherResponse, context: NSManagedObjectContext) {
@@ -61,13 +62,15 @@ public class WeeklyForecastEntity: NSManagedObject {
                                                latitude - epsilon,  latitude + epsilon, longitude - epsilon, longitude + epsilon)
         request.predicate = coordinatesPredicate
         
-        do {
-            let dailyForecast = try context.fetch(request)
-            return dailyForecast.first
-        } catch {
-            print("\(error)")
-            return nil
+        var weeklyForecast: WeeklyForecastEntity?
+        context.performAndWait {
+            do {
+                weeklyForecast = try context.fetch(request).first
+            } catch {
+                print("\(error)")
+            }
         }
+        return weeklyForecast
     }
     
 }
