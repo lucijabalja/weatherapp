@@ -13,7 +13,7 @@ class WeatherApiService {
     private let apiURL = "https://api.openweathermap.org/data/2.5"
     private let apiKey = "appid=56151fef235e6cebb33750525932d021"
     private let units = "units=metric"
-    private let exclusions = "exclude=minutely,hourly"
+    private let exclusions = "exclude=minutely"
     private let parsingService: ParsingService
     
     init(parsingService: ParsingService) {
@@ -69,42 +69,23 @@ extension WeatherApiService: WeatherListServiceProtocol {
 }
 
 extension WeatherApiService: WeatherDetailServiceProtocol {
-    
-    func fetchHourlyWeather(for city: String, completion: @escaping (Result<HourlyWeatherResponse, NetworkError>) -> Void) {
-        let urlString = "\(apiURL)/forecast?\(apiKey)&\(units)&q=\(city)"
-        
-        performRequest(with: urlString) { [weak self] (result) in
-            switch result {
-            case .success(let data):
-                let parsedResponse = self?.parsingService.parseHourlyWeather(data, city: city)
-                
-                guard let hourlyWeather = parsedResponse else {
-                    completion(.failure(.decodingError))
-                    return
-                } 
-                
-                completion(.success(hourlyWeather))
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-    
-    func fetchDailyWeather(with latitude: Double,_ longitude: Double, completion: @escaping (Result<DailyWeatherResponse, NetworkError>) -> Void) {
+
+    func fetchWeeklyWeather(with latitude: Double,_ longitude: Double, completion: @escaping (Result<WeeklyWeatherResponse, NetworkError>) -> Void) {
+
         let urlString = "\(apiURL)/onecall?\(apiKey)&\(units)&lat=\(latitude)&lon=\(longitude)&\(exclusions)"
         
         performRequest(with: urlString) { [weak self] (result) in
             
             switch result {
             case .success(let data):
-                let parsedResponse = self?.parsingService.parseDailyWeather(data)
+                let parsedResponse = self?.parsingService.parseWeeklyWeather(data)
                 
-                guard let dailyWeather = parsedResponse else {
+                guard let weeklyWeather = parsedResponse else {
                     completion(.failure(.decodingError))
                     return
                 }
                 
-                completion(.success(dailyWeather))
+                completion(.success(weeklyWeather))
                 
             case .failure(let error):
                 completion(.failure(error))

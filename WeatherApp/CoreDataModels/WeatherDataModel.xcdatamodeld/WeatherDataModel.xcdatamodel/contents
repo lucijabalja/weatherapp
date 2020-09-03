@@ -10,26 +10,17 @@
         <relationship name="parameters" maxCount="1" deletionRule="Nullify" destinationEntity="TemperatureParametersEntity" inverseName="currentWeather" inverseEntity="TemperatureParametersEntity"/>
         <relationship name="weatherDescription" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WeatherDescriptionEntity" inverseName="currentWeather" inverseEntity="WeatherDescriptionEntity"/>
     </entity>
-    <entity name="DailyForecastEntity" representedClassName=".DailyForecastEntity" syncable="YES">
-        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="dailyWeather" toMany="YES" deletionRule="Nullify" destinationEntity="DailyWeatherEntity" inverseName="dailyForecast" inverseEntity="DailyWeatherEntity"/>
-    </entity>
     <entity name="DailyWeatherEntity" representedClassName=".DailyWeatherEntity" syncable="YES">
-        <attribute name="icon" attributeType="String"/>
-        <attribute name="weekDay" attributeType="String"/>
-        <relationship name="dailyForecast" maxCount="1" deletionRule="Nullify" destinationEntity="DailyForecastEntity" inverseName="dailyWeather" inverseEntity="DailyForecastEntity"/>
+        <attribute name="conditionID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="dateTime" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="temperature" maxCount="1" deletionRule="Nullify" destinationEntity="TemperatureEntity" inverseName="weather" inverseEntity="TemperatureEntity"/>
-    </entity>
-    <entity name="HourlyForecastEntity" representedClassName=".HourlyForecastEntity" syncable="YES">
-        <attribute name="city" attributeType="String"/>
-        <relationship name="hourlyWeather" toMany="YES" deletionRule="Nullify" destinationEntity="HourlyWeatherEntity" inverseName="hourlyForecast" inverseEntity="HourlyWeatherEntity"/>
+        <relationship name="weeklyForecast" maxCount="1" deletionRule="Nullify" destinationEntity="WeeklyForecastEntity" inverseName="dailyWeather" inverseEntity="WeeklyForecastEntity"/>
     </entity>
     <entity name="HourlyWeatherEntity" representedClassName=".HourlyWeatherEntity" syncable="YES">
         <attribute name="conditionID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <attribute name="temperature" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <attribute name="time" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="hourlyForecast" maxCount="1" deletionRule="Nullify" destinationEntity="HourlyForecastEntity" inverseName="hourlyWeather" inverseEntity="HourlyForecastEntity"/>
+        <attribute name="time" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <relationship name="weeklyForecast" maxCount="1" deletionRule="Nullify" destinationEntity="WeeklyForecastEntity" inverseName="hourlyWeather" inverseEntity="WeeklyForecastEntity"/>
     </entity>
     <entity name="TemperatureEntity" representedClassName=".TemperatureEntity" syncable="YES">
         <attribute name="max" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
@@ -47,15 +38,20 @@
         <attribute name="conditionID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="currentWeather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentWeatherEntity" inverseName="weatherDescription" inverseEntity="CurrentWeatherEntity"/>
     </entity>
+    <entity name="WeeklyForecastEntity" representedClassName=".WeeklyForecastEntity" syncable="YES">
+        <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <relationship name="dailyWeather" toMany="YES" deletionRule="Nullify" destinationEntity="DailyWeatherEntity" inverseName="weeklyForecast" inverseEntity="DailyWeatherEntity"/>
+        <relationship name="hourlyWeather" toMany="YES" deletionRule="Nullify" destinationEntity="HourlyWeatherEntity" inverseName="weeklyForecast" inverseEntity="HourlyWeatherEntity"/>
+    </entity>
     <elements>
         <element name="CurrentForecastEntity" positionX="-109.50390625" positionY="-176.609375" width="128" height="28"/>
         <element name="CurrentWeatherEntity" positionX="-43.96875" positionY="-92.11328125" width="128" height="103"/>
-        <element name="DailyForecastEntity" positionX="-133.5390625" positionY="265.58203125" width="128" height="88"/>
         <element name="DailyWeatherEntity" positionX="128.8515625" positionY="265.453125" width="128" height="103"/>
-        <element name="HourlyForecastEntity" positionX="376.99609375" positionY="104.90625" width="128" height="73"/>
-        <element name="HourlyWeatherEntity" positionX="312.04296875" positionY="-109.4375" width="128" height="103"/>
+        <element name="HourlyWeatherEntity" positionX="312.04296875" positionY="-109.4375" width="128" height="28"/>
         <element name="TemperatureEntity" positionX="394.33984375" positionY="279.6171875" width="128" height="88"/>
-        <element name="TemperatureParametersEntity" positionX="167.83203125" positionY="-18.37109375" width="128" height="103"/>
+        <element name="TemperatureParametersEntity" positionX="241.7578125" positionY="4.34765625" width="128" height="103"/>
         <element name="WeatherDescriptionEntity" positionX="-289.23046875" positionY="107.16796875" width="128" height="88"/>
+        <element name="WeeklyForecastEntity" positionX="-166.10546875" positionY="260.0703125" width="128" height="103"/>
     </elements>
 </model>

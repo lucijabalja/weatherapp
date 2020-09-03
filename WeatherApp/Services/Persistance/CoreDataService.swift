@@ -30,24 +30,15 @@ class CoreDataService {
         CurrentForecastEntity.loadCurrentForecast(context: mainObjectContext)
     }
     
-    func saveDailyForecast(_ dailyWeatherResponse: DailyWeatherResponse) {
-        DailyForecastEntity.createFrom(dailyWeatherResponse, context: privateObjectContext)
+    func saveWeeklyForecast(_ weeklyWeatherResponse: WeeklyWeatherResponse) {
+        WeeklyForecastEntity.createFrom(weeklyWeatherResponse, context: privateObjectContext)
         saveChanges()
     }
     
-    func loadDailyForecast(withCoordinates latitude: Double, _ longitude: Double) -> DailyForecastEntity? {
-        DailyForecastEntity.loadDailyForecast(with: latitude, longitude, context: mainObjectContext)
+    func loadWeeklyForecast(withCoordinates latitude: Double, _ longitude: Double) -> WeeklyForecastEntity? {
+        WeeklyForecastEntity.loadWeeklyForecast(with: latitude, longitude, context: mainObjectContext)
     }
-    
-    func saveHourlyForecast(_ hourlyWeatherResponse: HourlyWeatherResponse,_ city: String) {
-        HourlyForecastEntity.createFrom(hourlyWeatherResponse, city, context: privateObjectContext)
-        saveChanges()
-    }
-    
-    func loadHourlyForecast(forCity city: String) -> HourlyForecastEntity? {
-        HourlyForecastEntity.loadHourlyForecast(for: city, context: mainObjectContext)
-    }
-    
+
     func saveChanges() {
         privateObjectContext.performAndWait {
             do {

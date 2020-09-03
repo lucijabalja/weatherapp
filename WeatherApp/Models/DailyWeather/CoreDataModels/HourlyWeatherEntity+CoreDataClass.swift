@@ -2,7 +2,7 @@
 //  HourlyWeatherEntity+CoreDataClass.swift
 //  WeatherApp
 //
-//  Created by Lucija Balja on 23/08/2020.
+//  Created by Lucija Balja on 03/09/2020.
 //  Copyright © 2020 Lucija Balja. All rights reserved.
 //
 //
@@ -10,13 +10,14 @@
 import Foundation
 import CoreData
 
+
 public class HourlyWeatherEntity: NSManagedObject {
-    
+
     class func createFrom(_ hourlyForecast: HourlyForecast, context: NSManagedObjectContext) -> HourlyWeatherEntity {
         let hourlyWeatherEntity = HourlyWeatherEntity(context: context)
         
         hourlyWeatherEntity.time = Int64(hourlyForecast.dateTime)
-        hourlyWeatherEntity.temperature = hourlyForecast.temperatureParameters.currentTemperature
+        hourlyWeatherEntity.temperature = hourlyForecast.temperature
         hourlyWeatherEntity.conditionID = Int64(hourlyForecast.weather[0].conditionID)
         return hourlyWeatherEntity
     }
@@ -40,7 +41,7 @@ public class HourlyWeatherEntity: NSManagedObject {
     
     func update(with hourlyForecast: HourlyForecast) {
           self.time = Int64(hourlyForecast.dateTime)
-          self.temperature = hourlyForecast.temperatureParameters.currentTemperature
+          self.temperature = hourlyForecast.temperature
           self.conditionID = Int64(hourlyForecast.weather[0].conditionID)
       }
       
