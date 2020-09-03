@@ -15,7 +15,7 @@ class DataRepository {
     let weatherApiService: WeatherApiService
     let coreDataService: CoreDataService
     let disposeBag = DisposeBag()
-    
+
     init(weatherApiService: WeatherApiService, coreDataService: CoreDataService) {
         self.weatherApiService = weatherApiService
         self.coreDataService = coreDataService
@@ -24,20 +24,27 @@ class DataRepository {
     func getCurrentWeatherData() -> Observable<CurrentForecastEntity> {
         let weatherData: Observable<CurrentWeatherResponse> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
         
-        return weatherData
-            .do(onNext: { [weak self] (currentWeatherResponse) in
+        weatherData.subscribe(
+            onNext: { [weak self] (currentWeatherResponse) in
                 guard let self = self else { return }
                 
                 self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
-            })
-            .flatMap { [weak self] (_) -> Observable<CurrentForecastEntity> in
-                guard let self = self else { return Observable.of() }
-                
-                let loadedEntities = self.coreDataService.loadCurrentForecastData()
-                guard let entities = loadedEntities else { return Observable.of() }
-                
-                return Observable.of(entities)
-        }
+            }).disposed(by: disposeBag)
+        
+        return Observable.create({ [weak self] (observer) in
+            guard let self = self else { return Disposables.create() }
+            
+            let loadedEntities = self.coreDataService.loadCurrentForecastData()
+            guard let entities = loadedEntities else {
+                observer.onError(CoreDataError.loadingError)
+                return Disposables.create()
+            }
+            
+            observer.onNext(entities)
+            observer.onCompleted()
+            
+            return Disposables.create()
+        })
     }
     
     func getWeeklyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<WeeklyForecastEntity, Error>) -> Void) {
@@ -58,5 +65,4 @@ class DataRepository {
             }
         }
     }
-    
 }

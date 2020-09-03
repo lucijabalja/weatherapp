@@ -33,5 +33,5 @@ class AppDependencies {
     lazy var locationService: LocationService = {
         LocationService()
     }()
-    
+ 
 }
