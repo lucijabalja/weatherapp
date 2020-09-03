@@ -35,7 +35,7 @@ class DataRepository {
                 
                 let loadedEntities = self.coreDataService.loadCurrentForecastData()
                 guard let entities = loadedEntities else {
-                    observer.onError(CoreDataError.loadingError)
+                    observer.onError(PersistanceError.loadingError)
                     return Disposables.create()
                 }
                 
