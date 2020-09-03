@@ -23,12 +23,19 @@ class DataRepository {
             switch result {
             case .success(let currentWeatherResponse):
                 self?.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
-                guard let currentWeatherEntity = self?.coreDataService.loadCurrentForecastData() else { return }
+                
+                guard let currentWeatherEntity = self?.coreDataService.loadCurrentForecastData() else {
+                    completion(.failure(PersistanceError.loadingError))
+                    return
+                }
                 
                 completion(.success(currentWeatherEntity))
                 
-            case .failure(_):
-                guard let currentWeatherEntity = self?.coreDataService.loadCurrentForecastData() else { return }
+            case .failure(let error):
+                guard let currentWeatherEntity = self?.coreDataService.loadCurrentForecastData() else {
+                    completion(.failure(error))
+                    return
+                }
                 
                 completion(.success(currentWeatherEntity))
             }
@@ -40,12 +47,17 @@ class DataRepository {
             switch result {
             case .success(let dailyWeatherResponse):
                 self?.coreDataService.saveDailyForecast(dailyWeatherResponse)
-                guard let dailyForecastEntity = self?.coreDataService.loadDailyForecast(withCoordinates: dailyWeatherResponse.latitude, dailyWeatherResponse.longitude) else { return }
+                
+                guard let dailyForecastEntity = self?.coreDataService.loadDailyForecast(withCoordinates: dailyWeatherResponse.latitude, dailyWeatherResponse.longitude) else {
+                    completion(.failure(PersistanceError.loadingError))
+                    return
+                }
                 
                 completion(.success(dailyForecastEntity))
                 
-            case .failure(_):
+            case .failure(let error):
                 guard let dailyForecastEntity = self?.coreDataService.loadDailyForecast(withCoordinates: latitude, longitude) else {
+                    completion(.failure(error))
                     return
                 }
                 
@@ -59,12 +71,18 @@ class DataRepository {
             switch result {
             case .success(let hourlyWeather):
                 self?.coreDataService.saveHourlyForecast(hourlyWeather, city)
-                guard let hourlyForecastEntity = self?.coreDataService.loadHourlyForecast(forCity: city) else { return }
+                guard let hourlyForecastEntity = self?.coreDataService.loadHourlyForecast(forCity: city) else {
+                    completion(.failure(PersistanceError.loadingError))
+                    return
+                }
                 
                 completion(.success(hourlyForecastEntity))
                 
-            case .failure(_):
-                guard let hourlyForecastEntity = self?.coreDataService.loadHourlyForecast(forCity: city) else { return }
+            case .failure(let error):
+                guard let hourlyForecastEntity = self?.coreDataService.loadHourlyForecast(forCity: city) else {
+                    completion(.failure(error))
+                    return
+                }
                 
                 completion(.success(hourlyForecastEntity))
             }

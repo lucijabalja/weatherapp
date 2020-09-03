@@ -22,18 +22,18 @@ class WeatherApiService {
     
     private func performRequest(with urlString: String, completion: @escaping (Result<Data, NetworkError>) -> Void) {
         guard let url = URL(string: urlString) else {
-            completion(.failure(.invalidURLError(message: "Invalid URL passed.")))
+            completion(.failure(.invalidURLError))
             return
         }
         
         let task = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
             if let _ = error {
-                completion(.failure(.URLSessionError(message: "URL session failed. Try again.")))
+                completion(.failure(.URLSessionError))
                 return
             }
             
             guard let data = data else {
-                completion(.failure(.decodingError(message: "Unwrapping data failed.")))
+                completion(.failure(.unwrappingError))
                 return
             }
             
@@ -56,7 +56,7 @@ extension WeatherApiService: WeatherListServiceProtocol {
                 let parsedResponse = self?.parsingService.parseCurrentWeather(data)
                 
                 guard let currentWeather = parsedResponse else {
-                    completion(.failure(.decodingError(message: "Cannot parse data correctly.")))
+                    completion(.failure(.unwrappingError))
                     return
                 }
                 completion(.success(currentWeather))
@@ -79,7 +79,7 @@ extension WeatherApiService: WeatherDetailServiceProtocol {
                 let parsedResponse = self?.parsingService.parseHourlyWeather(data, city: city)
                 
                 guard let hourlyWeather = parsedResponse else {
-                    completion(.failure(.decodingError(message: "Cannot parse data correctly.")))
+                    completion(.failure(.decodingError))
                     return
                 } 
                 
@@ -100,7 +100,7 @@ extension WeatherApiService: WeatherDetailServiceProtocol {
                 let parsedResponse = self?.parsingService.parseDailyWeather(data)
                 
                 guard let dailyWeather = parsedResponse else {
-                    completion(.failure(.decodingError(message: "Cannot parse data correctly.")))
+                    completion(.failure(.decodingError))
                     return
                 }
                 
