@@ -21,10 +21,10 @@ class WeatherListViewModel {
     }
     
     func getCurrentWeather(completionHandler: @escaping (Result<Bool,Error>) -> Void) {
-        dataRepository.getCurrentWeatherData() { (result) in
+        dataRepository.getCurrentWeatherData() { [weak self] (result) in
             switch result {
             case .success(let currentForecastEntity):
-                self.saveCurrentWeather(from: currentForecastEntity)
+                self?.saveCurrentWeather(from: currentForecastEntity)
                 completionHandler(.success(true))
                 
             case .failure(let error):

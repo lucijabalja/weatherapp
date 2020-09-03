@@ -11,11 +11,10 @@ import UIKit
 class Coordinator {
     
     private var appDependencies: AppDependencies
-    private let navigationController = UINavigationController()
-    private let window: UIWindow
+    private weak var navigationController: UINavigationController?
     
-    init(window: UIWindow) {
-        self.window = window
+    init(navigationController: UINavigationController) {
+        self.navigationController = navigationController
         self.appDependencies = AppDependencies()
     }
     
@@ -23,17 +22,14 @@ class Coordinator {
         let viewModel = WeatherListViewModel(coordinator: self, dataRepository: appDependencies.dataRepository)
         let rootViewController = WeatherListViewController(with: viewModel)
         rootViewController.modalPresentationStyle = .fullScreen
-        navigationController.pushViewController(rootViewController, animated: true)
-
-        window.rootViewController = navigationController
-        window.makeKeyAndVisible()
+        navigationController?.pushViewController(rootViewController, animated: true)
     }
     
     func pushDetailViewController(with selectedCity: CurrentWeather) {
         let viewModel = WeatherDetailViewModel(appDependencies: appDependencies, currentWeather: selectedCity, coordinator: self)
         let weatherDetailViewController = WeatherDetailViewController(with: viewModel)
         weatherDetailViewController.modalPresentationStyle = .fullScreen
-        navigationController.pushViewController(weatherDetailViewController, animated: true)
+        navigationController?.pushViewController(weatherDetailViewController, animated: true)
     }
     
 }

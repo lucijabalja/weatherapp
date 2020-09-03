@@ -10,7 +10,7 @@ import UIKit
 
 extension UIImageView {
     
-    func styleView() {
+    func applyDefaultStyleView() {
         self.contentMode = .scaleAspectFill
         self.translatesAutoresizingMaskIntoConstraints = false
         self.layer.cornerRadius = 35

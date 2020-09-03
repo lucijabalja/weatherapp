@@ -40,10 +40,10 @@ class WeatherDetailViewModel {
                     self.saveToWeeklyWeather(with: dailyForecastEntity)
                     
                     completion(.success(true))
+                    
                 case .failure(let error):
                     completion(.failure(error))
                 }
-                
             }
         }
     }
