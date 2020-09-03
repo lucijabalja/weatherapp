@@ -19,5 +19,4 @@ struct CurrentForecast: Decodable {
         case temperatureParameters = "main"
         case city = "name"
     }
-    
 }

@@ -19,11 +19,12 @@ class DataRepository {
     }
     
     func getCurrentWeatherData(completion: @escaping (Result<CurrentForecastEntity, Error>) -> Void) {
-        weatherApiService.fetchCurrentWeather(completion: { (result) in
+        weatherApiService.fetchCurrentWeather(completion: { [weak self] (result) in
             switch result {
             case .success(let currentWeatherResponse):
-                self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
-                guard let currentWeatherEntity = self.coreDataService.loadCurrentForecastData() else {
+                self?.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+                
+                guard let currentWeatherEntity = self?.coreDataService.loadCurrentForecastData() else {
                     completion(.failure(PersistanceError.loadingError))
                     return
                 }
@@ -31,7 +32,7 @@ class DataRepository {
                 completion(.success(currentWeatherEntity))
                 
             case .failure(let error):
-                guard let currentWeatherEntity = self.coreDataService.loadCurrentForecastData() else {
+                guard let currentWeatherEntity = self?.coreDataService.loadCurrentForecastData() else {
                     completion(.failure(error))
                     return
                 }
@@ -42,11 +43,12 @@ class DataRepository {
     }
     
     func getDailyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<DailyForecastEntity, Error>) -> Void) {
-        weatherApiService.fetchDailyWeather(with: latitude, longitude) { (result) in
+        weatherApiService.fetchDailyWeather(with: latitude, longitude) { [weak self] (result) in
             switch result {
             case .success(let dailyWeatherResponse):
-                self.coreDataService.saveDailyForecast(dailyWeatherResponse)
-                guard let dailyForecastEntity = self.coreDataService.loadDailyForecast(withCoordinates: dailyWeatherResponse.latitude, dailyWeatherResponse.longitude) else {
+                self?.coreDataService.saveDailyForecast(dailyWeatherResponse)
+                
+                guard let dailyForecastEntity = self?.coreDataService.loadDailyForecast(withCoordinates: dailyWeatherResponse.latitude, dailyWeatherResponse.longitude) else {
                     completion(.failure(PersistanceError.loadingError))
                     return
                 }
@@ -54,7 +56,7 @@ class DataRepository {
                 completion(.success(dailyForecastEntity))
                 
             case .failure(let error):
-                guard let dailyForecastEntity = self.coreDataService.loadDailyForecast(withCoordinates: latitude, longitude) else {
+                guard let dailyForecastEntity = self?.coreDataService.loadDailyForecast(withCoordinates: latitude, longitude) else {
                     completion(.failure(error))
                     return
                 }
@@ -65,11 +67,11 @@ class DataRepository {
     }
     
     func getHourlyWeather(city: String, completion: @escaping (Result<HourlyForecastEntity, Error>) -> Void) {
-        weatherApiService.fetchHourlyWeather(for: city) { (result) in
+        weatherApiService.fetchHourlyWeather(for: city) { [weak self] (result) in
             switch result {
             case .success(let hourlyWeather):
-                self.coreDataService.saveHourlyForecast(hourlyWeather, city)
-                guard let hourlyForecastEntity = self.coreDataService.loadHourlyForecast(forCity: city) else {
+                self?.coreDataService.saveHourlyForecast(hourlyWeather, city)
+                guard let hourlyForecastEntity = self?.coreDataService.loadHourlyForecast(forCity: city) else {
                     completion(.failure(PersistanceError.loadingError))
                     return
                 }
@@ -77,7 +79,7 @@ class DataRepository {
                 completion(.success(hourlyForecastEntity))
                 
             case .failure(let error):
-                guard let hourlyForecastEntity = self.coreDataService.loadHourlyForecast(forCity: city) else {
+                guard let hourlyForecastEntity = self?.coreDataService.loadHourlyForecast(forCity: city) else {
                     completion(.failure(error))
                     return
                 }

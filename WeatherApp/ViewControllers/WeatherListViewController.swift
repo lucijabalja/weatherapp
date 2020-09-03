@@ -26,7 +26,7 @@ class WeatherListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-              
+        
         setupEvents()
         setupTableView()
         setupUI()
@@ -48,16 +48,16 @@ class WeatherListViewController: UIViewController {
         weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
     
-
+    
     private func fillTableView() {
-        weatherViewModel.getCurrentWeather() { (result) in
+        weatherViewModel.getCurrentWeather() { [weak self] (result) in
             switch result {
-            case .success(_): self.updateUI()
+            case .success(_): self?.updateUI()
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self.weatherView.tableView.isHidden = true
-                    self.errorView.isHidden = false
-                    self.errorView.setErrorLabel(with: error)
+                    self?.weatherView.tableView.isHidden = true
+                    self?.errorView.isHidden = false
+                    self?.errorView.setErrorLabel(with: error)
                 }
             }
         }
