@@ -15,7 +15,6 @@ class WeatherDetailViewController: UIViewController {
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
     @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
-    
     private var weatherDetailViewModel: WeatherDetailViewModel!
     
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {
@@ -83,7 +82,6 @@ class WeatherDetailViewController: UIViewController {
             }
         }
     }
-    
 }
 
 extension WeatherDetailViewController: UICollectionViewDelegate {

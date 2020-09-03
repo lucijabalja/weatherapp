@@ -19,16 +19,23 @@ class DataRepository {
     }
     
     func getCurrentWeatherData(completion: @escaping (Result<CurrentForecastEntity, Error>) -> Void) {
-        weatherApiService.fetchCurrentWeather(completion: { (result) in
+        weatherApiService.fetchCurrentWeather(completion: { [weak self] (result) in
             switch result {
             case .success(let currentWeatherResponse):
-                self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
-                guard let currentWeatherEntity = self.coreDataService.loadCurrentForecastData() else { return }
+                self?.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+                
+                guard let currentWeatherEntity = self?.coreDataService.loadCurrentForecastData() else {
+                    completion(.failure(PersistanceError.loadingError))
+                    return
+                }
                 
                 completion(.success(currentWeatherEntity))
                 
-            case .failure(_):
-                guard let currentWeatherEntity = self.coreDataService.loadCurrentForecastData() else { return }
+            case .failure(let error):
+                guard let currentWeatherEntity = self?.coreDataService.loadCurrentForecastData() else {
+                    completion(.failure(error))
+                    return
+                }
                 
                 completion(.success(currentWeatherEntity))
             }
@@ -53,5 +60,4 @@ class DataRepository {
             }
         }
     }
-    
 }
