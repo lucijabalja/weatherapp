@@ -67,6 +67,7 @@ class WeatherDetailViewModel {
                     self.saveToDailyWeather(with: dailyForecastEntity)
                     
                     completion(.success(true))
+                    
                 case .failure(let error):
                     completion(.failure(error))
                 }
