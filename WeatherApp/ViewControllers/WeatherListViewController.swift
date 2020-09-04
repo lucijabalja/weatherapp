@@ -35,18 +35,15 @@ class WeatherListViewController: UIViewController {
         setupConstraints()
         setupTableView()
     }
-
+    
     private func setupTableView() {
         weatherView.tableView.rx.setDelegate(self).disposed(by: disposeBag)
         weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
     
     private func bindTableView() {
-        weatherViewModel.currentWeatherList
-            .bind(to: weatherView.tableView.rx
-                .items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) {
-                    (row, currentWeather, cell) in
-                    cell.setup(currentWeather)
+        weatherViewModel.currentWeatherList.bind(to: weatherView.tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { (row, currentWeather, cell) in
+            cell.setup(currentWeather)
         }.disposed(by: disposeBag)
         
         weatherView.tableView.rx.modelSelected(CurrentWeather.self)
@@ -68,7 +65,7 @@ class WeatherListViewController: UIViewController {
         weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-
+        
     }
     
 }

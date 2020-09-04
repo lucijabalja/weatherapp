@@ -22,13 +22,19 @@ class DataRepository {
     }
     
     func getCurrentWeatherData() -> Observable<CurrentForecastEntity> {
-        let weatherData: Observable<CurrentWeatherResponse> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
+        let weatherData: Observable<Result<CurrentWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
         
         return weatherData.do(
-            onNext: { [weak self] (currentWeatherResponse) in
+            onNext: { [weak self] (result) in
                 guard let self = self else { return }
                 
-                self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+                switch result {
+                case .success(let currentWeatherResponse):
+                    self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+                case .failure(let error):
+                    print(error)
+                }
+                
         }).flatMap { (_) -> Observable<CurrentForecastEntity> in
             return  Observable.create({ [weak self] (observer) in
                 guard let self = self else { return Disposables.create() }
