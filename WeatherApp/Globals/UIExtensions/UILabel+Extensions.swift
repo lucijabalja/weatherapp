@@ -12,7 +12,7 @@ extension UILabel {
     
     func style(fontSize: CGFloat = 20.0, textAlignment: NSTextAlignment = .center) {
         self.font = .boldSystemFont(ofSize: fontSize)
-        self.textColor = .white
+        self.textColor = .mainLabelColor
         self.textAlignment = textAlignment
         self.clipsToBounds = true
         self.adjustsFontSizeToFitWidth = true

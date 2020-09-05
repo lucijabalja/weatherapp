@@ -34,6 +34,11 @@ class WeatherListViewController: UIViewController {
         fillTableView()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     private func setupEvents() {
         errorView.refreshButton.addTarget(self, action: #selector(refreshButtonPressed), for: .touchUpInside)
     }
@@ -77,6 +82,7 @@ class WeatherListViewController: UIViewController {
         weatherView.isHidden = false
         errorView.isHidden = true
         
+        view.setupGradientBackground()
         view.addSubview(weatherView)
         view.addSubview(errorView)
     }
@@ -84,8 +90,8 @@ class WeatherListViewController: UIViewController {
     private func setupConstraints() {
         weatherView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 10).isActive = true
+        weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -10).isActive = true
         
         errorView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
         errorView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
@@ -121,7 +127,7 @@ extension WeatherListViewController: UITableViewDelegate {
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        100
+        110
     }
     
 }

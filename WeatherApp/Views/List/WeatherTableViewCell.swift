@@ -17,7 +17,7 @@ class WeatherTableViewCell: UITableViewCell {
     private let currentTempLabel = UILabel()
     private let minTempLabel = UILabel()
     private let maxTempLabel = UILabel()
-
+    
     static let identifier = "weatherCell"
     
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
@@ -40,16 +40,19 @@ class WeatherTableViewCell: UITableViewCell {
         maxTempLabel.text = params.max
     }
     
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let caLayer = CALayer()
+        caLayer.cornerRadius = 10
+        caLayer.backgroundColor = UIColor.black.cgColor
+        caLayer.frame = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: bounds.width, height: bounds.height).insetBy(dx: 5, dy: 10)
+        layer.mask = caLayer
+    }
+    
     private func setupUI() {
-        contentView.backgroundColor = .systemBlue
+        backgroundColor = UIColor(white: 1.0, alpha: 0.7)
         contentView.clipsToBounds = true
-        layer.backgroundColor = UIColor.clear.cgColor
-        layer.shadowColor = UIColor.black.cgColor
-        layer.shadowOffset = CGSize(width: 0, height: 1.0)
-        layer.shadowOpacity = 0.2
-        layer.shadowRadius = 4.0
-          
-        containerView.layer.cornerRadius = 6.0
         containerView.layer.masksToBounds = true
         containerView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -60,7 +63,8 @@ class WeatherTableViewCell: UITableViewCell {
         minTempLabel.style(fontSize: 15, textAlignment: .left)
         
         cityLabel.numberOfLines = 0
-        minTempLabel.textColor =  .systemGray4
+        maxTempLabel.textColor = .lightMainColor
+
         temperatureView.translatesAutoresizingMaskIntoConstraints = false
         temperatureView.clipsToBounds = true
         
@@ -79,7 +83,7 @@ class WeatherTableViewCell: UITableViewCell {
         let tempDistance: CGFloat = 5
         let labelsDistance: CGFloat = 20
         let cityLabelsWidth: CGFloat = 150
-
+        
         containerView.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
         containerView.bottomAnchor.constraint(equalTo:self.contentView.bottomAnchor).isActive = true
         containerView.trailingAnchor.constraint(equalTo:self.contentView.trailingAnchor).isActive = true
@@ -98,16 +102,16 @@ class WeatherTableViewCell: UITableViewCell {
         temperatureView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
         temperatureView.leadingAnchor.constraint(equalTo: self.cityLabel.trailingAnchor, constant: labelsDistance).isActive = true
         temperatureView.trailingAnchor.constraint(equalTo:self.trailingAnchor, constant: -edgeMargin).isActive = true
-
+        
         currentTempLabel.topAnchor.constraint(equalTo: self.temperatureView.topAnchor, constant: labelsDistance).isActive = true
         currentTempLabel.leadingAnchor.constraint(equalTo:self.temperatureView.leadingAnchor).isActive = true
         currentTempLabel.trailingAnchor.constraint(equalTo:self.temperatureView.trailingAnchor).isActive = true
         
         maxTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: tempDistance).isActive = true
-        maxTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -tempDistance).isActive = true
+        maxTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -20).isActive = true
         
         minTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: tempDistance).isActive = true
-        minTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -tempDistance).isActive = true
+        minTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -20).isActive = true
         minTempLabel.trailingAnchor.constraint(equalTo:self.temperatureView.trailingAnchor).isActive = true
         minTempLabel.leadingAnchor.constraint(equalTo: self.maxTempLabel.trailingAnchor, constant: tempDistance).isActive = true
     }

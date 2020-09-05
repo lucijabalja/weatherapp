@@ -24,15 +24,12 @@ class WeatherListView: UIView {
     }
     
     private func setupUI() {
-        backgroundColor = .systemBlue
-        
-        tableView.backgroundColor = .systemBlue
+        tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.isHidden = false
         
         addSubview(tableView)
-
     }
     
     private func setupConstraints() {
