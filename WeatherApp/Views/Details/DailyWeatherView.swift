@@ -39,5 +39,7 @@ class DailyWeatherView: UIView {
         maxTempLabel.text = dayData.temperature.max
         minTempLabel.text = dayData.temperature.min
         weatherIcon.image = UIImage(systemName: dayData.icon)
+        weatherIcon.tintColor = dayData.icon.starts(with: "sun") ? .sunColor : .cloudColor
     }
+    
 }

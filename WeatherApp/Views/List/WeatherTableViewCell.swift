@@ -34,6 +34,7 @@ class WeatherTableViewCell: UITableViewCell {
     func setup(_ weather: CurrentWeather) {
         let params = weather.parameters
         weatherIcon.image = UIImage(systemName: weather.condition.icon)
+        weatherIcon.tintColor = weather.condition.icon.starts(with: "sun") ? .sunColor : .cloudColor
         cityLabel.text = weather.city
         currentTempLabel.text = params.now
         minTempLabel.text = params.min
@@ -51,7 +52,7 @@ class WeatherTableViewCell: UITableViewCell {
     }
     
     private func setupUI() {
-        backgroundColor = UIColor(white: 1.0, alpha: 0.7)
+        backgroundColor = .cellBackgroundColor
         contentView.clipsToBounds = true
         containerView.layer.masksToBounds = true
         containerView.translatesAutoresizingMaskIntoConstraints = false
@@ -63,7 +64,7 @@ class WeatherTableViewCell: UITableViewCell {
         minTempLabel.style(fontSize: 15, textAlignment: .left)
         
         cityLabel.numberOfLines = 0
-        maxTempLabel.textColor = .lightMainColor
+        minTempLabel.textColor = .mainLabelColor
 
         temperatureView.translatesAutoresizingMaskIntoConstraints = false
         temperatureView.clipsToBounds = true
@@ -108,10 +109,10 @@ class WeatherTableViewCell: UITableViewCell {
         currentTempLabel.trailingAnchor.constraint(equalTo:self.temperatureView.trailingAnchor).isActive = true
         
         maxTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: tempDistance).isActive = true
-        maxTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -20).isActive = true
+        maxTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -labelsDistance).isActive = true
         
         minTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: tempDistance).isActive = true
-        minTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -20).isActive = true
+        minTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -labelsDistance + 2).isActive = true
         minTempLabel.trailingAnchor.constraint(equalTo:self.temperatureView.trailingAnchor).isActive = true
         minTempLabel.leadingAnchor.constraint(equalTo: self.maxTempLabel.trailingAnchor, constant: tempDistance).isActive = true
     }

@@ -15,6 +15,5 @@ extension UIImageView {
         self.translatesAutoresizingMaskIntoConstraints = false
         self.layer.cornerRadius = 35
         self.clipsToBounds = true
-        self.tintColor = .systemYellow
     }
 }

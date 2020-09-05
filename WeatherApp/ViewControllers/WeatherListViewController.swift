@@ -24,6 +24,11 @@ class WeatherListViewController: UIViewController {
         super.init(coder: coder)
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -32,11 +37,6 @@ class WeatherListViewController: UIViewController {
         setupUI()
         setupConstraints()
         fillTableView()
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
     private func setupEvents() {

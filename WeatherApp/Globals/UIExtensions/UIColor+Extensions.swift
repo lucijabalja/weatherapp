@@ -10,8 +10,11 @@ import UIKit
 
 extension UIColor {
     
-    static let mainLabelColor = UIColor(red: 0.00, green: 0.47, blue: 0.71, alpha: 1.00)
-    static let lightMainColor = UIColor(red: 0.01, green: 0.24, blue: 0.54, alpha: 1.00)
-    static let gradientDarkColor = UIColor(red: 0.13, green: 0.58, blue: 0.69, alpha: 1.00)
-    static let gradientLightColor = UIColor(red: 0.43, green: 0.84, blue: 0.93, alpha: 1.00)
+    static let mainLabelColor = UIColor(white: 1.0, alpha: 1.0)
+    static let gradientLightColor = UIColor(red: 0.00, green: 0.71, blue: 0.86, alpha: 1.00)
+    static let gradientDarkColor = UIColor(red: 0.00, green: 0.51, blue: 0.69, alpha: 1.00)
+    static let cellBackgroundColor = UIColor(white: 1.0, alpha: 0.3)
+    static let sunColor = UIColor(red: 1.00, green: 0.89, blue: 0.32, alpha: 1.00)
+    static let cloudColor = UIColor(red: 0.91, green: 0.93, blue: 0.94, alpha: 1.00)
+
 }

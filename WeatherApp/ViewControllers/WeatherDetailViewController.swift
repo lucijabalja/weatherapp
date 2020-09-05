@@ -10,7 +10,6 @@ import UIKit
 
 class WeatherDetailViewController: UIViewController {
     
-    @IBOutlet weak var contentView: UIView!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
@@ -68,8 +67,6 @@ class WeatherDetailViewController: UIViewController {
     
     private func setupUI() {
         view.setupGradientBackground()
-        //contentView.backgroundColor = .clear
-        contentView.setupGradientBackground()
         cityLabel.text = weatherDetailViewModel.currentWeather.city
         dateLabel.text = weatherDetailViewModel.date
         timeLabel.text = weatherDetailViewModel.time
