@@ -123,7 +123,8 @@ extension WeatherListViewController: UITableViewDataSource {
 extension WeatherListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        weatherViewModel.pushToDetailView(at: indexPath.row)
+        tableView.deselectRow(at: indexPath, animated: false)
+        return weatherViewModel.pushToDetailView(at: indexPath.row)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
