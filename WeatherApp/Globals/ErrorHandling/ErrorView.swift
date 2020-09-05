@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PureLayout
 
 class ErrorView: UIView {
     
@@ -38,7 +39,7 @@ class ErrorView: UIView {
     }
     
     private func setupUI() {
-        backgroundColor = .systemBlue
+        backgroundColor = .clear
         
         errorImage.applyDefaultStyleView()
         errorImage.image = UIImage(named: "error-icon")
@@ -56,21 +57,20 @@ class ErrorView: UIView {
     
     private func setupConstraints() {
         let errorImageDimension: CGFloat = 60
-        let errorsTopAnchor: CGFloat = 50
+        let errorsTopMargin: CGFloat = 50
         let labelsMargin: CGFloat = 20
         
-        errorImage.topAnchor.constraint(equalTo: self.topAnchor, constant: errorsTopAnchor).isActive = true
-        errorImage.centerXAnchor.constraint(equalTo: self.centerXAnchor).isActive = true
-        errorImage.heightAnchor.constraint(equalToConstant: errorImageDimension).isActive = true
-        errorImage.widthAnchor.constraint(equalToConstant: errorImageDimension).isActive = true
+        errorImage.autoPinEdge(.top, to: .top, of: self, withOffset: errorsTopMargin)
+        errorImage.autoAlignAxis(toSuperviewAxis: .horizontal)
+        errorImage.autoSetDimensions(to: CGSize(width: errorImageDimension, height: errorImageDimension))
         
-        errorLabel.topAnchor.constraint(equalTo: errorImage.bottomAnchor, constant: labelsMargin).isActive = true
-        errorLabel.leftAnchor.constraint(equalTo: self.leftAnchor, constant: labelsMargin).isActive = true
-        errorLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -labelsMargin).isActive = true
+        errorLabel.autoPinEdge(.top, to: .bottom, of: self.errorImage, withOffset: labelsMargin)
+        errorLabel.autoPinEdge(.left, to: .left, of: self, withOffset: labelsMargin)
+        errorLabel.autoPinEdge(.right, to: .right, of: self, withOffset: -labelsMargin)
         
-        refreshButton.topAnchor.constraint(equalTo: errorLabel.bottomAnchor, constant: errorsTopAnchor).isActive = true
-        refreshButton.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 30).isActive = true
-        refreshButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -30).isActive = true
+        refreshButton.autoPinEdge(.top, to: .bottom, of: self.errorLabel, withOffset: errorsTopMargin)
+        refreshButton.autoPinEdge(.left, to: .left, of: self, withOffset: 30)
+        refreshButton.autoPinEdge(.right, to: .right, of: self, withOffset: -30)
     }
     
 }

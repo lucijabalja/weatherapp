@@ -18,6 +18,5 @@ extension UIButton {
         self.tintColor = .systemBlue
         self.layer.cornerRadius = 10
         self.clipsToBounds = true
-        self.translatesAutoresizingMaskIntoConstraints = false
     }
 }

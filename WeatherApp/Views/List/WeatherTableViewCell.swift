@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PureLayout
 
 class WeatherTableViewCell: UITableViewCell {
     
@@ -47,7 +48,7 @@ class WeatherTableViewCell: UITableViewCell {
         let caLayer = CALayer()
         caLayer.cornerRadius = 10
         caLayer.backgroundColor = UIColor.black.cgColor
-        caLayer.frame = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: bounds.width, height: bounds.height).insetBy(dx: 5, dy: 10)
+        caLayer.frame = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: bounds.width, height: bounds.height).insetBy(dx: 5, dy: 5)
         layer.mask = caLayer
     }
     
@@ -55,7 +56,6 @@ class WeatherTableViewCell: UITableViewCell {
         backgroundColor = .cellBackgroundColor
         contentView.clipsToBounds = true
         containerView.layer.masksToBounds = true
-        containerView.translatesAutoresizingMaskIntoConstraints = false
         
         weatherIcon.applyDefaultStyleView()
         cityLabel.style(fontSize: 30, textAlignment: .left)
@@ -65,8 +65,6 @@ class WeatherTableViewCell: UITableViewCell {
         
         cityLabel.numberOfLines = 0
         minTempLabel.textColor = .mainLabelColor
-
-        temperatureView.translatesAutoresizingMaskIntoConstraints = false
         temperatureView.clipsToBounds = true
         
         contentView.addSubview(containerView)
@@ -80,41 +78,44 @@ class WeatherTableViewCell: UITableViewCell {
     
     private func setupConstraints() {
         let iconDimension: CGFloat = 50
+        let iconOffset: CGFloat = 30
         let edgeMargin: CGFloat = 15
         let tempDistance: CGFloat = 5
         let labelsDistance: CGFloat = 20
         let cityLabelsWidth: CGFloat = 150
         
-        containerView.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
-        containerView.bottomAnchor.constraint(equalTo:self.contentView.bottomAnchor).isActive = true
-        containerView.trailingAnchor.constraint(equalTo:self.contentView.trailingAnchor).isActive = true
-        containerView.leadingAnchor.constraint(equalTo: self.contentView.leadingAnchor).isActive = true
+        containerView.autoPinEdge(.top, to: .top, of: self.contentView)
+        containerView.autoPinEdge(.bottom, to: .bottom, of: self.contentView)
+        containerView.autoPinEdge(.left, to: .left, of: self.contentView)
+        containerView.autoPinEdge(.right, to: .right, of: self.contentView)
         
-        weatherIcon.centerYAnchor.constraint(equalTo:self.contentView.centerYAnchor).isActive = true
-        weatherIcon.leadingAnchor.constraint(equalTo:self.contentView.leadingAnchor, constant: edgeMargin).isActive = true
-        weatherIcon.widthAnchor.constraint(equalToConstant: iconDimension).isActive = true
-        weatherIcon.heightAnchor.constraint(equalToConstant: iconDimension).isActive = true
+        weatherIcon.autoPinEdge(.top, to: .top, of: self.contentView, withOffset: iconOffset)
+        weatherIcon.autoPinEdge(.bottom, to: .bottom, of: self.contentView, withOffset: -iconOffset)
+        weatherIcon.autoPinEdge(.left, to: .left, of: self.contentView, withOffset: labelsDistance)
+        weatherIcon.autoAlignAxis(.horizontal, toSameAxisOf: self.contentView)
+        weatherIcon.autoSetDimensions(to: CGSize(width: iconDimension, height: iconDimension))
+
+        cityLabel.autoPinEdge(.top, to: .top, of: self.contentView)
+        cityLabel.autoPinEdge(.left, to: .right, of: self.weatherIcon, withOffset: labelsDistance)
+        cityLabel.autoSetDimension(.width, toSize: cityLabelsWidth)
+        cityLabel.autoAlignAxis(.horizontal, toSameAxisOf: self.contentView)
+
+        temperatureView.autoPinEdge(.top, to: .top, of: self.contentView)
+        temperatureView.autoPinEdge(.bottom, to: .bottom, of: self.contentView)
+        temperatureView.autoPinEdge(.left, to: .right, of: self.cityLabel, withOffset: labelsDistance)
+        temperatureView.autoPinEdge(.right, to: .right, of: self.contentView, withOffset: -edgeMargin)
         
-        cityLabel.centerYAnchor.constraint(equalTo:self.contentView.centerYAnchor).isActive = true
-        cityLabel.leadingAnchor.constraint(equalTo:self.weatherIcon.trailingAnchor, constant: labelsDistance).isActive = true
-        cityLabel.widthAnchor.constraint(equalToConstant: cityLabelsWidth).isActive = true
+        currentTempLabel.autoPinEdge(.top, to: .top, of: self.temperatureView, withOffset: labelsDistance)
+        currentTempLabel.autoPinEdge(.left, to: .left, of: self.temperatureView)
+        currentTempLabel.autoPinEdge(.right, to: .right, of: self.temperatureView)
         
-        temperatureView.topAnchor.constraint(equalTo: self.contentView.topAnchor).isActive = true
-        temperatureView.bottomAnchor.constraint(equalTo: self.contentView.bottomAnchor).isActive = true
-        temperatureView.leadingAnchor.constraint(equalTo: self.cityLabel.trailingAnchor, constant: labelsDistance).isActive = true
-        temperatureView.trailingAnchor.constraint(equalTo:self.trailingAnchor, constant: -edgeMargin).isActive = true
+        maxTempLabel.autoPinEdge(.top, to: .bottom, of: self.currentTempLabel, withOffset: tempDistance)
+        maxTempLabel.autoPinEdge(.bottom, to: .bottom, of: self.temperatureView, withOffset: -labelsDistance)
         
-        currentTempLabel.topAnchor.constraint(equalTo: self.temperatureView.topAnchor, constant: labelsDistance).isActive = true
-        currentTempLabel.leadingAnchor.constraint(equalTo:self.temperatureView.leadingAnchor).isActive = true
-        currentTempLabel.trailingAnchor.constraint(equalTo:self.temperatureView.trailingAnchor).isActive = true
-        
-        maxTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: tempDistance).isActive = true
-        maxTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -labelsDistance).isActive = true
-        
-        minTempLabel.topAnchor.constraint(equalTo: self.currentTempLabel.bottomAnchor, constant: tempDistance).isActive = true
-        minTempLabel.bottomAnchor.constraint(equalTo:self.temperatureView.bottomAnchor, constant: -labelsDistance + 2).isActive = true
-        minTempLabel.trailingAnchor.constraint(equalTo:self.temperatureView.trailingAnchor).isActive = true
-        minTempLabel.leadingAnchor.constraint(equalTo: self.maxTempLabel.trailingAnchor, constant: tempDistance).isActive = true
+        minTempLabel.autoPinEdge(.top, to: .bottom, of: self.currentTempLabel, withOffset: tempDistance)
+        minTempLabel.autoPinEdge(.bottom, to: .bottom, of: self.temperatureView, withOffset: -labelsDistance)
+        minTempLabel.autoPinEdge(.left, to: .right, of: self.maxTempLabel, withOffset: tempDistance)
+        minTempLabel.autoPinEdge(.right, to: .right, of: self.temperatureView, withOffset: -tempDistance)
     }
     
 }

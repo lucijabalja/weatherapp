@@ -16,6 +16,5 @@ extension UILabel {
         self.textAlignment = textAlignment
         self.clipsToBounds = true
         self.adjustsFontSizeToFitWidth = true
-        self.translatesAutoresizingMaskIntoConstraints = false
     }
 }

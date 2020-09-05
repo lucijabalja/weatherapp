@@ -6,7 +6,7 @@ target 'WeatherApp' do
   use_frameworks!
 
   # Pods for WeatherApp
-
+    pod 'PureLayout'
   target 'WeatherAppTests' do
     inherit! :search_paths
     # Pods for testing

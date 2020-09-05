@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PureLayout
 
 class WeatherListViewController: UIViewController {
     
@@ -60,9 +61,7 @@ class WeatherListViewController: UIViewController {
             case .success(_): self?.updateUI()
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self?.weatherView.tableView.isHidden = true
-                    self?.errorView.isHidden = false
-                    self?.errorView.setErrorLabel(with: error)
+                    self?.setErrorView(with: error)
                 }
             }
         }
@@ -77,26 +76,30 @@ class WeatherListViewController: UIViewController {
     }
     
     private func setupUI() {
-        weatherView.translatesAutoresizingMaskIntoConstraints = false
-        errorView.translatesAutoresizingMaskIntoConstraints = false
         weatherView.isHidden = false
         errorView.isHidden = true
         
         view.setupGradientBackground()
         view.addSubview(weatherView)
-        view.addSubview(errorView)
     }
     
     private func setupConstraints() {
-        weatherView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor, constant: 10).isActive = true
-        weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor, constant: -10).isActive = true
+        weatherView.autoPinEdge(.top, to: .top, of: self.view)
+        weatherView.autoPinEdge(.bottom, to: .bottom, of: self.view)
+        weatherView.autoPinEdge(.left, to: .left, of: self.view, withOffset: 10)
+        weatherView.autoPinEdge(.right, to: .right, of: self.view, withOffset: -10)
+    }
+    
+    private func setErrorView(with error: Error) {
+        errorView.setErrorLabel(with: error)
+        view.addSubview(errorView)
+        weatherView.tableView.isHidden = true
+        errorView.isHidden = false
         
-        errorView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        errorView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        errorView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        errorView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        errorView.autoPinEdge(.top, to: .top, of: self.view)
+        errorView.autoPinEdge(.bottom, to: .bottom, of: self.view)
+        errorView.autoPinEdge(.left, to: .left, of: self.view)
+        errorView.autoPinEdge(.right, to: .right, of: self.view)
     }
     
 }
