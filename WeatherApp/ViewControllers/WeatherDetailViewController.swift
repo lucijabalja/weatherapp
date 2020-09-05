@@ -61,10 +61,11 @@ class WeatherDetailViewController: UIViewController {
     }
     
     private func setupUI() {
+        view.setupGradientBackground()
         cityLabel.text = weatherDetailViewModel.currentWeather.city
         dateLabel.text = weatherDetailViewModel.date
         timeLabel.text = weatherDetailViewModel.time
-        hourlyWeatherCollectionView.backgroundColor = .systemBlue
+        hourlyWeatherCollectionView.backgroundColor = .clear
     }
     
     private func updateCollectionView() {
