@@ -2,7 +2,7 @@
 //  CurrentWeatherEntity+CoreDataProperties.swift
 //  WeatherApp
 //
-//  Created by Lucija Balja on 23/08/2020.
+//  Created by Lucija Balja on 07/09/2020.
 //  Copyright © 2020 Lucija Balja. All rights reserved.
 //
 //
@@ -17,8 +17,7 @@ extension CurrentWeatherEntity {
         return NSFetchRequest<CurrentWeatherEntity>(entityName: "CurrentWeatherEntity")
     }
 
-    @NSManaged public var city: String
-    @NSManaged public var currentForecast: CurrentForecastEntity
+    @NSManaged public var city: CityEntity
     @NSManaged public var parameters: TemperatureParametersEntity
     @NSManaged public var weatherDescription: WeatherDescriptionEntity
 

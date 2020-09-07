@@ -15,7 +15,7 @@ struct CurrentWeather {
     let condition: Condition
     
     init(from currentWeatherEntity: CurrentWeatherEntity) {
-        self.city = currentWeatherEntity.city
+        self.city = currentWeatherEntity.city.name
         self.condition = Condition(icon:  Utils.resolveWeatherIcon(Int(currentWeatherEntity.weatherDescription.conditionID)),
                                    conditionDescription: currentWeatherEntity.weatherDescription.conditionDescription)
         

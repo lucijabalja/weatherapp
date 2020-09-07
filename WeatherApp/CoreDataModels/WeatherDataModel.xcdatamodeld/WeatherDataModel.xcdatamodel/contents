@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19G2021" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
-    <entity name="CurrentForecastEntity" representedClassName=".CurrentForecastEntity" syncable="YES">
-        <attribute name="dateTime" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
-        <relationship name="currentWeather" toMany="YES" deletionRule="Nullify" destinationEntity="CurrentWeatherEntity" inverseName="currentForecast" inverseEntity="CurrentWeatherEntity"/>
+    <entity name="CityEntity" representedClassName=".CityEntity" syncable="YES">
+        <attribute name="id" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="name" attributeType="String"/>
+        <relationship name="currentWeather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentWeatherEntity" inverseName="city" inverseEntity="CurrentWeatherEntity"/>
     </entity>
     <entity name="CurrentWeatherEntity" representedClassName=".CurrentWeatherEntity" syncable="YES">
-        <attribute name="city" attributeType="String"/>
-        <relationship name="currentForecast" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentForecastEntity" inverseName="currentWeather" inverseEntity="CurrentForecastEntity"/>
+        <relationship name="city" maxCount="1" deletionRule="Nullify" destinationEntity="CityEntity" inverseName="currentWeather" inverseEntity="CityEntity"/>
         <relationship name="parameters" maxCount="1" deletionRule="Nullify" destinationEntity="TemperatureParametersEntity" inverseName="currentWeather" inverseEntity="TemperatureParametersEntity"/>
         <relationship name="weatherDescription" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WeatherDescriptionEntity" inverseName="currentWeather" inverseEntity="WeatherDescriptionEntity"/>
     </entity>
@@ -47,14 +47,13 @@
         <relationship name="hourlyWeather" toMany="YES" deletionRule="Nullify" destinationEntity="HourlyWeatherEntity" inverseName="weeklyForecast" inverseEntity="HourlyWeatherEntity"/>
     </entity>
     <elements>
-        <element name="CurrentForecastEntity" positionX="-109.50390625" positionY="-176.609375" width="128" height="28"/>
-        <element name="CurrentWeatherEntity" positionX="-43.96875" positionY="-92.11328125" width="128" height="103"/>
-        <element name="WeeklyForecastEntity" positionX="-166.10546875" positionY="260.0703125" width="128" height="103"/>
+        <element name="CurrentWeatherEntity" positionX="-43.96875" positionY="-92.11328125" width="128" height="88"/>
         <element name="DailyWeatherEntity" positionX="128.8515625" positionY="265.453125" width="128" height="118"/>
         <element name="HourlyWeatherEntity" positionX="312.04296875" positionY="-109.4375" width="128" height="118"/>
         <element name="TemperatureEntity" positionX="394.33984375" positionY="279.6171875" width="128" height="88"/>
         <element name="TemperatureParametersEntity" positionX="241.7578125" positionY="4.34765625" width="128" height="103"/>
         <element name="WeatherDescriptionEntity" positionX="-289.23046875" positionY="107.16796875" width="128" height="88"/>
         <element name="WeeklyForecastEntity" positionX="-166.10546875" positionY="260.0703125" width="128" height="103"/>
+        <element name="CityEntity" positionX="-81" positionY="45" width="128" height="88"/>
     </elements>
 </model>

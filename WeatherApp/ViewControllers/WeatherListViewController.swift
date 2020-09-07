@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import CoreLocation
 
 class WeatherListViewController: UIViewController {
     
@@ -16,12 +17,14 @@ class WeatherListViewController: UIViewController {
     private let errorView = ErrorView()
     private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
+    let locationManager = CLLocationManager()
     
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
         
         self.weatherViewModel = weatherViewModel
         bindTableView()
+        bindSearchBar()
     }
     
     required init?(coder: NSCoder) {
@@ -30,10 +33,26 @@ class WeatherListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        locationManager.delegate = self
+
+        setupCurrentLocation()
         setupUI()
         setupConstraints()
         setupTableView()
+    }
+    
+    private func setupCurrentLocation() {
+        // Ask for Authorisation from the User.
+        self.locationManager.requestAlwaysAuthorization()
+        
+        // For use in foreground
+        self.locationManager.requestWhenInUseAuthorization()
+        
+        if CLLocationManager.locationServicesEnabled() {
+            locationManager.delegate = self
+            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
+            locationManager.startUpdatingLocation()
+        }
     }
     
     private func setupTableView() {
@@ -55,6 +74,10 @@ class WeatherListViewController: UIViewController {
             }).disposed(by: disposeBag)
     }
     
+    private func bindSearchBar() {
+        
+    }
+    
     private func setupUI() {
         weatherView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(weatherView)
@@ -65,7 +88,6 @@ class WeatherListViewController: UIViewController {
         weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-        
     }
     
 }
@@ -74,6 +96,16 @@ extension WeatherListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         100
+    }
+    
+}
+
+extension WeatherListViewController: CLLocationManagerDelegate {
+    
+    private func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) -> (Double, Double) {
+        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return (0.0,0.0) }
+        print("locations = \(locValue.latitude) \(locValue.longitude)")
+        return (locValue.latitude.rounded(digits: 2), locValue.longitude.rounded(digits: 2))
     }
     
 }
