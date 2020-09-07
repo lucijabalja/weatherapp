@@ -39,6 +39,8 @@ class WeatherApiService {
             } catch {
                 return Observable.just(.failure(.decodingError))
             }
+        }.catchError { (_) -> Observable<Result<T, NetworkError>> in
+            return Observable.just(.failure(.URLSessionError))
         }
     }
         

@@ -42,12 +42,6 @@ class WeatherListViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBar))
     }
     
-    @objc func showSearchBar() {
-        search(shouldShow: true)
-        navigationItem.titleView = searchBar
-        searchBar.becomeFirstResponder()
-    }
-    
     private func setupTableView() {
         weatherView.tableView.rx.setDelegate(self).disposed(by: disposeBag)
         weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
@@ -68,18 +62,42 @@ class WeatherListViewController: UIViewController {
     }
     
     private func bindSearchBar() {
-        searchBar.rx.cancelButtonClicked.subscribe(onNext: { (_)  in
+        searchBar.rx.cancelButtonClicked.subscribe(onNext: { [weak self] (_)  in
+            guard let self = self else { return }
+
             self.search(shouldShow: false)
             self.searchBar.resignFirstResponder()
         }).disposed(by: disposeBag)
         
-        searchBar.rx.searchButtonClicked.subscribe(onNext: { (_) in
+        searchBar.rx.searchButtonClicked.subscribe(onNext: { [weak self] (_) in
+            guard let self = self else { return }
+
+            if let city = self.searchBar.text {
+                self.weatherViewModel.getCurrentWeather(for: city)
+            }
             self.searchBar.resignFirstResponder()
             self.searchBar.text = ""
-            if let city = self.searchBar.text {
-                self.weatherViewModel.getCurrentWeatherForCity(city)
-            }
         }).disposed(by: disposeBag)
+    }
+    
+}
+
+extension WeatherListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        100
+    }
+    
+}
+
+// MARK:- UI Setup
+
+extension WeatherListViewController {
+    
+    @objc func showSearchBar() {
+        search(shouldShow: true)
+        navigationItem.titleView = searchBar
+        searchBar.becomeFirstResponder()
     }
     
     private func search(shouldShow: Bool) {
@@ -98,14 +116,6 @@ class WeatherListViewController: UIViewController {
         weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-    }
-    
-}
-
-extension WeatherListViewController: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        100
     }
     
 }

@@ -21,22 +21,14 @@ class DataRepository {
         self.coreDataService = coreDataService
     }
     
-    func getCurrent<T:Decodable>(for city: String = "") -> Observable<Result<T, NetworkError>> {
-        let weatherData: Observable<Result<T, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
-        
-        return weatherData
-    }
-    
     func getCurrentWeatherData() -> Observable<[CurrentWeatherEntity]> {
         let weatherData: Observable<Result<CurrentWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
-        
         return weatherData.do(
             onNext: { [weak self] (result) in
                 guard let self = self else { return }
-                
                 switch result {
                 case .success(let currentWeatherResponse):
-                    self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+                    self.coreDataService.saveCurrentWeatherData(currentWeatherResponse.currentForecastList)
                 case .failure(let error):
                     print(error)
                 }
@@ -54,7 +46,7 @@ class DataRepository {
         }
     }
     
-    func getCurrentWeatherData(for city: String) -> Observable<[CurrentWeatherEntity]> {
+    func getCurrentCityWeather(for city: String) -> Observable<[CurrentWeatherEntity]>  {
         let weatherData: Observable<Result<CurrentForecast, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.currentCityWeather(city: city))
         
         return weatherData.do(
@@ -62,17 +54,17 @@ class DataRepository {
                 guard let self = self else { return }
                 
                 switch result {
-                case .success(let currentForecast):
-                    self.coreDataService.saveCurrentForecastData(currentForecast)
+                case .success(let currentWeatherResponse):
+                    self.coreDataService.saveCurrentWeatherData([currentWeatherResponse])
                 case .failure(let error):
                     print(error)
                 }
-                
         }).flatMap { (_) -> Observable<[CurrentWeatherEntity]> in
             return  Observable.create({ [weak self] (observer) in
                 guard let self = self else { return Disposables.create() }
                 
                 let loadedEntities = self.coreDataService.loadCurrentForecastData()
+                
                 observer.onNext(loadedEntities)
                 observer.onCompleted()
                 
@@ -80,7 +72,6 @@ class DataRepository {
             })
         }
     }
-    
     
     func getWeeklyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<WeeklyForecastEntity, Error>) -> Void) {
         weatherApiService.fetchWeeklyWeather(with: latitude, longitude) { (result) in

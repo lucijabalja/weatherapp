@@ -34,14 +34,13 @@ class WeatherListViewModel {
         }).disposed(by: disposeBag)
     }
     
-    func getCurrentWeatherForCity(_ city: String) {
-        dataRepository.getCurrentWeatherData(for: city).subscribe(
-            onNext: { (currentWeatherEntities) in
+    func getCurrentWeather(for city: String) {
+        dataRepository.getCurrentCityWeather(for: city).subscribe(
+            onNext: { [weak self] (currentWeatherEntities) in
+                guard let self = self else { return }
+                
                 let curentWeatherList = currentWeatherEntities.map { CurrentWeather(from: $0 )}
                 self.currentWeatherList.accept(curentWeatherList)
-        }, onError: { (error) in
-            print(error)
-        }, onCompleted: { print("completed")
         }).disposed(by: disposeBag)
     }
 
