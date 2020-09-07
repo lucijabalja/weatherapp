@@ -33,7 +33,7 @@
         <attribute name="current" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="max" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="min" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="currentWeather" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentWeatherEntity" inverseName="parameters" inverseEntity="CurrentWeatherEntity"/>
+        <relationship name="currentWeather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentWeatherEntity" inverseName="parameters" inverseEntity="CurrentWeatherEntity"/>
     </entity>
     <entity name="WeatherDescriptionEntity" representedClassName=".WeatherDescriptionEntity" syncable="YES">
         <attribute name="conditionDescription" attributeType="String"/>

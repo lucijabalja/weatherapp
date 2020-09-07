@@ -34,16 +34,17 @@ class WeatherListViewModel {
         }).disposed(by: disposeBag)
     }
     
-//    func getCurrentWeatherForCity(city: String) {
-//        dataRepository.getCurrentWeatherData(for: city).subscribe(
-//            onNext: { (currentForecastEntity) in
-//                print(currentForecastEntity)
-//        }, onError: { (error) in
-//            print(error)
-//        }, onCompleted: { print("completed")
-//        }).disposed(by: disposeBag)
-//    }
-//
+    func getCurrentWeatherForCity(_ city: String) {
+        dataRepository.getCurrentWeatherData(for: city).subscribe(
+            onNext: { (currentWeatherEntities) in
+                let curentWeatherList = currentWeatherEntities.map { CurrentWeather(from: $0 )}
+                self.currentWeatherList.accept(curentWeatherList)
+        }, onError: { (error) in
+            print(error)
+        }, onCompleted: { print("completed")
+        }).disposed(by: disposeBag)
+    }
+
     func pushToDetailView(with selectedCity: CurrentWeather) {
         coordinator.pushDetailViewController(with: selectedCity)
     }

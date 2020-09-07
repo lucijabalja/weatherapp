@@ -9,15 +9,14 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import CoreLocation
 
 class WeatherListViewController: UIViewController {
     
     private let weatherView = WeatherListView()
     private let errorView = ErrorView()
+    private var searchBar = UISearchBar()
     private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
-    let locationManager = CLLocationManager()
     
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -33,26 +32,20 @@ class WeatherListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        locationManager.delegate = self
-
-        setupCurrentLocation()
+        
         setupUI()
         setupConstraints()
         setupTableView()
     }
     
-    private func setupCurrentLocation() {
-        // Ask for Authorisation from the User.
-        self.locationManager.requestAlwaysAuthorization()
-        
-        // For use in foreground
-        self.locationManager.requestWhenInUseAuthorization()
-        
-        if CLLocationManager.locationServicesEnabled() {
-            locationManager.delegate = self
-            locationManager.desiredAccuracy = kCLLocationAccuracyNearestTenMeters
-            locationManager.startUpdatingLocation()
-        }
+    override func viewWillAppear(_ animated: Bool) {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBar))
+    }
+    
+    @objc func showSearchBar() {
+        search(shouldShow: true)
+        navigationItem.titleView = searchBar
+        searchBar.becomeFirstResponder()
     }
     
     private func setupTableView() {
@@ -75,7 +68,24 @@ class WeatherListViewController: UIViewController {
     }
     
     private func bindSearchBar() {
+        searchBar.rx.cancelButtonClicked.subscribe(onNext: { (_)  in
+            self.search(shouldShow: false)
+            self.searchBar.resignFirstResponder()
+        }).disposed(by: disposeBag)
         
+        searchBar.rx.searchButtonClicked.subscribe(onNext: { (_) in
+            self.searchBar.resignFirstResponder()
+            self.searchBar.text = ""
+            if let city = self.searchBar.text {
+                self.weatherViewModel.getCurrentWeatherForCity(city)
+            }
+        }).disposed(by: disposeBag)
+    }
+    
+    private func search(shouldShow: Bool) {
+        searchBar.isHidden = !shouldShow
+        searchBar.showsCancelButton = shouldShow
+        navigationItem.rightBarButtonItem = shouldShow ? nil : UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBar))
     }
     
     private func setupUI() {
@@ -96,16 +106,6 @@ extension WeatherListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         100
-    }
-    
-}
-
-extension WeatherListViewController: CLLocationManagerDelegate {
-    
-    private func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) -> (Double, Double) {
-        guard let locValue: CLLocationCoordinate2D = manager.location?.coordinate else { return (0.0,0.0) }
-        print("locations = \(locValue.latitude) \(locValue.longitude)")
-        return (locValue.latitude.rounded(digits: 2), locValue.longitude.rounded(digits: 2))
     }
     
 }

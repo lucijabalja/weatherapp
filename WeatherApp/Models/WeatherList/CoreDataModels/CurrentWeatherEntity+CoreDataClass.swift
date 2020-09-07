@@ -22,7 +22,7 @@ public class CurrentWeatherEntity: NSManagedObject {
     
     class func firstOrCreate(withCity city: String, context: NSManagedObjectContext) -> CurrentWeatherEntity? {
         let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
-        request.predicate = NSPredicate(format: "city = %@", city)
+        request.predicate = NSPredicate(format: "city.name = %@", city)
         request.returnsObjectsAsFaults = false
         
         do {
@@ -38,8 +38,10 @@ public class CurrentWeatherEntity: NSManagedObject {
         }
     }
 
-    class func loadCurrentWeatherData(context: NSManagedObjectContext) -> [CurrentWeatherEntity] {
+    class func loadCurrentWeatherData(_ city: String = "", context: NSManagedObjectContext) -> [CurrentWeatherEntity] {
         let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
+        let cityPredicate = city.isEmpty ? nil : NSPredicate(format: "city.name = %@", city)
+        request.predicate = cityPredicate
         
         do {
             let cityWeatherEntity = try context.fetch(request)

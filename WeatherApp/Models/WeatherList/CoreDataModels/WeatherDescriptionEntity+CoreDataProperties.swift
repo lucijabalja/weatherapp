@@ -19,6 +19,6 @@ extension WeatherDescriptionEntity {
 
     @NSManaged public var conditionDescription: String
     @NSManaged public var conditionID: Int64
-    @NSManaged public var currentWeather: CurrentWeatherEntity
+    @NSManaged public var currentWeather: CurrentWeatherEntity?
 
 }
