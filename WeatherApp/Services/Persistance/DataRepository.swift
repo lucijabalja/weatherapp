@@ -49,27 +49,27 @@ class DataRepository {
                 observer.onCompleted()
                 
                 return Disposables.create()
-                })
+            })
         }
     }
-        
-        
-        func getWeeklyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<WeeklyForecastEntity, Error>) -> Void) {
-            weatherApiService.fetchWeeklyWeather(with: latitude, longitude) { (result) in
-                switch result {
-                case .success(let dailyWeatherResponse):
-                    self.coreDataService.saveWeeklyForecast(dailyWeatherResponse)
-                    guard let weeklyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else { return }
-                    
-                    completion(.success(weeklyForecastEntity))
-                    
-                case .failure(_):
-                    guard let weeklyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else {
-                        return
-                    }
-                    
-                    completion(.success(weeklyForecastEntity))
+    
+    
+    func getWeeklyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<WeeklyForecastEntity, Error>) -> Void) {
+        weatherApiService.fetchWeeklyWeather(with: latitude, longitude) { (result) in
+            switch result {
+            case .success(let dailyWeatherResponse):
+                self.coreDataService.saveWeeklyForecast(dailyWeatherResponse)
+                guard let weeklyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else { return }
+                
+                completion(.success(weeklyForecastEntity))
+                
+            case .failure(_):
+                guard let weeklyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else {
+                    return
                 }
+                
+                completion(.success(weeklyForecastEntity))
             }
         }
+    }
 }
