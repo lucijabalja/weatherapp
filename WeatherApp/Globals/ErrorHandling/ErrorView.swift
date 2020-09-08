@@ -49,7 +49,6 @@ class ErrorView: UIView {
         errorLabel.numberOfLines = 0
         
         refreshButton.applyDefaultStyle(title: "Try again")
-        
     }
     
     private func setupConstraints() {

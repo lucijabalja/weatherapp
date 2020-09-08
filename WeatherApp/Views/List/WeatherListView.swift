@@ -28,11 +28,10 @@ class WeatherListView: UIView {
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
         tableView.isHidden = false
-        
-        addSubview(tableView)
     }
     
     private func setupConstraints() {
+        self.addSubview(tableView)
         tableView.autoPinEdgesToSuperviewEdges()
     }
     
