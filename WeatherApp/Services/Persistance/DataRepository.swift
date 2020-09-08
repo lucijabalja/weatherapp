@@ -76,7 +76,7 @@ class DataRepository {
         }
     }
     
-    func getCurrentCityIds() -> String {
+    private func getCurrentCityIds() -> String {
         let cityIds = coreDataService.loadCityEntites().map { String($0.id) }
         return cityIds.count > 0 ? cityIds.map { $0 }.joined(separator:",") : Constants.defaultCityIds
     }
