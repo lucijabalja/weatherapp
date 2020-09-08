@@ -22,13 +22,18 @@ class DataRepository {
     }
     
     func getCurrentWeatherData() -> Observable<CurrentForecastEntity> {
-        let weatherData: Observable<CurrentWeatherResponse> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
+        let weatherData: Observable<Result<CurrentWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
         
         return weatherData.do(
-            onNext: { [weak self] (currentWeatherResponse) in
+            onNext: { [weak self] (result) in
                 guard let self = self else { return }
                 
-                self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+                switch result {
+                case .success(let currentWeatherResponse):
+                    self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+                case .failure(let error):
+                    print(error)
+                }
         }).flatMap { (_) -> Observable<CurrentForecastEntity> in
             return  Observable.create({ [weak self] (observer) in
                 guard let self = self else { return Disposables.create() }
@@ -43,18 +48,23 @@ class DataRepository {
                 observer.onCompleted()
                 
                 return Disposables.create()
-                })
+            })
         }
     }
     
     func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<WeeklyForecastEntity> {
-        let weeeklyWeatherResponse: Observable<WeeklyWeatherResponse> = weatherApiService.fetchData(urlString: URLGenerator.weeklyWeather(latitude: latitude, longitude: longitude))
+        let weeklyWeatherResponse: Observable<Result<WeeklyWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.weeklyWeather(latitude: latitude, longitude: longitude))
         
-        return weeeklyWeatherResponse
-            .do(onNext: { [weak self] (weeeklyWeatherResponse) in
+        return weeklyWeatherResponse
+            .do(onNext: { [weak self] (result) in
                 guard let self = self else { return }
                 
-                self.coreDataService.saveWeeklyForecast(weeeklyWeatherResponse)
+                switch result {
+                case .success(let weeklyWeatherResponse):
+                    self.coreDataService.saveWeeklyForecast(weeklyWeatherResponse)
+                case .failure(let error):
+                    print(error)
+                }
             })
             .flatMap { [weak self ] (_) -> Observable<WeeklyForecastEntity> in
                 guard let self = self else { return Observable.of() }
