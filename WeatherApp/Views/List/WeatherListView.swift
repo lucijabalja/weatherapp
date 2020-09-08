@@ -22,15 +22,16 @@ class WeatherListView: UIView {
     required init?(coder: NSCoder) {
         super.init(coder: coder)
     }
-
+    
     private func setupUI() {
         backgroundColor = .systemBlue
         
         tableView.backgroundColor = .systemBlue
         tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
+        tableView.isHidden = false
         
-        self.addSubview(tableView)
+        addSubview(tableView)
     }
     
     private func setupConstraints() {

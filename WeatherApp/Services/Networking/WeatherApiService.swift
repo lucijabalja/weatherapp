@@ -43,53 +43,54 @@ class WeatherApiService {
             return Observable.just(.failure(.URLSessionError))
         }
     }
+    
+    private func performRequest(with urlString: String, completion: @escaping (Result<Data, NetworkError>) -> Void) {
+        guard let url = URL(string: urlString) else {
+            completion(.failure(.invalidURLError))
+            return
+        }
         
-        private func performRequest(with urlString: String, completion: @escaping (Result<Data, NetworkError>) -> Void) {
-            guard let url = URL(string: urlString) else {
-                completion(.failure(.invalidURLError))
+        let task = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
+            if let _ = error {
+                completion(.failure(.URLSessionError))
                 return
             }
             
-            let task = URLSession.shared.dataTask(with: url, completionHandler: { (data, response, error) in
-                if let _ = error {
-                    completion(.failure(.URLSessionError))
-                    return
-                }
-                
-                guard let data = data else {
-                    completion(.failure(.unwrappingError))
-                    return
-                }
-                
-                completion(.success(data))
-            })
-            task.resume()
-        }
-        
+            guard let data = data else {
+                completion(.failure(.unwrappingError))
+                return
+            }
+            
+            completion(.success(data))
+        })
+        task.resume()
     }
     
-    extension WeatherApiService: WeatherDetailServiceProtocol {
+}
+
+extension WeatherApiService: WeatherDetailServiceProtocol {
+    
+    func fetchWeeklyWeather(with latitude: Double,_ longitude: Double, completion: @escaping (Result<WeeklyWeatherResponse, NetworkError>) -> Void) {
         
-        func fetchWeeklyWeather(with latitude: Double,_ longitude: Double, completion: @escaping (Result<WeeklyWeatherResponse, NetworkError>) -> Void) {
-            let urlString = "\(baseURL)/onecall?\(apiKey)&\(units)&lat=\(latitude)&lon=\(longitude)&\(exclusions)"
+        let urlString = "\(baseURL)/onecall?\(apiKey)&\(units)&lat=\(latitude)&lon=\(longitude)&\(exclusions)"
+        
+        performRequest(with: urlString) { [weak self] (result) in
             
-            performRequest(with: urlString) { [weak self] (result) in
+            switch result {
+            case .success(let data):
+                let parsedResponse = self?.parsingService.parseWeeklyWeather(data)
                 
-                switch result {
-                case .success(let data):
-                    let parsedResponse = self?.parsingService.parseWeeklyWeather(data)
-                    
-                    guard let weeklyWeather = parsedResponse else {
-                        completion(.failure(.decodingError))
-                        return
-                    }
-                    
-                    completion(.success(weeklyWeather))
-                    
-                case .failure(let error):
-                    completion(.failure(error))
+                guard let weeklyWeather = parsedResponse else {
+                    completion(.failure(.decodingError))
+                    return
                 }
+                
+                completion(.success(weeklyWeather))
+                
+            case .failure(let error):
+                completion(.failure(error))
             }
         }
-        
+    }
+    
 }
