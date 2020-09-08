@@ -11,5 +11,5 @@ import Foundation
 class Constants {
     
     static let appName = "Weather forecast"
-    
+    static let defaultCityIds = "3186886,3191648,3193935,3190261"
 }

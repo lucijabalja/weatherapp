@@ -49,7 +49,7 @@ class DataRepository {
     }
     
     func getCurrentCityWeather(for city: String) -> Observable<[CurrentWeatherEntity]>  {
-        let apiURL = URLGenerator.currentCityWeather(city: city)
+        let apiURL = URLGenerator.currentCityWeather(city: city.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? city)
         let weatherData: Observable<Result<CurrentForecast, NetworkError>> = weatherApiService.fetchData(urlString: apiURL)
         
         return weatherData.do(
@@ -77,7 +77,8 @@ class DataRepository {
     }
     
     func getCurrentCityIds() -> String {
-        coreDataService.loadCityEntites().map { String($0.id) }.map { $0 }.joined(separator:",")
+        let cityIds = coreDataService.loadCityEntites().map { String($0.id) }
+        return cityIds.count > 0 ? cityIds.map { $0 }.joined(separator:",") : Constants.defaultCityIds
     }
     
     func getWeeklyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<WeeklyForecastEntity, Error>) -> Void) {

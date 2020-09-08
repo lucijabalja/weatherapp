@@ -9,21 +9,19 @@
 import UIKit
 import RxSwift
 import RxCocoa
-import CoreLocation
 
 class WeatherListViewController: UIViewController {
     
     private let weatherView = WeatherListView()
     private let errorView = ErrorView()
     private var searchBar = UISearchBar()
-    private var weatherViewModel: WeatherListViewModel!
+    private var weatherListViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
-    private let locationManager = CLLocationManager()
     
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
         
-        self.weatherViewModel = weatherViewModel
+        self.weatherListViewModel = weatherViewModel
         bindTableView()
         bindSearchBar()
     }
@@ -35,11 +33,9 @@ class WeatherListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        locationManager.delegate = self
+        setupTableView()
         setupUI()
         setupConstraints()
-        setupTableView()
-        setupLocationAccessRights()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -52,7 +48,7 @@ class WeatherListViewController: UIViewController {
     }
     
     private func bindTableView() {
-        weatherViewModel.currentWeatherList.bind(to: weatherView.tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { (row, currentWeather, cell) in
+        weatherListViewModel.currentWeatherList.bind(to: weatherView.tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { (row, currentWeather, cell) in
             cell.setup(currentWeather)
         }.disposed(by: disposeBag)
         
@@ -61,23 +57,24 @@ class WeatherListViewController: UIViewController {
                 onNext: { [weak self] (currentWeather) in
                     guard let self = self else { return }
                     
-                    self.weatherViewModel.pushToDetailView(with: currentWeather)
+                    self.weatherListViewModel.pushToDetailView(with: currentWeather)
             }).disposed(by: disposeBag)
     }
     
     private func bindSearchBar() {
         searchBar.rx.cancelButtonClicked.subscribe(onNext: { [weak self] (_)  in
             guard let self = self else { return }
-
+            
             self.search(shouldShow: false)
             self.searchBar.resignFirstResponder()
         }).disposed(by: disposeBag)
         
         searchBar.rx.searchButtonClicked.subscribe(onNext: { [weak self] (_) in
             guard let self = self else { return }
-
+            
             if let city = self.searchBar.text {
-                self.weatherViewModel.getCurrentWeather(for: city)
+                print(city)
+                self.weatherListViewModel.getCurrentWeather(for: city)
             }
             self.searchBar.resignFirstResponder()
             self.searchBar.text = ""
@@ -91,15 +88,7 @@ extension WeatherListViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         100
     }
-    
-}
 
-extension WeatherListViewController: CLLocationManagerDelegate {
-    
-    private func setupLocationAccessRights() {
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.requestAlwaysAuthorization()
-    }
 }
 
 // MARK:- UI Setup
@@ -119,6 +108,7 @@ extension WeatherListViewController {
     }
     
     private func setupUI() {
+        weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
         weatherView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(weatherView)
     }
