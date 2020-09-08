@@ -22,7 +22,9 @@ class DataRepository {
     }
     
     func getCurrentWeatherData() -> Observable<[CurrentWeatherEntity]> {
-        let weatherData: Observable<Result<CurrentWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
+        let apiURL = URLGenerator.currentWeather(ids: getCurrentCityIds())
+        let weatherData: Observable<Result<CurrentWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: apiURL)
+        
         return weatherData.do(
             onNext: { [weak self] (result) in
                 guard let self = self else { return }
@@ -47,7 +49,8 @@ class DataRepository {
     }
     
     func getCurrentCityWeather(for city: String) -> Observable<[CurrentWeatherEntity]>  {
-        let weatherData: Observable<Result<CurrentForecast, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.currentCityWeather(city: city))
+        let apiURL = URLGenerator.currentCityWeather(city: city)
+        let weatherData: Observable<Result<CurrentForecast, NetworkError>> = weatherApiService.fetchData(urlString: apiURL)
         
         return weatherData.do(
             onNext: { [weak self] (result) in
@@ -71,6 +74,10 @@ class DataRepository {
                 return Disposables.create()
             })
         }
+    }
+    
+    func getCurrentCityIds() -> String {
+        coreDataService.loadCityEntites().map { String($0.id) }.map { $0 }.joined(separator:",")
     }
     
     func getWeeklyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<WeeklyForecastEntity, Error>) -> Void) {

@@ -28,4 +28,13 @@ class LocationService {
         }
     }
     
+    func getLocationName(latitude: Double, longitude: Double) {
+        geoCoder.reverseGeocodeLocation(CLLocation(latitude: latitude, longitude: longitude)) { (placemark, error) in
+            guard let placemark = placemark, error == nil else {
+                return
+            }
+            print(placemark)
+        }
+    }
+    
 }

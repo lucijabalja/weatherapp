@@ -39,6 +39,10 @@ class CoreDataService {
     func loadWeeklyForecast(withCoordinates latitude: Double, _ longitude: Double) -> WeeklyForecastEntity? {
         WeeklyForecastEntity.loadWeeklyForecast(with: latitude, longitude, context: mainObjectContext)
     }
+    
+    func loadCityEntites() -> [CityEntity] {
+        CityEntity.loadCities(context: mainObjectContext) 
+    }
 
     func saveChanges() {
         privateObjectContext.performAndWait {

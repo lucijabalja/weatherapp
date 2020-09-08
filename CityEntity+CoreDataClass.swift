@@ -19,4 +19,16 @@ public class CityEntity: NSManagedObject {
         cityEntity.id = id
         return cityEntity
     }
+    
+    class func loadCities(context: NSManagedObjectContext) -> [CityEntity] {
+        let request: NSFetchRequest<CityEntity> = CityEntity.fetchRequest()
+        do {
+            let cities = try context.fetch(request)
+            return cities
+        } catch {
+            print("\(error)")
+            return []
+        }
+    }
+    
 }

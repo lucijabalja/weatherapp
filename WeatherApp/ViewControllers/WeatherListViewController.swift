@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import CoreLocation
 
 class WeatherListViewController: UIViewController {
     
@@ -17,6 +18,7 @@ class WeatherListViewController: UIViewController {
     private var searchBar = UISearchBar()
     private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
+    private let locationManager = CLLocationManager()
     
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -33,9 +35,11 @@ class WeatherListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        locationManager.delegate = self
         setupUI()
         setupConstraints()
         setupTableView()
+        setupLocationAccessRights()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -88,6 +92,14 @@ extension WeatherListViewController: UITableViewDelegate {
         100
     }
     
+}
+
+extension WeatherListViewController: CLLocationManagerDelegate {
+    
+    private func setupLocationAccessRights() {
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.requestAlwaysAuthorization()
+    }
 }
 
 // MARK:- UI Setup

@@ -15,9 +15,8 @@ class URLGenerator {
     static let units = "units=metric"
     static let exclusions = "exclude=minutely"
     
-    static func currentWeather() -> String {
-        let ids = City.allCases.map{ $0.rawValue}.map { $0 }.joined(separator:",")
-        return "\(baseURL)/group?\(apiKey)&\(exclusions)&\(units)&id=\(ids)"
+    static func currentWeather(ids: String) -> String {
+        "\(baseURL)/group?\(apiKey)&\(exclusions)&\(units)&id=\(ids)"
     }
     
     static func currentCityWeather(city: String) -> String {
