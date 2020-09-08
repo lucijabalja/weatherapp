@@ -35,30 +35,30 @@
                             <rect key="frame" x="0.0" y="0.0" width="375" height="1000"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="zxK-wS-H6y" userLabel="Labels Stack View">
-                                    <rect key="frame" x="10" y="50" width="355" height="128"/>
+                                    <rect key="frame" x="10" y="50" width="355" height="170"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NaK-oa-pcB" userLabel="cityLabel">
-                                            <rect key="frame" x="0.0" y="0.0" width="355" height="48"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="40"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NaK-oa-pcB" userLabel="cityLabel">
+                                            <rect key="frame" x="0.0" y="0.0" width="355" height="50"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="35"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V4B-jY-K69" userLabel="dateLabel">
-                                            <rect key="frame" x="0.0" y="58" width="355" height="24"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V4B-jY-K69" userLabel="dateLabel">
+                                            <rect key="frame" x="0.0" y="60" width="355" height="50"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="25"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kcy-hl-B1I" userLabel="timeLabel">
-                                            <rect key="frame" x="0.0" y="92" width="355" height="36"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kcy-hl-B1I" userLabel="timeLabel">
+                                            <rect key="frame" x="0.0" y="120" width="355" height="50"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="30"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                 </stackView>
                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="J7s-Dc-e5I">
-                                    <rect key="frame" x="10" y="188" width="355" height="180"/>
+                                    <rect key="frame" x="10" y="230" width="355" height="180"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
@@ -72,7 +72,7 @@
                                     </collectionViewFlowLayout>
                                 </collectionView>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="lAP-wb-IAe" userLabel="Daily Weather Stack View">
-                                    <rect key="frame" x="5" y="388" width="365" height="398"/>
+                                    <rect key="frame" x="5" y="430" width="365" height="398"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b0P-Ob-q8b" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="365" height="50"/>
@@ -126,6 +126,9 @@
                                     </subviews>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstItem="b0P-Ob-q8b" firstAttribute="leading" secondItem="lAP-wb-IAe" secondAttribute="leading" id="58e-Xx-hAI"/>
+                                    </constraints>
                                 </stackView>
                             </subviews>
                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
@@ -136,12 +139,12 @@
                                 <constraint firstAttribute="trailing" secondItem="lAP-wb-IAe" secondAttribute="trailing" constant="5" id="Ehd-mW-66g"/>
                                 <constraint firstAttribute="trailing" secondItem="J7s-Dc-e5I" secondAttribute="trailing" constant="10" id="GUA-SC-MEU"/>
                                 <constraint firstItem="zxK-wS-H6y" firstAttribute="leading" secondItem="rR7-Xl-WF9" secondAttribute="leading" constant="10" id="I4g-5l-my8"/>
-                                <constraint firstItem="lAP-wb-IAe" firstAttribute="leading" secondItem="rR7-Xl-WF9" secondAttribute="leading" constant="5" id="MRF-dF-BWR"/>
                                 <constraint firstItem="J7s-Dc-e5I" firstAttribute="top" secondItem="zxK-wS-H6y" secondAttribute="bottom" constant="10" id="Wtq-5L-IGR"/>
                                 <constraint firstItem="zxK-wS-H6y" firstAttribute="centerX" secondItem="rR7-Xl-WF9" secondAttribute="centerX" id="eLo-xL-Zhb"/>
                                 <constraint firstAttribute="height" constant="1000" id="exb-xm-wrp"/>
                                 <constraint firstItem="lAP-wb-IAe" firstAttribute="centerX" secondItem="rR7-Xl-WF9" secondAttribute="centerX" id="hZT-Ql-6mG"/>
                                 <constraint firstItem="zxK-wS-H6y" firstAttribute="top" secondItem="rR7-Xl-WF9" secondAttribute="top" constant="50" id="jC7-2p-1GT"/>
+                                <constraint firstItem="lAP-wb-IAe" firstAttribute="leading" secondItem="rR7-Xl-WF9" secondAttribute="leading" constant="5" id="jTW-KH-JOJ"/>
                                 <constraint firstItem="J7s-Dc-e5I" firstAttribute="centerX" secondItem="rR7-Xl-WF9" secondAttribute="centerX" id="yS6-g1-tWN"/>
                             </constraints>
                         </view>

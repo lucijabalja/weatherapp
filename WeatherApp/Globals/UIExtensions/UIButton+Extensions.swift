@@ -10,8 +10,8 @@ import UIKit
 
 extension UIButton {
     
-    func applyDefaultStyle(fontSize: CGFloat = 25.0, isBold: Bool = true, title: String) {
-        self.titleLabel?.font = isBold ? .boldSystemFont(ofSize: fontSize) : .systemFont(ofSize: fontSize)
+    func applyDefaultStyle(fontSize: CGFloat = 25.0, title: String) {
+        self.titleLabel?.font = UIFont(name: "AvenirNext-DemiBold", size: fontSize)
         self.setTitle(title, for: .normal)
         self.backgroundColor = .white
         self.alpha = 0.9

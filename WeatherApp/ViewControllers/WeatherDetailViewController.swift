@@ -37,9 +37,10 @@ class WeatherDetailViewController: UIViewController {
         configureCollectionLayout()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(false, animated: animated)
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        view.setupGradientBackground()
     }
     
     private func setupCollectionView() {
@@ -67,7 +68,6 @@ class WeatherDetailViewController: UIViewController {
     }
     
     private func setupUI() {
-        view.setupGradientBackground()
         cityLabel.text = weatherDetailViewModel.currentWeather.city
         dateLabel.text = weatherDetailViewModel.date
         timeLabel.text = weatherDetailViewModel.time

@@ -50,9 +50,6 @@ class ErrorView: UIView {
         
         refreshButton.applyDefaultStyle(title: "Try again")
         
-        addSubview(errorImage)
-        addSubview(errorLabel)
-        addSubview(refreshButton)
     }
     
     private func setupConstraints() {
@@ -60,14 +57,17 @@ class ErrorView: UIView {
         let errorsTopMargin: CGFloat = 50
         let labelsMargin: CGFloat = 20
         
+        addSubview(errorImage)
         errorImage.autoPinEdge(.top, to: .top, of: self, withOffset: errorsTopMargin)
         errorImage.autoAlignAxis(toSuperviewAxis: .horizontal)
         errorImage.autoSetDimensions(to: CGSize(width: errorImageDimension, height: errorImageDimension))
         
+        addSubview(errorLabel)
         errorLabel.autoPinEdge(.top, to: .bottom, of: self.errorImage, withOffset: labelsMargin)
         errorLabel.autoPinEdge(.left, to: .left, of: self, withOffset: labelsMargin)
         errorLabel.autoPinEdge(.right, to: .right, of: self, withOffset: -labelsMargin)
         
+        addSubview(refreshButton)
         refreshButton.autoPinEdge(.top, to: .bottom, of: self.errorLabel, withOffset: errorsTopMargin)
         refreshButton.autoPinEdge(.left, to: .left, of: self, withOffset: 30)
         refreshButton.autoPinEdge(.right, to: .right, of: self, withOffset: -30)

@@ -33,10 +33,7 @@ class WeatherListView: UIView {
     }
     
     private func setupConstraints() {
-        tableView.autoPinEdge(.top, to: .top, of: self)
-        tableView.autoPinEdge(.bottom, to: .bottom, of: self)
-        tableView.autoPinEdge(.left, to: .left, of: self)
-        tableView.autoPinEdge(.right, to: .right, of: self)
+        tableView.autoPinEdgesToSuperviewEdges()
     }
     
 }

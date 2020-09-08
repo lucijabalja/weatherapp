@@ -11,7 +11,7 @@ import PureLayout
 
 class WeatherListViewController: UIViewController {
     
-    private let weatherView = WeatherListView()
+    private let weatherListView = WeatherListView()
     private let errorView = ErrorView()
     private var weatherViewModel: WeatherListViewModel!
     
@@ -23,11 +23,6 @@ class WeatherListViewController: UIViewController {
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)
-    }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        navigationController?.setNavigationBarHidden(true, animated: animated)
     }
     
     override func viewDidLoad() {
@@ -49,11 +44,10 @@ class WeatherListViewController: UIViewController {
     }
     
     private func setupTableView() {
-        weatherView.tableView.dataSource = self
-        weatherView.tableView.delegate = self
-        weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
+        weatherListView.tableView.dataSource = self
+        weatherListView.tableView.delegate = self
+        weatherListView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
-    
     
     private func fillTableView() {
         weatherViewModel.getCurrentWeather() { [weak self] (result) in
@@ -70,36 +64,29 @@ class WeatherListViewController: UIViewController {
     private func updateUI() {
         DispatchQueue.main.async {
             self.errorView.isHidden = true
-            self.weatherView.tableView.isHidden = false
-            self.weatherView.tableView.reloadData()
+            self.weatherListView.tableView.isHidden = false
+            self.weatherListView.tableView.reloadData()
         }
     }
     
     private func setupUI() {
-        weatherView.isHidden = false
+        weatherListView.isHidden = false
         errorView.isHidden = true
-        
         view.setupGradientBackground()
-        view.addSubview(weatherView)
     }
     
     private func setupConstraints() {
-        weatherView.autoPinEdge(.top, to: .top, of: self.view)
-        weatherView.autoPinEdge(.bottom, to: .bottom, of: self.view)
-        weatherView.autoPinEdge(.left, to: .left, of: self.view, withOffset: 10)
-        weatherView.autoPinEdge(.right, to: .right, of: self.view, withOffset: -10)
+        view.addSubview(weatherListView)
+        weatherListView.autoPinEdgesToSuperviewEdges()
     }
     
     private func setErrorView(with error: Error) {
         errorView.setErrorLabel(with: error)
-        view.addSubview(errorView)
-        weatherView.tableView.isHidden = true
+        weatherListView.tableView.isHidden = true
         errorView.isHidden = false
         
-        errorView.autoPinEdge(.top, to: .top, of: self.view)
-        errorView.autoPinEdge(.bottom, to: .bottom, of: self.view)
-        errorView.autoPinEdge(.left, to: .left, of: self.view)
-        errorView.autoPinEdge(.right, to: .right, of: self.view)
+        view.addSubview(errorView)
+        errorView.autoPinEdgesToSuperviewEdges()
     }
     
 }
