@@ -28,7 +28,8 @@ class WeatherListView: UIView {
         tableView.backgroundColor = .systemBlue
         tableView.separatorStyle = .none
         tableView.translatesAutoresizingMaskIntoConstraints = false
-
+        
+        tableView.isHidden = false
         addSubview(tableView)
     }
     
