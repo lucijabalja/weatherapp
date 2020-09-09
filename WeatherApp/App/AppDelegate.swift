@@ -39,6 +39,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().barTintColor = .gradientDarkColor
         UINavigationBar.appearance().tintColor = UIColor.white
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().isTranslucent = false
     }
     

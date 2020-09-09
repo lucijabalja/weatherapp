@@ -35,6 +35,11 @@ class WeatherListViewController: UIViewController {
         fillTableView()
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        view.setupGradientBackground()
+    }
+    
     private func setupEvents() {
         errorView.refreshButton.addTarget(self, action: #selector(refreshButtonPressed), for: .touchUpInside)
     }
@@ -72,12 +77,11 @@ class WeatherListViewController: UIViewController {
     private func setupUI() {
         weatherListView.isHidden = false
         errorView.isHidden = true
-        view.setupGradientBackground()
     }
     
     private func setupConstraints() {
         view.addSubview(weatherListView)
-        weatherListView.autoPinEdgesToSuperviewEdges()
+        weatherListView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5))
     }
     
     private func setErrorView(with error: Error) {
