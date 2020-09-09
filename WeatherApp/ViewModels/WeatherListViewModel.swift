@@ -43,7 +43,7 @@ class WeatherListViewModel {
                 self.currentWeatherList.accept(curentWeatherList)
         }).disposed(by: disposeBag)
     }
-
+    
     func pushToDetailView(with selectedCity: CurrentWeather) {
         coordinator.pushDetailViewController(with: selectedCity)
     }

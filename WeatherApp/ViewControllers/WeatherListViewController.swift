@@ -35,10 +35,10 @@ class WeatherListViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        setupTableView()
         setupUI()
         setupRefreshControl()
         setupConstraints()
+        setupTableView()
     }
     
     override func viewWillAppear(_ animated: Bool) {

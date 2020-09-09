@@ -10,7 +10,6 @@
 import Foundation
 import CoreData
 
-
 extension CityEntity {
 
     @nonobjc public class func fetchRequest() -> NSFetchRequest<CityEntity> {

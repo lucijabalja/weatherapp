@@ -19,7 +19,7 @@ class LocationService {
                 guard let placemark = placemarks?[0] else { return }
                 
                 guard let location = placemark.location else { return }
-            
+                
                 let latitude = location.coordinate.latitude.rounded(digits: 2)
                 let longitude = location.coordinate.longitude.rounded(digits: 2)
                 
@@ -27,5 +27,5 @@ class LocationService {
             }
         }
     }
-
+    
 }

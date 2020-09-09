@@ -10,9 +10,8 @@
 import Foundation
 import CoreData
 
-
 public class CityEntity: NSManagedObject {
-
+    
     class func createFrom(_ name: String,_ id: Double, context: NSManagedObjectContext) -> CityEntity {
         let cityEntity = CityEntity(context: context)
         cityEntity.name = name
