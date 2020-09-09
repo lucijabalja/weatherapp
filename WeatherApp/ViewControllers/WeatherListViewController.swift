@@ -17,6 +17,7 @@ class WeatherListViewController: UIViewController {
     private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
+    private let spinner = SpinnerViewController()
     
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -44,8 +45,11 @@ class WeatherListViewController: UIViewController {
     }
     
     private func bindTableView() {
-        weatherViewModel.currentWeatherList.bind(to: weatherView.tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { (row, currentWeather, cell) in
+        weatherViewModel.currentWeatherList.bind(to: weatherView.tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { [weak self] (row, currentWeather, cell) in
+            guard let self = self else { return }
+            
             self.refreshControl.endRefreshing()
+            self.endLoading()
             cell.setup(currentWeather)
         }.disposed(by: disposeBag)
         
@@ -61,6 +65,17 @@ class WeatherListViewController: UIViewController {
     private func setupUI() {
         weatherView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(weatherView)
+        
+        addChild(spinner)
+        spinner.view.frame = view.frame
+        view.addSubview(spinner.view)
+        spinner.didMove(toParent: self)
+    }
+    
+    private func endLoading() {
+        spinner.willMove(toParent: nil)
+        spinner.view.removeFromSuperview()
+        spinner.removeFromParent()
     }
     
     private func setupConstraints() {
@@ -83,7 +98,7 @@ extension WeatherListViewController: UITableViewDelegate {
 // MARK:- Refresh Control setup
 
 extension WeatherListViewController {
-
+    
     private func setupRefreshControl() {
         refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
         if #available(iOS 10.0, *) {
@@ -92,9 +107,9 @@ extension WeatherListViewController {
             weatherView.tableView.addSubview(refreshControl)
         }
     }
-
+    
     @objc private func refreshWeatherData(_ sender: Any) {
         weatherViewModel.getCurrentWeather()
     }
-
+    
 }
