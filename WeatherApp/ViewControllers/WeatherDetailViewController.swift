@@ -20,6 +20,7 @@ class WeatherDetailViewController: UIViewController {
     private var weatherDetailViewModel: WeatherDetailViewModel!
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
+    private let spinner = SpinnerViewController()
     
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {
         super.init(nibName: nil, bundle: nil)
@@ -39,6 +40,11 @@ class WeatherDetailViewController: UIViewController {
         setupWeeklyWeatherData()
         setupUI()
         configureCollectionLayout()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillLayoutSubviews()
+        setupSpinner()
     }
     
     private func setupWeeklyWeatherData() {
@@ -62,11 +68,25 @@ class WeatherDetailViewController: UIViewController {
         hourlyWeatherCollectionView.backgroundColor = .systemBlue
     }
     
+    private func setupSpinner() {
+        addChild(spinner)
+        spinner.view.frame = view.frame
+        view.addSubview(spinner.view)
+        spinner.didMove(toParent: self)
+    }
+    
+    private func endLoading() {
+        spinner.willMove(toParent: nil)
+        spinner.view.removeFromSuperview()
+        spinner.removeFromParent()
+    }
+    
     private func updateDailyStackView() {
         for (index, dailyViews) in self.dailyWeatherViews.enumerated() {
             guard let dayData = weatherDetailViewModel.weeklyWeather.value.dailyWeatherList[safeIndex: index] else { return }
             
             DispatchQueue.main.async {
+                self.endLoading()
                 dailyViews.setupView(with: dayData)
             }
         }
