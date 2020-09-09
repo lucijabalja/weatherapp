@@ -16,6 +16,7 @@ class WeatherListViewController: UIViewController {
     private let errorView = ErrorView()
     private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
+    private let refreshControl = UIRefreshControl()
     
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -32,6 +33,7 @@ class WeatherListViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
+        setupRefreshControl()
         setupConstraints()
         setupTableView()
     }
@@ -43,6 +45,7 @@ class WeatherListViewController: UIViewController {
     
     private func bindTableView() {
         weatherViewModel.currentWeatherList.bind(to: weatherView.tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { (row, currentWeather, cell) in
+            self.refreshControl.endRefreshing()
             cell.setup(currentWeather)
         }.disposed(by: disposeBag)
         
@@ -75,4 +78,23 @@ extension WeatherListViewController: UITableViewDelegate {
         100
     }
     
+}
+
+// MARK:- Refresh Control setup
+
+extension WeatherListViewController {
+
+    private func setupRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
+        if #available(iOS 10.0, *) {
+            weatherView.tableView.refreshControl = refreshControl
+        } else {
+            weatherView.tableView.addSubview(refreshControl)
+        }
+    }
+
+    @objc private func refreshWeatherData(_ sender: Any) {
+        weatherViewModel.getCurrentWeather()
+    }
+
 }
