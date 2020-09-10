@@ -15,7 +15,7 @@ class WeatherListViewModel {
     private let coordinator: Coordinator
     private let dataRepository: DataRepository
     private let disposeBag = DisposeBag()
-    let currentWeatherList: BehaviorRelay<[CurrentWeather]> = BehaviorRelay(value: [])
+    let currentWeatherList: BehaviorRelay<[SectionOfCurrentWeather]> = BehaviorRelay(value: [])
     
     init(coordinator: Coordinator, dataRepository: DataRepository) {
         self.coordinator = coordinator
@@ -29,7 +29,9 @@ class WeatherListViewModel {
             onNext: { [weak self] (currentForecastEntity) in
                 guard let self = self else { return }
 
-                let curentWeatherList = currentForecastEntity.currentWeather.map { CurrentWeather(from: $0 as! CurrentWeatherEntity )}
+                let curentWeatherList = currentForecastEntity.currentWeather
+                    .map { CurrentWeather(from: $0 as! CurrentWeatherEntity )}
+                    .map( {SectionOfCurrentWeather(items: [$0]) } )
                 self.currentWeatherList.accept(curentWeatherList)
         }).disposed(by: disposeBag)
     }

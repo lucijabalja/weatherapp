@@ -9,6 +9,7 @@
 import UIKit
 import RxSwift
 import RxCocoa
+import RxDataSources
 
 class WeatherListViewController: UIViewController {
     
@@ -18,12 +19,12 @@ class WeatherListViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let spinner = SpinnerViewController()
+    private var dataSource: RxTableViewSectionedReloadDataSource<SectionOfCurrentWeather>!
     
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
         
         self.weatherViewModel = weatherViewModel
-        bindTableView()
     }
     
     required init?(coder: NSCoder) {
@@ -37,6 +38,19 @@ class WeatherListViewController: UIViewController {
         setupRefreshControl()
         setupConstraints()
         setupTableView()
+        configureDataSource()
+        bindTableView()
+    }
+    
+    private func configureDataSource() {
+        dataSource = RxTableViewSectionedReloadDataSource<SectionOfCurrentWeather>(
+            configureCell: { _, tableView, indexPath, item in
+                let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
+                cell.setup(item)
+                self.endLoading()
+                self.refreshControl.endRefreshing()
+                return cell
+        })
     }
     
     private func setupTableView() {
@@ -45,13 +59,9 @@ class WeatherListViewController: UIViewController {
     }
     
     private func bindTableView() {
-        weatherViewModel.currentWeatherList.bind(to: weatherView.tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { [weak self] (row, currentWeather, cell) in
-            guard let self = self else { return }
-            
-            self.refreshControl.endRefreshing()
-            self.endLoading()
-            cell.setup(currentWeather)
-        }.disposed(by: disposeBag)
+        weatherViewModel.currentWeatherList
+            .bind(to: weatherView.tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
         
         weatherView.tableView.rx.modelSelected(CurrentWeather.self)
             .subscribe(
