@@ -15,7 +15,7 @@ class WeatherListViewController: UIViewController {
     private let weatherView = WeatherListView()
     private let errorView = ErrorView()
     private var searchBar = UISearchBar()
-    private var weatherListViewModel: WeatherListViewModel!
+    private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let spinner = SpinnerViewController()
@@ -23,7 +23,7 @@ class WeatherListViewController: UIViewController {
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
         
-        self.weatherListViewModel = weatherViewModel
+        self.weatherViewModel = weatherViewModel
         bindTableView()
         bindSearchBar()
     }
@@ -51,7 +51,7 @@ class WeatherListViewController: UIViewController {
     }
     
     private func bindTableView() {
-        weatherListViewModel.currentWeatherList.bind(to: weatherView.tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { [weak self] (row, currentWeather, cell) in
+        weatherViewModel.currentWeatherList.bind(to: weatherView.tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { [weak self] (row, currentWeather, cell) in
             guard let self = self else { return }
             
             self.refreshControl.endRefreshing()
@@ -64,7 +64,7 @@ class WeatherListViewController: UIViewController {
                 onNext: { [weak self] (currentWeather) in
                     guard let self = self else { return }
                     
-                    self.weatherListViewModel.pushToDetailView(with: currentWeather)
+                    self.weatherViewModel.pushToDetailView(with: currentWeather)
             }).disposed(by: disposeBag)
     }
     
@@ -81,7 +81,7 @@ class WeatherListViewController: UIViewController {
             
             if let city = self.searchBar.text {
                 print(city)
-                self.weatherListViewModel.getCurrentWeather(for: city)
+                self.weatherViewModel.getCurrentWeather(for: city)
             }
             self.searchBar.resignFirstResponder()
             self.searchBar.text = ""
@@ -154,7 +154,7 @@ extension WeatherListViewController {
     }
     
     @objc private func refreshWeatherData(_ sender: Any) {
-        weatherListViewModel.getCurrentWeather()
+        weatherViewModel.getCurrentWeather()
     }
     
 }
