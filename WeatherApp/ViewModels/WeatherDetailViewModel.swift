@@ -18,15 +18,8 @@ class WeatherDetailViewModel {
     var currentWeather: CurrentWeather
     var dailyWeather: BehaviorRelay<[DailyWeather]> = BehaviorRelay(value: [])
     var hourlyWeather: BehaviorRelay<[SectionOfHourlyWeather]> = BehaviorRelay(value: [])
+    var errorStream: PublishSubject<PersistanceError> = PublishSubject()
     let disposeBag = DisposeBag()
-    
-    var date: String {
-        Utils.getFormattedDate()
-    }
-    
-    var time: String {
-        Utils.getFormattedTime()
-    }
     
     init(appDependencies: AppDependencies, currentWeather: CurrentWeather, coordinator: Coordinator) {
         self.currentWeather = currentWeather
@@ -41,24 +34,28 @@ class WeatherDetailViewModel {
     func getWeeklyWeather() {
         dataRepository.getWeeklyWeather(latitude: locationService.coordinates.value.latitude,
                                         longitude: locationService.coordinates.value.longitude)
-            .subscribe(onNext: { [weak self] (weeklyForecastEntity) in
+            .subscribe(onNext: { [weak self] (result) in
                 guard let self = self else { return }
                 
-                let hourlyWeatherList = weeklyForecastEntity.hourlyWeather
-                    .map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
-                    .sorted { $0.dateTime < $1.dateTime }
-                    .map( {SectionOfHourlyWeather(items: [$0]) } )
-
-                let dailyWeatherList = weeklyForecastEntity.dailyWeather
-                    .map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
-                    .sorted { $0.dateTime < $1.dateTime }
-
-  
-                self.hourlyWeather.accept(hourlyWeatherList)
-                self.dailyWeather.accept(dailyWeatherList)
-                }, onError: { (error) in
-                    print(error)
-            }).disposed(by: self.disposeBag)
+                switch result {
+                case .success(let weeklyForecastEntity):
+                    let hourlyWeatherList = weeklyForecastEntity.hourlyWeather
+                        .map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
+                        .sorted { $0.dateTime < $1.dateTime }
+                        .map( {SectionOfHourlyWeather(items: [$0]) } )
+                    
+                    let dailyWeatherList = weeklyForecastEntity.dailyWeather
+                        .map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
+                        .sorted { $0.dateTime < $1.dateTime }
+                    
+                    self.hourlyWeather.accept(hourlyWeatherList)
+                    self.dailyWeather.accept(dailyWeatherList)
+                    
+                case .failure(let error):
+                    self.errorStream.onNext(error)
+                }
+            })
+            .disposed(by: self.disposeBag)
     }
     
 }

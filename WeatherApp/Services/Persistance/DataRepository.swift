@@ -21,58 +21,49 @@ class DataRepository {
         self.coreDataService = coreDataService
     }
     
-    func getCurrentWeatherData() -> Observable<CurrentForecastEntity> {
+    func getCurrentWeatherData() -> Observable<Result<CurrentForecastEntity, PersistanceError>> {
         let weatherData: Observable<Result<CurrentWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
         
-        return weatherData.do(
-            onNext: { [weak self] (result) in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let currentWeatherResponse):
-                    self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
-                case .failure(let error):
-                    print(error)
-                }
-        }).flatMap { (_) -> Observable<CurrentForecastEntity> in
-            return  Observable.create({ [weak self] (observer) in
-                guard let self = self else { return Disposables.create() }
-                
-                let loadedEntities = self.coreDataService.loadCurrentForecastData()
-                guard let entities = loadedEntities else {
-                    observer.onError(PersistanceError.loadingError)
-                    return Disposables.create()
-                }
-                
-                observer.onNext(entities)
-                observer.onCompleted()
-                
-                return Disposables.create()
-            })
+        return weatherData.do(onNext: { [weak self] (result) in
+            guard let self = self else { return }
+            
+            if case let .success(currentWeatherResponse) = result {
+                self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+            }
+        }).flatMap { [weak self ] (_) -> Observable<Result<CurrentForecastEntity, PersistanceError>> in
+            guard let self = self else {
+                return Observable.just(.failure(.loadingError))
+            }
+            
+            let currentForecastEntity = self.coreDataService.loadCurrentForecastData()
+            guard let currentForecast = currentForecastEntity else {
+                return Observable.just(.failure(.noEntitiesFound))
+            }
+            
+            return Observable.of(.success(currentForecast))
         }
     }
     
-    func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<WeeklyForecastEntity> {
+    func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> {
         let weeklyWeatherResponse: Observable<Result<WeeklyWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.weeklyWeather(latitude: latitude, longitude: longitude))
         
-        return weeklyWeatherResponse
-            .do(onNext: { [weak self] (result) in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let weeklyWeatherResponse):
-                    self.coreDataService.saveWeeklyForecast(weeklyWeatherResponse)
-                case .failure(let error):
-                    print(error)
-                }
-            })
-            .flatMap { [weak self ] (_) -> Observable<WeeklyForecastEntity> in
-                guard let self = self else { return Observable.of() }
-                
-                let loadedEntities = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude)
-                guard let entities = loadedEntities else { return Observable.of() }
-                
-                return Observable.of(entities)
+        return weeklyWeatherResponse.do(onNext: { [weak self] (result) in
+            guard let self = self else { return }
+            
+            if case let .success(weeklyWeatherResponse) = result {
+                self.coreDataService.saveWeeklyForecast(weeklyWeatherResponse)
+            }
+        }).flatMap { [weak self ] (_) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> in
+            guard let self = self else {
+                return Observable.just(.failure(.loadingError))
+            }
+            
+            let loadedEntities = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude)
+            guard let entities = loadedEntities else {
+                return Observable.just(.failure(.noEntitiesFound))
+            }
+            
+            return Observable.of(.success(entities))
         }
     }
     

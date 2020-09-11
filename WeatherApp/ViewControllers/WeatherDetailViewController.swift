@@ -64,9 +64,9 @@ class WeatherDetailViewController: UIViewController {
     }
     
     private func bindCollectionView() {
-          weatherDetailViewModel.hourlyWeather
-               .bind(to: hourlyWeatherCollectionView.rx.items(dataSource: hourlyWeatherDataSource))
-               .disposed(by: disposeBag)
+        weatherDetailViewModel.hourlyWeather
+            .bind(to: hourlyWeatherCollectionView.rx.items(dataSource: hourlyWeatherDataSource))
+            .disposed(by: disposeBag)
     }
     
     private func setupWeeklyWeatherData() {
@@ -134,8 +134,8 @@ extension WeatherDetailViewController {
     
     private func setupUI() {
         cityLabel.text = weatherDetailViewModel.currentWeather.city
-        dateLabel.text = weatherDetailViewModel.date
-        timeLabel.text = weatherDetailViewModel.time
+        dateLabel.text = Utils.getFormattedDate()
+        timeLabel.text = Utils.getFormattedTime()
         hourlyWeatherCollectionView.backgroundColor = .systemBlue
     }
     

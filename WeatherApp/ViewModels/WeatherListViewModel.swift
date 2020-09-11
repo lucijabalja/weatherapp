@@ -16,6 +16,7 @@ class WeatherListViewModel {
     private let dataRepository: DataRepository
     private let disposeBag = DisposeBag()
     let currentWeatherList: BehaviorRelay<[SectionOfCurrentWeather]> = BehaviorRelay(value: [])
+    let errorStream: PublishSubject<PersistanceError> = PublishSubject()
     
     init(coordinator: Coordinator, dataRepository: DataRepository) {
         self.coordinator = coordinator
@@ -25,14 +26,19 @@ class WeatherListViewModel {
     }
     
     func getCurrentWeather() {
-        dataRepository.getCurrentWeatherData().subscribe(
-            onNext: { [weak self] (currentForecastEntity) in
-                guard let self = self else { return }
-
+        dataRepository.getCurrentWeatherData().subscribe(onNext: { [weak self] (result) in
+            guard let self = self else { return }
+            
+            switch result {
+            case .success(let currentForecastEntity):
                 let curentWeatherList = currentForecastEntity.currentWeather
                     .map { CurrentWeather(from: $0 as! CurrentWeatherEntity )}
                     .map( {SectionOfCurrentWeather(items: [$0]) } )
                 self.currentWeatherList.accept(curentWeatherList)
+                
+            case .failure(let error):
+                self.errorStream.onNext(error)
+            }
         }).disposed(by: disposeBag)
     }
     

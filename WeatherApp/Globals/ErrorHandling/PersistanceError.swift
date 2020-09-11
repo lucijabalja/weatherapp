@@ -10,6 +10,5 @@ import Foundation
 
 enum PersistanceError: Error {
     
-    case loadingError
-    case savingError
+    case loadingError, savingError, noEntitiesFound
 }
