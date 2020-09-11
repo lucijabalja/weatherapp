@@ -13,17 +13,18 @@ import RxDataSources
 
 class WeatherDetailViewController: UIViewController {
     
+    private var weatherDetailViewModel: WeatherDetailViewModel!
+    private let disposeBag = DisposeBag()
+    private let refreshControl = UIRefreshControl()
+    private let spinner = SpinnerViewController()
+    private var hourlyWeatherDataSource: RxCollectionViewSectionedReloadDataSource<SectionOfHourlyWeather>!
+    
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var dateLabel: UILabel!
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
     @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
-    private var weatherDetailViewModel: WeatherDetailViewModel!
-    private let disposeBag = DisposeBag()
-    private let refreshControl = UIRefreshControl()
-    private let spinner = SpinnerViewController()
-    private var hourlyWeatherDataSource: RxCollectionViewSectionedReloadDataSource<SectionOfHourlyWeather>!
     
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {
         super.init(nibName: nil, bundle: nil)
@@ -43,7 +44,7 @@ class WeatherDetailViewController: UIViewController {
         setupWeeklyWeatherData()
         setupUI()
         configureCollectionLayout()
-        configureDataSources()
+        createDataSource()
         bindCollectionView()
     }
     
@@ -52,7 +53,7 @@ class WeatherDetailViewController: UIViewController {
         setupSpinner()
     }
     
-    private func configureDataSources() {
+    private func createDataSource() {
         hourlyWeatherDataSource = RxCollectionViewSectionedReloadDataSource<SectionOfHourlyWeather>(
             configureCell: { _, tableView, indexPath, item in
                 let cell = self.hourlyWeatherCollectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell

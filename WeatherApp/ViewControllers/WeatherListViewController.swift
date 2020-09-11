@@ -14,9 +14,9 @@ import RxDataSources
 class WeatherListViewController: UIViewController {
     
     private let weatherView = WeatherListView()
-    private let errorView = ErrorView()
     private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
+    private var timerDisposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let spinner = SpinnerViewController()
     private var dataSource: RxTableViewSectionedReloadDataSource<SectionOfCurrentWeather>!
@@ -35,14 +35,28 @@ class WeatherListViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
+        createTimer()
         setupRefreshControl()
         setupConstraints()
         setupTableView()
-        configureDataSource()
+        createDataSource()
         bindTableView()
     }
     
-    private func configureDataSource() {
+    private func createTimer() {
+        timerDisposeBag = DisposeBag()
+        
+        Observable<Int>
+            .timer(.seconds(0), period: .seconds(600), scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] _ in
+                guard let self = self else { return }
+                
+                self.weatherViewModel.getCurrentWeather()
+            })
+            .disposed(by: timerDisposeBag)
+    }
+    
+    private func createDataSource() {
         dataSource = RxTableViewSectionedReloadDataSource<SectionOfCurrentWeather>(
             configureCell: { _, tableView, indexPath, item in
                 let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell

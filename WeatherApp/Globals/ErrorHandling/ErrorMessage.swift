@@ -15,5 +15,5 @@ class ErrorMessage {
     static let invalidURLError = "Invalid URL passed."
     static let urlSessionError = "URL session failed. Try again."
     static let unwrappingError = "Cannot unwrap data correctly."
-    static let parsingError = "Cannot parse data correctly."
+
 }

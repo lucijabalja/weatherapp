@@ -40,10 +40,8 @@
 		7F722B8B24D9565C0045CBA8 /* WeatherDetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F722B8A24D9565C0045CBA8 /* WeatherDetailViewController.swift */; };
 		7F722B9024DBEFF70045CBA8 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F722B8F24DBEFF70045CBA8 /* Utils.swift */; };
 		7F73B4E124E2A10E00BC2451 /* HourlyWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F73B4E024E2A10E00BC2451 /* HourlyWeather.swift */; };
-		7F73B4E524E2BCA600BC2451 /* ParsingService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F73B4E424E2BCA600BC2451 /* ParsingService.swift */; };
 		7F73B4E724E2C76000BC2451 /* HourlyForecast.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F73B4E624E2C76000BC2451 /* HourlyForecast.swift */; };
 		7F741E8624EA9BF600AEE92B /* AppDependencies.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F741E8524EA9BF600AEE92B /* AppDependencies.swift */; };
-		7F741E8824EA9DE700AEE92B /* WeeklyWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F741E8724EA9DE700AEE92B /* WeeklyWeather.swift */; };
 		7F7853D7250900DB008FAF73 /* SpinnerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F7853D6250900DB008FAF73 /* SpinnerViewController.swift */; };
 		7F81C39B24EFB9A900E9A164 /* WeeklyForecastEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F81C39724EFB9A900E9A164 /* WeeklyForecastEntity+CoreDataClass.swift */; };
 		7F81C39E24EFE37800E9A164 /* Double+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F81C39D24EFE37800E9A164 /* Double+Extensions.swift */; };
@@ -139,10 +137,8 @@
 		7F722B8A24D9565C0045CBA8 /* WeatherDetailViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherDetailViewController.swift; sourceTree = "<group>"; };
 		7F722B8F24DBEFF70045CBA8 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		7F73B4E024E2A10E00BC2451 /* HourlyWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyWeather.swift; sourceTree = "<group>"; };
-		7F73B4E424E2BCA600BC2451 /* ParsingService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParsingService.swift; sourceTree = "<group>"; };
 		7F73B4E624E2C76000BC2451 /* HourlyForecast.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HourlyForecast.swift; sourceTree = "<group>"; };
 		7F741E8524EA9BF600AEE92B /* AppDependencies.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDependencies.swift; sourceTree = "<group>"; };
-		7F741E8724EA9DE700AEE92B /* WeeklyWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeeklyWeather.swift; sourceTree = "<group>"; };
 		7F7853D6250900DB008FAF73 /* SpinnerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpinnerViewController.swift; sourceTree = "<group>"; };
 		7F81C39724EFB9A900E9A164 /* WeeklyForecastEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "WeeklyForecastEntity+CoreDataClass.swift"; path = "WeatherApp/Models/DailyWeather/CoreDataModels/WeeklyForecastEntity+CoreDataClass.swift"; sourceTree = SOURCE_ROOT; };
 		7F81C39D24EFE37800E9A164 /* Double+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Double+Extensions.swift"; sourceTree = "<group>"; };
@@ -259,7 +255,6 @@
 				7F8BA68224D841ED004BFC74 /* WeatherApiService.swift */,
 				7F54C56D24FE2DFB003EC689 /* URLGenerator.swift */,
 				7F53B12924E6D7440033700E /* LocationService.swift */,
-				7F73B4E424E2BCA600BC2451 /* ParsingService.swift */,
 			);
 			path = Networking;
 			sourceTree = "<group>";
@@ -375,7 +370,6 @@
 		7F81C38924EFB33300E9A164 /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
-				7F741E8724EA9DE700AEE92B /* WeeklyWeather.swift */,
 				7F4DCEE124F7A9E50061070D /* DailyWeather.swift */,
 				7F73B4E024E2A10E00BC2451 /* HourlyWeather.swift */,
 				7F70B7BC250B64EA0035CD2F /* SectionOfHourlyWeather.swift */,
@@ -583,6 +577,7 @@
 				7F8BA64424D83D8F004BFC74 /* Frameworks */,
 				7F8BA64524D83D8F004BFC74 /* Resources */,
 				53D209DE29FC388DA479C725 /* [CP] Embed Pods Frameworks */,
+				7F70B7BE250BB7070035CD2F /* ShellScript */,
 			);
 			buildRules = (
 			);
@@ -766,6 +761,23 @@
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WeatherApp/Pods-WeatherApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
+		7F70B7BE250BB7070035CD2F /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "file=\"unused.rb\"\nif [ -f \"$file\" ]\nthen\necho \"$file found.\"\nruby unused.rb xcode\nelse\necho \"unused.rb doesn't exist\"\nfi\n";
+		};
 		C87D078534DD7C281B5545A5 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
@@ -814,7 +826,6 @@
 			files = (
 				7F956C8A24F54A5100C744F9 /* UIImageView+Extensions.swift in Sources */,
 				7F722B8B24D9565C0045CBA8 /* WeatherDetailViewController.swift in Sources */,
-				7F741E8824EA9DE700AEE92B /* WeeklyWeather.swift in Sources */,
 				7F8BA68124D840A5004BFC74 /* CurrentWeatherResponse.swift in Sources */,
 				7F8BA68924D84DB8004BFC74 /* WeatherTableViewCell.swift in Sources */,
 				7F81C3B324F1403700E9A164 /* CurrentForecastEntity+CoreDataClass.swift in Sources */,
@@ -866,7 +877,6 @@
 				7F59E6DD24EC11AC00169E30 /* DataRepository.swift in Sources */,
 				7FE15F6325010DFA00F92968 /* HourlyWeatherEntity+CoreDataProperties.swift in Sources */,
 				7FE15F54250108BC00F92968 /* TemperatureParametersEntity+CoreDataProperties.swift in Sources */,
-				7F73B4E524E2BCA600BC2451 /* ParsingService.swift in Sources */,
 				7F85F6EA250A63B600B0E0FA /* SectionOfCurrentWeather.swift in Sources */,
 				7F595B0924E1602F006C7DF7 /* WeatherListViewModel.swift in Sources */,
 				7F53B12A24E6D7440033700E /* LocationService.swift in Sources */,
