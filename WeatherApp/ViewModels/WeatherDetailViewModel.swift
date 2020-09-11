@@ -16,7 +16,8 @@ class WeatherDetailViewModel {
     private let coordinator: Coordinator
     private var dataRepository: DataRepository
     var currentWeather: CurrentWeather
-    var weeklyWeather: BehaviorRelay<WeeklyWeather>
+    var dailyWeather: BehaviorRelay<[DailyWeather]> = BehaviorRelay(value: [])
+    var hourlyWeather: BehaviorRelay<[SectionOfHourlyWeather]> = BehaviorRelay(value: [])
     let disposeBag = DisposeBag()
     
     var date: String {
@@ -32,7 +33,6 @@ class WeatherDetailViewModel {
         self.coordinator = coordinator
         self.locationService = appDependencies.locationService
         self.dataRepository = appDependencies.dataRepository
-        self.weeklyWeather = BehaviorRelay(value: WeeklyWeather(city: currentWeather.city, dailyWeatherList: [], hourlyWeatherList: []))
         
         locationService.getLocationCoordinates(location: currentWeather.city)
         getWeeklyWeather()
@@ -41,19 +41,22 @@ class WeatherDetailViewModel {
     func getWeeklyWeather() {
         dataRepository.getWeeklyWeather(latitude: locationService.coordinates.value.latitude,
                                         longitude: locationService.coordinates.value.longitude)
-            .subscribe(
-                onNext: { [weak self] (weeklyForecastEntity) in
-                    guard let self = self else { return }
-                    
-                    let hourlyWeatherList = weeklyForecastEntity.hourlyWeather.map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
-                    let dailyWeatherList = weeklyForecastEntity.dailyWeather.map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
-                    var newWeeklyWeather = WeeklyWeather(city: self.currentWeather.city, dailyWeatherList: dailyWeatherList, hourlyWeatherList: hourlyWeatherList)
-                    
-                    newWeeklyWeather.dailyWeatherList.sort { $0.dateTime < $1.dateTime }
-                    newWeeklyWeather.hourlyWeatherList.sort { $0.dateTime < $1.dateTime }
-                    self.weeklyWeather.accept(newWeeklyWeather)
-                },
-                onError: { (error) in
+            .subscribe(onNext: { [weak self] (weeklyForecastEntity) in
+                guard let self = self else { return }
+                
+                let hourlyWeatherList = weeklyForecastEntity.hourlyWeather
+                    .map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
+                    .sorted { $0.dateTime < $1.dateTime }
+                    .map( {SectionOfHourlyWeather(items: [$0]) } )
+
+                let dailyWeatherList = weeklyForecastEntity.dailyWeather
+                    .map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
+                    .sorted { $0.dateTime < $1.dateTime }
+
+  
+                self.hourlyWeather.accept(hourlyWeatherList)
+                self.dailyWeather.accept(dailyWeatherList)
+                }, onError: { (error) in
                     print(error)
             }).disposed(by: self.disposeBag)
     }

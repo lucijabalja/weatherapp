@@ -8,6 +8,8 @@
 
 import UIKit
 import RxSwift
+import RxCocoa
+import RxDataSources
 
 class WeatherDetailViewController: UIViewController {
     
@@ -21,6 +23,7 @@ class WeatherDetailViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private let spinner = SpinnerViewController()
+    private var hourlyWeatherDataSource: RxCollectionViewSectionedReloadDataSource<SectionOfHourlyWeather>!
     
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {
         super.init(nibName: nil, bundle: nil)
@@ -40,6 +43,8 @@ class WeatherDetailViewController: UIViewController {
         setupWeeklyWeatherData()
         setupUI()
         configureCollectionLayout()
+        configureDataSources()
+        bindCollectionView()
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -47,12 +52,28 @@ class WeatherDetailViewController: UIViewController {
         setupSpinner()
     }
     
+    private func configureDataSources() {
+        hourlyWeatherDataSource = RxCollectionViewSectionedReloadDataSource<SectionOfHourlyWeather>(
+            configureCell: { _, tableView, indexPath, item in
+                let cell = self.hourlyWeatherCollectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell
+                cell.configure(with: item)
+                self.endLoading()
+                self.refreshControl.endRefreshing()
+                return cell
+        })
+    }
+    
+    private func bindCollectionView() {
+          weatherDetailViewModel.hourlyWeather
+               .bind(to: hourlyWeatherCollectionView.rx.items(dataSource: hourlyWeatherDataSource))
+               .disposed(by: disposeBag)
+    }
+    
     private func setupWeeklyWeatherData() {
-        weatherDetailViewModel.weeklyWeather.subscribe(
+        weatherDetailViewModel.dailyWeather.subscribe(
             onNext: { [weak self] (_) in
                 guard let self = self else { return }
                 
-                self.updateCollectionView()
                 self.updateDailyStackView()
             },
             onError: { (error) in
@@ -61,29 +82,9 @@ class WeatherDetailViewController: UIViewController {
         }).disposed(by: disposeBag)
     }
     
-    private func setupUI() {
-        cityLabel.text = weatherDetailViewModel.currentWeather.city
-        dateLabel.text = weatherDetailViewModel.date
-        timeLabel.text = weatherDetailViewModel.time
-        hourlyWeatherCollectionView.backgroundColor = .systemBlue
-    }
-    
-    private func setupSpinner() {
-        addChild(spinner)
-        spinner.view.frame = view.frame
-        view.addSubview(spinner.view)
-        spinner.didMove(toParent: self)
-    }
-    
-    private func endLoading() {
-        spinner.willMove(toParent: nil)
-        spinner.view.removeFromSuperview()
-        spinner.removeFromParent()
-    }
-    
     private func updateDailyStackView() {
         for (index, dailyViews) in self.dailyWeatherViews.enumerated() {
-            guard let dayData = weatherDetailViewModel.weeklyWeather.value.dailyWeatherList[safeIndex: index] else { return }
+            guard let dayData = weatherDetailViewModel.dailyWeather.value[safeIndex: index] else { return }
             
             DispatchQueue.main.async {
                 self.endLoading()
@@ -99,44 +100,11 @@ extension WeatherDetailViewController: UICollectionViewDelegate {
     
     private func setupCollectionView() {
         hourlyWeatherCollectionView.register(WeatherCollectionViewCell.nib(), forCellWithReuseIdentifier: WeatherCollectionViewCell.identifier)
-        hourlyWeatherCollectionView.delegate = self
-        hourlyWeatherCollectionView.dataSource = self
+        hourlyWeatherCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
-    
-    private func configureCollectionLayout() {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 70, height: 150)
-        layout.scrollDirection = .horizontal
-        hourlyWeatherCollectionView.collectionViewLayout = layout
-    }
-    
-    private func updateCollectionView() {
-        DispatchQueue.main.async {
-            self.hourlyWeatherCollectionView.reloadData()
-            self.refreshControl.endRefreshing()
-        }
-    }
-    
+
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-    }
-    
-}
-
-extension WeatherDetailViewController: UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        weatherDetailViewModel.weeklyWeather.value.hourlyWeatherList.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell
-        
-        if let hourlyWeather = weatherDetailViewModel.weeklyWeather.value.hourlyWeatherList[safeIndex: indexPath.row] {
-            cell.configure(with: hourlyWeather)
-        }
-        
-        return cell
     }
     
 }
@@ -156,6 +124,39 @@ extension WeatherDetailViewController {
     
     @objc private func refreshWeatherData(_ sender: Any) {
         weatherDetailViewModel.getWeeklyWeather()
+    }
+    
+}
+
+// MARK:- Setup UI
+
+extension WeatherDetailViewController {
+    
+    private func setupUI() {
+        cityLabel.text = weatherDetailViewModel.currentWeather.city
+        dateLabel.text = weatherDetailViewModel.date
+        timeLabel.text = weatherDetailViewModel.time
+        hourlyWeatherCollectionView.backgroundColor = .systemBlue
+    }
+    
+    private func configureCollectionLayout() {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 70, height: 150)
+        layout.scrollDirection = .horizontal
+        hourlyWeatherCollectionView.collectionViewLayout = layout
+    }
+    
+    private func setupSpinner() {
+        addChild(spinner)
+        spinner.view.frame = view.frame
+        view.addSubview(spinner.view)
+        spinner.didMove(toParent: self)
+    }
+    
+    private func endLoading() {
+        spinner.willMove(toParent: nil)
+        spinner.view.removeFromSuperview()
+        spinner.removeFromParent()
     }
     
 }

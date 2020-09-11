@@ -63,13 +63,14 @@ class WeatherListViewController: UIViewController {
             .bind(to: weatherView.tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
-        weatherView.tableView.rx.modelSelected(CurrentWeather.self)
-            .subscribe(
-                onNext: { [weak self] (currentWeather) in
-                    guard let self = self else { return }
-                    
-                    self.weatherViewModel.pushToDetailView(with: currentWeather)
-            }).disposed(by: disposeBag)
+        weatherView.tableView.rx
+            .modelSelected(CurrentWeather.self)
+            .subscribe(onNext: { [weak self] (currentWeather) in
+                guard let self = self else { return }
+                
+                self.weatherViewModel.pushToDetailView(with: currentWeather)
+            })
+            .disposed(by: disposeBag)
     }
     
     private func setupUI() {
