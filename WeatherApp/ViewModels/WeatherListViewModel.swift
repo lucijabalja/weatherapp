@@ -25,22 +25,25 @@ class WeatherListViewModel {
     }
     
     func getCurrentWeather() {
-        dataRepository.getCurrentWeatherData().subscribe(
-            onNext: { [weak self] (currentWeatherEntities) in
-                guard let self = self else { return }
-                
-                let curentWeatherList = currentWeatherEntities.map { CurrentWeather(from: $0 )}
+        dataRepository.getCurrentWeatherData().subscribe(onNext: { [weak self] (result) in
+            guard let self = self else { return }
+            
+            if case let .success(currentWeatherList) = result {
+                let curentWeatherList = currentWeatherList.map { CurrentWeather(from: $0 )}
                 self.currentWeatherList.accept(curentWeatherList)
+            }
         }).disposed(by: disposeBag)
     }
     
     func getCurrentWeather(for city: String) {
         dataRepository.getCurrentCityWeather(for: city).subscribe(
-            onNext: { [weak self] (currentWeatherEntities) in
+            onNext: { [weak self] (result) in
                 guard let self = self else { return }
                 
-                let curentWeatherList = currentWeatherEntities.map { CurrentWeather(from: $0 )}
-                self.currentWeatherList.accept(curentWeatherList)
+                if case let .success(currentWeatherList) = result {
+                    let curentWeatherList = currentWeatherList.map { CurrentWeather(from: $0 )}
+                    self.currentWeatherList.accept(curentWeatherList)
+                }
         }).disposed(by: disposeBag)
     }
     
