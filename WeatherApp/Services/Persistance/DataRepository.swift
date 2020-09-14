@@ -21,34 +21,24 @@ class DataRepository {
         self.coreDataService = coreDataService
     }
     
-    func getCurrentWeatherData() -> Observable<CurrentForecastEntity> {
+    func getCurrentWeatherData() -> Observable<Result<CurrentForecastEntity, PersistanceError>> {
         let weatherData: Observable<Result<CurrentWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.currentWeather())
         
-        return weatherData.do(
-            onNext: { [weak self] (result) in
-                guard let self = self else { return }
-                
-                switch result {
-                case .success(let currentWeatherResponse):
-                    self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
-                case .failure(let error):
-                    print(error)
-                }
-        }).flatMap { (_) -> Observable<CurrentForecastEntity> in
-            return  Observable.create({ [weak self] (observer) in
-                guard let self = self else { return Disposables.create() }
-                
-                let loadedEntities = self.coreDataService.loadCurrentForecastData()
-                guard let entities = loadedEntities else {
-                    observer.onError(PersistanceError.loadingError)
-                    return Disposables.create()
-                }
-                
-                observer.onNext(entities)
-                observer.onCompleted()
-                
-                return Disposables.create()
-            })
+        return weatherData.do(onNext: { [weak self] (result) in
+            guard let self = self else { return }
+            
+            if case let .success(currentWeatherResponse) = result {
+                self.coreDataService.saveCurrentWeatherData(currentWeatherResponse)
+            }
+        }).flatMap { [weak self ] (_) -> Observable<Result<CurrentForecastEntity, PersistanceError>> in
+            guard
+                let self = self,
+                let currentForecastEntity = self.coreDataService.loadCurrentForecastData()
+                else {
+                    return Observable.just(.failure(.loadingError))
+            }
+            
+            return Observable.of(.success(currentForecastEntity))
         }
     }
     
