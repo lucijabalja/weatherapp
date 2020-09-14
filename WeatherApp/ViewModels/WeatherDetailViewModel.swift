@@ -7,6 +7,8 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 class WeatherDetailViewModel {
     
@@ -14,7 +16,8 @@ class WeatherDetailViewModel {
     private let coordinator: Coordinator
     private var dataRepository: DataRepository
     var currentWeather: CurrentWeather
-    var weeklyWeather: WeeklyWeather
+    var weeklyWeather: BehaviorRelay<WeeklyWeather>
+    let disposeBag = DisposeBag()
     
     var date: String {
         Utils.getFormattedDate()
@@ -29,34 +32,30 @@ class WeatherDetailViewModel {
         self.coordinator = coordinator
         self.locationService = appDependencies.locationService
         self.dataRepository = appDependencies.dataRepository
-        self.weeklyWeather = WeeklyWeather(city: currentWeather.city, dailyWeatherList: [], hourlyWeatherList: [])
+        self.weeklyWeather = BehaviorRelay(value: WeeklyWeather(city: currentWeather.city, dailyWeatherList: [], hourlyWeatherList: []))
+        
+        locationService.getLocationCoordinates(location: currentWeather.city)
+        getWeeklyWeather()
     }
     
-    func getWeeklyWeather(completion: @escaping (Result<Bool, Error>) -> Void) {
-        locationService.getLocationCoordinates(location: currentWeather.city) { (latitude, longitude ) in
-            self.dataRepository.getWeeklyWeather(latitude: latitude, longitude: longitude) { (result) in
-                switch result {
-                case .success(let weeklyForecastEntity):
-                    self.saveToWeeklyWeather(with: weeklyForecastEntity)
+    func getWeeklyWeather() {
+        dataRepository.getWeeklyWeather(latitude: locationService.coordinates.value.latitude,
+                                        longitude: locationService.coordinates.value.longitude)
+            .subscribe(
+                onNext: { [weak self] (result) in
+                    guard let self = self else { return }
                     
-                    completion(.success(true))
-                    
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-        }
-    }
-    
-    func saveToWeeklyWeather(with weeklyForecastEntity: WeeklyForecastEntity) {
-        let dailyList = weeklyForecastEntity.dailyWeather.map { DailyWeather(from: $0 as! DailyWeatherEntity) }
-        weeklyWeather.dailyWeatherList.append(contentsOf: dailyList)
-        
-        let hourlyList = weeklyForecastEntity.hourlyWeather.map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
-        weeklyWeather.hourlyWeatherList.append(contentsOf: hourlyList)
-        
-        weeklyWeather.dailyWeatherList.sort { $0.dateTime < $1.dateTime }
-        weeklyWeather.hourlyWeatherList.sort { $0.dateTime < $1.dateTime }
+                    if case let .success(weeklyForecastEntity) = result {
+                        let hourlyWeatherList = weeklyForecastEntity.hourlyWeather.map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
+                        let dailyWeatherList = weeklyForecastEntity.dailyWeather.map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
+                        var newWeeklyWeather = WeeklyWeather(city: self.currentWeather.city, dailyWeatherList: dailyWeatherList, hourlyWeatherList: hourlyWeatherList)
+                        
+                        newWeeklyWeather.dailyWeatherList.sort { $0.dateTime < $1.dateTime }
+                        newWeeklyWeather.hourlyWeatherList.sort { $0.dateTime < $1.dateTime }
+                        self.weeklyWeather.accept(newWeeklyWeather)
+                    }
+            }).disposed(by: self.disposeBag)
     }
     
 }
+

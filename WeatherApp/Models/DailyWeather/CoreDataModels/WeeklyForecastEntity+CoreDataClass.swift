@@ -48,7 +48,8 @@ public class WeeklyForecastEntity: NSManagedObject {
             weeklyForecastEntity.addToDailyWeather(dailyWeatherEntity)
         }
         
-        for (index, hourlyForecast) in weeklyWeatherResponse.hourlyForecast.enumerated() {
+        for index in 0...23 {
+            guard let hourlyForecast = weeklyWeatherResponse.hourlyForecast[safeIndex: index] else { return }
             let hourlyWeatherEntity = HourlyWeatherEntity.createFrom(hourlyForecast, index, context: context)
             hourlyWeatherEntity.weeklyForecast = weeklyForecastEntity
             weeklyForecastEntity.addToHourlyWeather(hourlyWeatherEntity)

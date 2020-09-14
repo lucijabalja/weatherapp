@@ -23,7 +23,7 @@ class URLGenerator {
         "\(baseURL)/weather?q=\(city)&\(apiKey)&\(units)"
     }
     
-    static func weeklyWeather(latitude: String, longitude: String) -> String {
+    static func weeklyWeather(latitude: Double, longitude: Double) -> String {
         "\(baseURL)/onecall?\(apiKey)&\(units)&lat=\(latitude)&lon=\(longitude)&\(exclusions)"
     }
     

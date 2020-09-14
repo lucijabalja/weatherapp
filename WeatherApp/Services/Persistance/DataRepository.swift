@@ -60,22 +60,26 @@ class DataRepository {
         }
     }
     
-    func getWeeklyWeather(latitude: Double, longitude: Double, completion: @escaping (Result<WeeklyForecastEntity, Error>) -> Void) {
-        weatherApiService.fetchWeeklyWeather(with: latitude, longitude) { (result) in
-            switch result {
-            case .success(let dailyWeatherResponse):
-                self.coreDataService.saveWeeklyForecast(dailyWeatherResponse)
-                guard let weeklyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else { return }
+    func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> {
+        let weeklyWeatherResponse: Observable<Result<WeeklyWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.weeklyWeather(latitude: latitude, longitude: longitude))
+        
+        return weeklyWeatherResponse
+            .do(onNext: { [weak self] (result) in
+                guard let self = self else { return }
                 
-                completion(.success(weeklyForecastEntity))
-                
-            case .failure(_):
-                guard let weeklyForecastEntity = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude) else {
-                    return
+                if case let .success(weeklyWeatherResponse) = result {
+                    self.coreDataService.saveWeeklyForecast(weeklyWeatherResponse)
+                }
+            })
+            .flatMap { [weak self ] (_) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> in
+                guard
+                    let self = self,
+                    let loadedEntities = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude)
+                    else {
+                        return Observable.just(.failure(.loadingError))
                 }
                 
-                completion(.success(weeklyForecastEntity))
-            }
+                return Observable.of(.success(loadedEntities))
         }
     }
     
@@ -83,4 +87,5 @@ class DataRepository {
         let cityIds = coreDataService.loadCityEntites().map { String($0.id) }
         return cityIds.count > 0 ? cityIds.map { $0 }.joined(separator:",") : Constants.defaultCityIds
     }
+
 }
