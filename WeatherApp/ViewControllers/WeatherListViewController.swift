@@ -10,10 +10,11 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxDataSources
+import PureLayout
 
 class WeatherListViewController: UIViewController {
     
-    private let weatherView = WeatherListView()
+    private let weatherListView = WeatherListView()
     private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
     private var timerDisposeBag = DisposeBag()
@@ -35,6 +36,7 @@ class WeatherListViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
+        setupSpinner()
         createTimer()
         setupRefreshControl()
         setupConstraints()
@@ -43,9 +45,10 @@ class WeatherListViewController: UIViewController {
         bindTableView()
         bindErrorStream()
     }
-    
-    override func viewWillAppear(_ animated: Bool) {
-        setupSpinner()
+
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        view.setupGradientBackground()
     }
     
     private func createTimer() {
@@ -74,14 +77,13 @@ class WeatherListViewController: UIViewController {
     
     private func bindTableView() {
         weatherViewModel.currentWeatherList
-            .bind(to: weatherView.tableView.rx.items(dataSource: dataSource))
+            .bind(to: weatherListView.tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
-        weatherView.tableView.rx
+        weatherListView.tableView.rx
             .modelSelected(CurrentWeather.self)
             .subscribe(onNext: { [weak self] (currentWeather) in
                 guard let self = self else { return }
-                
                 self.weatherViewModel.pushToDetailView(with: currentWeather)
             })
             .disposed(by: disposeBag)
@@ -96,7 +98,6 @@ class WeatherListViewController: UIViewController {
             }
         }).disposed(by: disposeBag)
     }
-    
 }
 
 // MARK:- Table View setup
@@ -104,12 +105,16 @@ class WeatherListViewController: UIViewController {
 extension WeatherListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        100
+        110
     }
     
     private func setupTableView() {
-        weatherView.tableView.rx.setDelegate(self).disposed(by: disposeBag)
-        weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
+        weatherListView.tableView.rx.setDelegate(self).disposed(by: disposeBag)
+        weatherListView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: false)
     }
     
 }
@@ -121,9 +126,9 @@ extension WeatherListViewController {
     private func setupRefreshControl() {
         refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
         if #available(iOS 10.0, *) {
-            weatherView.tableView.refreshControl = refreshControl
+            weatherListView.tableView.refreshControl = refreshControl
         } else {
-            weatherView.tableView.addSubview(refreshControl)
+            weatherListView.tableView.addSubview(refreshControl)
         }
     }
     
@@ -145,8 +150,8 @@ extension WeatherListViewController {
     }
     
     private func setupUI() {
-        weatherView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(weatherView)
+        weatherListView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(weatherListView)
     }
     
     private func setupSpinner() {
@@ -163,10 +168,8 @@ extension WeatherListViewController {
     }
     
     private func setupConstraints() {
-        weatherView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        view.addSubview(weatherListView)
+        weatherListView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5))
     }
     
 }

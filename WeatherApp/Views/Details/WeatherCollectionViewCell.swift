@@ -20,6 +20,7 @@ class WeatherCollectionViewCell: UICollectionViewCell {
         timeLabel.text = Utils.getFormattedTime(with: date)
         weatherIcon.image = UIImage(systemName: hourlyWeather.icon)
         temperatureLabel.text = hourlyWeather.temperature
+        weatherIcon.tintColor = hourlyWeather.icon.starts(with: "sun") ? .sunColor : .cloudColor
     }
     
     static func nib() -> UINib {

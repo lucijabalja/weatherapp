@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PureLayout
 
 class WeatherListView: UIView {
     
@@ -24,21 +25,14 @@ class WeatherListView: UIView {
     }
     
     private func setupUI() {
-        backgroundColor = .systemBlue
-        
-        tableView.backgroundColor = .systemBlue
+        tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
-        tableView.translatesAutoresizingMaskIntoConstraints = false
         tableView.isHidden = false
-        
-        addSubview(tableView)
     }
     
     private func setupConstraints() {
-        tableView.topAnchor.constraint(equalTo: self.topAnchor).isActive = true
-        tableView.leftAnchor.constraint(equalTo: self.leftAnchor).isActive = true
-        tableView.bottomAnchor.constraint(equalTo: self.bottomAnchor).isActive = true
-        tableView.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
+        self.addSubview(tableView)
+        tableView.autoPinEdgesToSuperviewEdges()
     }
     
 }

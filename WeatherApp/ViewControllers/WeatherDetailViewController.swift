@@ -10,6 +10,7 @@ import UIKit
 import RxSwift
 import RxCocoa
 import RxDataSources
+import PureLayout
 
 class WeatherDetailViewController: UIViewController {
     
@@ -43,14 +44,16 @@ class WeatherDetailViewController: UIViewController {
         setupRefreshControl()
         setupWeeklyWeatherData()
         setupUI()
+        setupSpinner()
         configureCollectionLayout()
         createDataSource()
         bindCollectionView()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
+    override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        setupSpinner()
+        
+        view.setupGradientBackground()
     }
     
     private func createDataSource() {
@@ -69,7 +72,7 @@ class WeatherDetailViewController: UIViewController {
             .bind(to: hourlyWeatherCollectionView.rx.items(dataSource: hourlyWeatherDataSource))
             .disposed(by: disposeBag)
     }
-    
+
     private func setupWeeklyWeatherData() {
         weatherDetailViewModel.dailyWeather.subscribe(
             onNext: { [weak self] (_) in
@@ -103,7 +106,7 @@ extension WeatherDetailViewController: UICollectionViewDelegate {
         hourlyWeatherCollectionView.register(WeatherCollectionViewCell.nib(), forCellWithReuseIdentifier: WeatherCollectionViewCell.identifier)
         hourlyWeatherCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
-
+    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
     }
@@ -137,7 +140,7 @@ extension WeatherDetailViewController {
         cityLabel.text = weatherDetailViewModel.currentWeather.city
         dateLabel.text = Utils.getFormattedDate()
         timeLabel.text = Utils.getFormattedTime()
-        hourlyWeatherCollectionView.backgroundColor = .systemBlue
+        hourlyWeatherCollectionView.backgroundColor = .clear
     }
     
     private func configureCollectionLayout() {

@@ -9,7 +9,8 @@ target 'WeatherApp' do
     pod 'RxSwift', '~> 5'
     pod 'RxCocoa', '~> 5'
     pod 'RxDataSources', '~> 4.0'
-
+    pod 'PureLayout'
+    
   target 'WeatherAppTests' do
     inherit! :search_paths
     # Pods for testing
