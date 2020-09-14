@@ -14,13 +14,13 @@ class URLGenerator {
     static let apiKey = "appid=56151fef235e6cebb33750525932d021"
     static let units = "units=metric"
     static let exclusions = "exclude=minutely"
-    
-    static func currentWeather() -> String {
+     
+    class func currentWeather() -> String {
         let ids = City.allCases.map{ $0.rawValue}.map { $0 }.joined(separator:",")
         return "\(baseURL)/group?\(apiKey)&\(exclusions)&\(units)&id=\(ids)"
     }
     
-    static func weeklyWeather(latitude: Double, longitude: Double) -> String {
+    class func weeklyWeather(latitude: Double, longitude: Double) -> String {
         "\(baseURL)/onecall?\(apiKey)&\(units)&lat=\(latitude)&lon=\(longitude)&\(exclusions)"
     }
 }

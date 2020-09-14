@@ -19,10 +19,11 @@ class LocationService {
     func getLocationCoordinates(location: String) {
         geoCoder.geocodeAddressString(location) { (placemarks, error) in
             if error == nil {
-                guard let placemark = placemarks?[0] else { return }
+                guard
+                    let placemark = placemarks?[0],
+                    let location = placemark.location
+                    else { return }
                 
-                guard let location = placemark.location else { return }
-            
                 let latitude = location.coordinate.latitude.rounded(digits: 2)
                 let longitude = location.coordinate.longitude.rounded(digits: 2)
                 
