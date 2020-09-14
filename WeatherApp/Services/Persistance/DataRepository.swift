@@ -52,27 +52,26 @@ class DataRepository {
         }
     }
     
-    func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<WeeklyForecastEntity> {
+    func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> {
         let weeklyWeatherResponse: Observable<Result<WeeklyWeatherResponse, NetworkError>> = weatherApiService.fetchData(urlString: URLGenerator.weeklyWeather(latitude: latitude, longitude: longitude))
         
         return weeklyWeatherResponse
             .do(onNext: { [weak self] (result) in
                 guard let self = self else { return }
                 
-                switch result {
-                case .success(let weeklyWeatherResponse):
+                if case let .success(weeklyWeatherResponse) = result {
                     self.coreDataService.saveWeeklyForecast(weeklyWeatherResponse)
-                case .failure(let error):
-                    print(error)
                 }
             })
-            .flatMap { [weak self ] (_) -> Observable<WeeklyForecastEntity> in
-                guard let self = self else { return Observable.of() }
+            .flatMap { [weak self ] (_) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> in
+                guard
+                    let self = self,
+                    let loadedEntities = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude)
+                    else {
+                        return Observable.just(.failure(.loadingError))
+                }
                 
-                let loadedEntities = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude)
-                guard let entities = loadedEntities else { return Observable.of() }
-                
-                return Observable.of(entities)
+                return Observable.of(.success(loadedEntities))
         }
     }
     

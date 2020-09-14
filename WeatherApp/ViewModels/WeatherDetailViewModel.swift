@@ -42,19 +42,18 @@ class WeatherDetailViewModel {
         dataRepository.getWeeklyWeather(latitude: locationService.coordinates.value.latitude,
                                         longitude: locationService.coordinates.value.longitude)
             .subscribe(
-                onNext: { [weak self] (weeklyForecastEntity) in
+                onNext: { [weak self] (result) in
                     guard let self = self else { return }
                     
-                    let hourlyWeatherList = weeklyForecastEntity.hourlyWeather.map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
-                    let dailyWeatherList = weeklyForecastEntity.dailyWeather.map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
-                    var newWeeklyWeather = WeeklyWeather(city: self.currentWeather.city, dailyWeatherList: dailyWeatherList, hourlyWeatherList: hourlyWeatherList)
-                    
-                    newWeeklyWeather.dailyWeatherList.sort { $0.dateTime < $1.dateTime }
-                    newWeeklyWeather.hourlyWeatherList.sort { $0.dateTime < $1.dateTime }
-                    self.weeklyWeather.accept(newWeeklyWeather)
-                },
-                onError: { (error) in
-                    print(error)
+                    if case let .success(weeklyForecastEntity) = result {
+                        let hourlyWeatherList = weeklyForecastEntity.hourlyWeather.map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
+                        let dailyWeatherList = weeklyForecastEntity.dailyWeather.map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
+                        var newWeeklyWeather = WeeklyWeather(city: self.currentWeather.city, dailyWeatherList: dailyWeatherList, hourlyWeatherList: hourlyWeatherList)
+                        
+                        newWeeklyWeather.dailyWeatherList.sort { $0.dateTime < $1.dateTime }
+                        newWeeklyWeather.hourlyWeatherList.sort { $0.dateTime < $1.dateTime }
+                        self.weeklyWeather.accept(newWeeklyWeather)
+                    }
             }).disposed(by: self.disposeBag)
     }
     
