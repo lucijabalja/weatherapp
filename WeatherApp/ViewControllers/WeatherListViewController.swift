@@ -67,11 +67,6 @@ class WeatherListViewController: UIViewController {
         })
     }
     
-    private func setupTableView() {
-        weatherView.tableView.rx.setDelegate(self).disposed(by: disposeBag)
-        weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
-    }
-    
     private func bindTableView() {
         weatherViewModel.currentWeatherList
             .bind(to: weatherView.tableView.rx.items(dataSource: dataSource))
@@ -86,6 +81,46 @@ class WeatherListViewController: UIViewController {
             })
             .disposed(by: disposeBag)
     }
+    
+}
+
+// MARK:- Table View setup
+
+extension WeatherListViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        100
+    }
+    
+    private func setupTableView() {
+        weatherView.tableView.rx.setDelegate(self).disposed(by: disposeBag)
+        weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
+    }
+    
+}
+
+// MARK:- Refresh Control setup
+
+extension WeatherListViewController {
+    
+    private func setupRefreshControl() {
+        refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
+        if #available(iOS 10.0, *) {
+            weatherView.tableView.refreshControl = refreshControl
+        } else {
+            weatherView.tableView.addSubview(refreshControl)
+        }
+    }
+    
+    @objc private func refreshWeatherData(_ sender: Any) {
+        weatherViewModel.getCurrentWeather()
+    }
+    
+}
+
+// MARK:- Setup UI
+
+extension WeatherListViewController {
     
     private func setupUI() {
         weatherView.translatesAutoresizingMaskIntoConstraints = false
@@ -108,33 +143,6 @@ class WeatherListViewController: UIViewController {
         weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
         weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
         weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
-    }
-    
-}
-
-extension WeatherListViewController: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        100
-    }
-    
-}
-
-// MARK:- Refresh Control setup
-
-extension WeatherListViewController {
-    
-    private func setupRefreshControl() {
-        refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
-        if #available(iOS 10.0, *) {
-            weatherView.tableView.refreshControl = refreshControl
-        } else {
-            weatherView.tableView.addSubview(refreshControl)
-        }
-    }
-    
-    @objc private func refreshWeatherData(_ sender: Any) {
-        weatherViewModel.getCurrentWeather()
     }
     
 }
