@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.2" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="16097.3" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
     <device id="retina5_9" orientation="portrait" appearance="light"/>
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="16087"/>
@@ -24,42 +24,42 @@
             </connections>
         </placeholder>
         <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        <view contentMode="scaleToFill" id="iN0-l3-epB">
-            <rect key="frame" x="0.0" y="0.0" width="314" height="1000"/>
+        <view clipsSubviews="YES" contentMode="scaleToFill" id="iN0-l3-epB">
+            <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
             <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
             <subviews>
                 <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Fog-wA-GA9">
-                    <rect key="frame" x="0.0" y="0.0" width="314" height="1000"/>
+                    <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
                     <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rR7-Xl-WF9" userLabel="ContentView">
-                            <rect key="frame" x="0.0" y="0.0" width="314" height="1000"/>
+                        <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rR7-Xl-WF9" userLabel="ContentView">
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="1000"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="zxK-wS-H6y" userLabel="Labels Stack View">
-                                    <rect key="frame" x="10" y="50" width="294" height="128"/>
+                                    <rect key="frame" x="10" y="50" width="355" height="170"/>
                                     <subviews>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NaK-oa-pcB" userLabel="cityLabel">
-                                            <rect key="frame" x="0.0" y="0.0" width="294" height="48"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="40"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NaK-oa-pcB" userLabel="cityLabel">
+                                            <rect key="frame" x="0.0" y="0.0" width="355" height="50"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="35"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V4B-jY-K69" userLabel="dateLabel">
-                                            <rect key="frame" x="0.0" y="58" width="294" height="24"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="20"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V4B-jY-K69" userLabel="dateLabel">
+                                            <rect key="frame" x="0.0" y="60" width="355" height="50"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="20"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
-                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="Label" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kcy-hl-B1I" userLabel="timeLabel">
-                                            <rect key="frame" x="0.0" y="92" width="294" height="36"/>
-                                            <fontDescription key="fontDescription" type="boldSystem" pointSize="30"/>
+                                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Kcy-hl-B1I" userLabel="timeLabel">
+                                            <rect key="frame" x="0.0" y="120" width="355" height="50"/>
+                                            <fontDescription key="fontDescription" name="AvenirNext-DemiBold" family="Avenir Next" pointSize="30"/>
                                             <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <nil key="highlightedColor"/>
                                         </label>
                                     </subviews>
                                 </stackView>
                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="J7s-Dc-e5I">
-                                    <rect key="frame" x="10" y="188" width="294" height="180"/>
-                                    <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <rect key="frame" x="10" y="230" width="355" height="180"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
                                         <constraint firstAttribute="height" constant="180" id="Dje-CL-wDJ"/>
@@ -72,63 +72,66 @@
                                     </collectionViewFlowLayout>
                                 </collectionView>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="lAP-wb-IAe" userLabel="Daily Weather Stack View">
-                                    <rect key="frame" x="5" y="388" width="304" height="398"/>
+                                    <rect key="frame" x="5" y="430" width="365" height="398"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b0P-Ob-q8b" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="0.0" width="304" height="50"/>
-                                            <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="365" height="50"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="o5r-tv-R5G"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="eZt-ni-sfp" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="58" width="304" height="50"/>
-                                            <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <rect key="frame" x="0.0" y="58" width="365" height="50"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="P56-Ow-T1B"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="YkS-z9-WxO" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="116" width="304" height="50"/>
-                                            <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <rect key="frame" x="0.0" y="116" width="365" height="50"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="QFn-eb-YeE"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="gsi-Zj-nOT" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="174" width="304" height="50"/>
-                                            <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <rect key="frame" x="0.0" y="174" width="365" height="50"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="Gm7-2R-d88"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="jLv-uu-A2Z" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="232" width="304" height="50"/>
-                                            <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <rect key="frame" x="0.0" y="232" width="365" height="50"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="eqG-eA-Ygb"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="oeI-7z-MY4" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="290" width="304" height="50"/>
-                                            <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <rect key="frame" x="0.0" y="290" width="365" height="50"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="9ut-ez-f1r"/>
                                             </constraints>
                                         </view>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="tuO-GX-c0F" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
-                                            <rect key="frame" x="0.0" y="348" width="304" height="50"/>
-                                            <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                            <rect key="frame" x="0.0" y="348" width="365" height="50"/>
+                                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                             <constraints>
                                                 <constraint firstAttribute="height" constant="50" id="5E1-Sc-gAi"/>
                                             </constraints>
                                         </view>
                                     </subviews>
-                                    <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="tintColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                    <constraints>
+                                        <constraint firstItem="b0P-Ob-q8b" firstAttribute="leading" secondItem="lAP-wb-IAe" secondAttribute="leading" id="58e-Xx-hAI"/>
+                                    </constraints>
                                 </stackView>
                             </subviews>
-                            <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                            <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                             <constraints>
                                 <constraint firstItem="J7s-Dc-e5I" firstAttribute="leading" secondItem="rR7-Xl-WF9" secondAttribute="leading" constant="10" id="3VG-0W-IK3"/>
                                 <constraint firstAttribute="trailing" secondItem="zxK-wS-H6y" secondAttribute="trailing" constant="10" id="8MD-vZ-YZV"/>
@@ -136,17 +139,17 @@
                                 <constraint firstAttribute="trailing" secondItem="lAP-wb-IAe" secondAttribute="trailing" constant="5" id="Ehd-mW-66g"/>
                                 <constraint firstAttribute="trailing" secondItem="J7s-Dc-e5I" secondAttribute="trailing" constant="10" id="GUA-SC-MEU"/>
                                 <constraint firstItem="zxK-wS-H6y" firstAttribute="leading" secondItem="rR7-Xl-WF9" secondAttribute="leading" constant="10" id="I4g-5l-my8"/>
-                                <constraint firstItem="lAP-wb-IAe" firstAttribute="leading" secondItem="rR7-Xl-WF9" secondAttribute="leading" constant="5" id="MRF-dF-BWR"/>
                                 <constraint firstItem="J7s-Dc-e5I" firstAttribute="top" secondItem="zxK-wS-H6y" secondAttribute="bottom" constant="10" id="Wtq-5L-IGR"/>
                                 <constraint firstItem="zxK-wS-H6y" firstAttribute="centerX" secondItem="rR7-Xl-WF9" secondAttribute="centerX" id="eLo-xL-Zhb"/>
                                 <constraint firstAttribute="height" constant="1000" id="exb-xm-wrp"/>
                                 <constraint firstItem="lAP-wb-IAe" firstAttribute="centerX" secondItem="rR7-Xl-WF9" secondAttribute="centerX" id="hZT-Ql-6mG"/>
                                 <constraint firstItem="zxK-wS-H6y" firstAttribute="top" secondItem="rR7-Xl-WF9" secondAttribute="top" constant="50" id="jC7-2p-1GT"/>
+                                <constraint firstItem="lAP-wb-IAe" firstAttribute="leading" secondItem="rR7-Xl-WF9" secondAttribute="leading" constant="5" id="jTW-KH-JOJ"/>
                                 <constraint firstItem="J7s-Dc-e5I" firstAttribute="centerX" secondItem="rR7-Xl-WF9" secondAttribute="centerX" id="yS6-g1-tWN"/>
                             </constraints>
                         </view>
                     </subviews>
-                    <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                    <color key="backgroundColor" red="0.42745098039215684" green="0.83529411764705885" blue="0.98039215686274506" alpha="0.0" colorSpace="calibratedRGB"/>
                     <constraints>
                         <constraint firstItem="rR7-Xl-WF9" firstAttribute="width" secondItem="Fog-wA-GA9" secondAttribute="width" id="0RV-Qb-Kw8"/>
                         <constraint firstItem="rR7-Xl-WF9" firstAttribute="top" secondItem="Fog-wA-GA9" secondAttribute="top" id="1Cw-1d-6ut"/>
@@ -159,7 +162,7 @@
                     <viewLayoutGuide key="frameLayoutGuide" id="aoH-oO-fEx"/>
                 </scrollView>
             </subviews>
-            <color key="backgroundColor" systemColor="systemBlueColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+            <color key="backgroundColor" red="0.42745098039215684" green="0.83529411764705885" blue="0.98039215686274506" alpha="0.0" colorSpace="calibratedRGB"/>
             <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
             <constraints>
                 <constraint firstItem="Fog-wA-GA9" firstAttribute="bottom" secondItem="vUN-kp-3ea" secondAttribute="bottom" constant="34" id="EQr-NY-mAA"/>
@@ -167,7 +170,6 @@
                 <constraint firstItem="Fog-wA-GA9" firstAttribute="leading" secondItem="vUN-kp-3ea" secondAttribute="leading" id="Ocx-MG-aJM"/>
                 <constraint firstItem="vUN-kp-3ea" firstAttribute="trailing" secondItem="Fog-wA-GA9" secondAttribute="trailing" id="bXp-pc-heQ"/>
             </constraints>
-            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
             <viewLayoutGuide key="safeArea" id="vUN-kp-3ea"/>
             <point key="canvasLocation" x="-291.19999999999999" y="196.55172413793105"/>
         </view>

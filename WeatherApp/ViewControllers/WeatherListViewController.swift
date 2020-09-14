@@ -7,10 +7,11 @@
 //
 
 import UIKit
+import PureLayout
 
 class WeatherListViewController: UIViewController {
     
-    private let weatherView = WeatherListView()
+    private let weatherListView = WeatherListView()
     private let errorView = ErrorView()
     private var weatherViewModel: WeatherListViewModel!
     
@@ -34,6 +35,11 @@ class WeatherListViewController: UIViewController {
         fillTableView()
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        view.setupGradientBackground()
+    }
+    
     private func setupEvents() {
         errorView.refreshButton.addTarget(self, action: #selector(refreshButtonPressed), for: .touchUpInside)
     }
@@ -43,11 +49,10 @@ class WeatherListViewController: UIViewController {
     }
     
     private func setupTableView() {
-        weatherView.tableView.dataSource = self
-        weatherView.tableView.delegate = self
-        weatherView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
+        weatherListView.tableView.dataSource = self
+        weatherListView.tableView.delegate = self
+        weatherListView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
-    
     
     private func fillTableView() {
         weatherViewModel.getCurrentWeather() { [weak self] (result) in
@@ -55,9 +60,7 @@ class WeatherListViewController: UIViewController {
             case .success(_): self?.updateUI()
             case .failure(let error):
                 DispatchQueue.main.async {
-                    self?.weatherView.tableView.isHidden = true
-                    self?.errorView.isHidden = false
-                    self?.errorView.setErrorLabel(with: error)
+                    self?.setErrorView(with: error)
                 }
             }
         }
@@ -66,31 +69,28 @@ class WeatherListViewController: UIViewController {
     private func updateUI() {
         DispatchQueue.main.async {
             self.errorView.isHidden = true
-            self.weatherView.tableView.isHidden = false
-            self.weatherView.tableView.reloadData()
+            self.weatherListView.tableView.isHidden = false
+            self.weatherListView.tableView.reloadData()
         }
     }
     
     private func setupUI() {
-        weatherView.translatesAutoresizingMaskIntoConstraints = false
-        errorView.translatesAutoresizingMaskIntoConstraints = false
-        weatherView.isHidden = false
+        weatherListView.isHidden = false
         errorView.isHidden = true
-        
-        view.addSubview(weatherView)
-        view.addSubview(errorView)
     }
     
     private func setupConstraints() {
-        weatherView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        weatherView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        weatherView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        weatherView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        view.addSubview(weatherListView)
+        weatherListView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5))
+    }
+    
+    private func setErrorView(with error: Error) {
+        errorView.setErrorLabel(with: error)
+        weatherListView.tableView.isHidden = true
+        errorView.isHidden = false
         
-        errorView.topAnchor.constraint(equalTo: self.view.topAnchor).isActive = true
-        errorView.bottomAnchor.constraint(equalTo: self.view.bottomAnchor).isActive = true
-        errorView.leftAnchor.constraint(equalTo: self.view.leftAnchor).isActive = true
-        errorView.rightAnchor.constraint(equalTo: self.view.rightAnchor).isActive = true
+        view.addSubview(errorView)
+        errorView.autoPinEdgesToSuperviewEdges()
     }
     
 }
@@ -117,11 +117,12 @@ extension WeatherListViewController: UITableViewDataSource {
 extension WeatherListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        weatherViewModel.pushToDetailView(at: indexPath.row)
+        tableView.deselectRow(at: indexPath, animated: false)
+        return weatherViewModel.pushToDetailView(at: indexPath.row)
     }
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        100
+        110
     }
     
 }

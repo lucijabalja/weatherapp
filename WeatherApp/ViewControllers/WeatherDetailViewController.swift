@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import PureLayout
 
 class WeatherDetailViewController: UIViewController {
     
@@ -34,6 +35,12 @@ class WeatherDetailViewController: UIViewController {
         setupWeeklyWeatherData()
         setupUI()
         configureCollectionLayout()
+    }
+    
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        view.setupGradientBackground()
     }
     
     private func setupCollectionView() {
@@ -64,7 +71,7 @@ class WeatherDetailViewController: UIViewController {
         cityLabel.text = weatherDetailViewModel.currentWeather.city
         dateLabel.text = weatherDetailViewModel.date
         timeLabel.text = weatherDetailViewModel.time
-        hourlyWeatherCollectionView.backgroundColor = .systemBlue
+        hourlyWeatherCollectionView.backgroundColor = .clear
     }
     
     private func updateCollectionView() {

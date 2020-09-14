@@ -12,9 +12,7 @@ extension UIImageView {
     
     func applyDefaultStyleView() {
         self.contentMode = .scaleAspectFill
-        self.translatesAutoresizingMaskIntoConstraints = false
         self.layer.cornerRadius = 35
         self.clipsToBounds = true
-        self.tintColor = .white
     }
 }
