@@ -41,6 +41,11 @@ class WeatherListViewController: UIViewController {
         setupTableView()
         createDataSource()
         bindTableView()
+        bindErrorStream()
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        setupSpinner()
     }
     
     private func createTimer() {
@@ -80,6 +85,16 @@ class WeatherListViewController: UIViewController {
                 self.weatherViewModel.pushToDetailView(with: currentWeather)
             })
             .disposed(by: disposeBag)
+    }
+    
+    private func bindErrorStream() {
+        weatherViewModel.errorStream.subscribe(onNext: { (persistanceError) in
+            print(persistanceError)
+            DispatchQueue.main.async {
+                self.endLoading()
+                self.setAlertMessage(with: persistanceError)
+            }
+        }).disposed(by: disposeBag)
     }
     
 }
@@ -122,10 +137,19 @@ extension WeatherListViewController {
 
 extension WeatherListViewController {
     
+    private func setAlertMessage(with error: PersistanceError) {
+        let alert = UIAlertController(title: ErrorMessage.noInternetConnection,
+                                      message: ErrorMessage.turnInternetConnection, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(alert, animated: true)
+    }
+    
     private func setupUI() {
         weatherView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(weatherView)
-        
+    }
+    
+    private func setupSpinner() {
         addChild(spinner)
         spinner.view.frame = view.frame
         view.addSubview(spinner.view)
