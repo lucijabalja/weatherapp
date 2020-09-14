@@ -8,6 +8,7 @@
 
 import UIKit
 import RxSwift
+import PureLayout
 
 class WeatherDetailViewController: UIViewController {
     
@@ -47,6 +48,12 @@ class WeatherDetailViewController: UIViewController {
         setupSpinner()
     }
     
+    override func viewWillLayoutSubviews() {
+        super.viewWillLayoutSubviews()
+        
+        view.setupGradientBackground()
+    }
+    
     private func setupWeeklyWeatherData() {
         weatherDetailViewModel.weeklyWeather.subscribe(
             onNext: { [weak self] (_) in
@@ -59,26 +66,6 @@ class WeatherDetailViewController: UIViewController {
                 print(error)
                 
         }).disposed(by: disposeBag)
-    }
-    
-    private func setupUI() {
-        cityLabel.text = weatherDetailViewModel.currentWeather.city
-        dateLabel.text = weatherDetailViewModel.date
-        timeLabel.text = weatherDetailViewModel.time
-        hourlyWeatherCollectionView.backgroundColor = .systemBlue
-    }
-    
-    private func setupSpinner() {
-        addChild(spinner)
-        spinner.view.frame = view.frame
-        view.addSubview(spinner.view)
-        spinner.didMove(toParent: self)
-    }
-    
-    private func endLoading() {
-        spinner.willMove(toParent: nil)
-        spinner.view.removeFromSuperview()
-        spinner.removeFromParent()
     }
     
     private func updateDailyStackView() {
@@ -156,6 +143,32 @@ extension WeatherDetailViewController {
     
     @objc private func refreshWeatherData(_ sender: Any) {
         weatherDetailViewModel.getWeeklyWeather()
+    }
+    
+}
+
+// MARK:- UI Setup
+
+extension WeatherDetailViewController {
+    
+    private func setupSpinner() {
+        addChild(spinner)
+        spinner.view.frame = view.frame
+        view.addSubview(spinner.view)
+        spinner.didMove(toParent: self)
+    }
+    
+    private func endLoading() {
+        spinner.willMove(toParent: nil)
+        spinner.view.removeFromSuperview()
+        spinner.removeFromParent()
+    }
+    
+    private func setupUI() {
+        cityLabel.text = weatherDetailViewModel.currentWeather.city
+        dateLabel.text = weatherDetailViewModel.date
+        timeLabel.text = weatherDetailViewModel.time
+        hourlyWeatherCollectionView.backgroundColor = .clear
     }
     
 }

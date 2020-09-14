@@ -15,6 +15,7 @@
 		7F37A6EF24ED498A00EA1163 /* TemperatureParametersEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F37A6EB24ED498A00EA1163 /* TemperatureParametersEntity+CoreDataClass.swift */; };
 		7F4DCEE224F7A9E50061070D /* DailyWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4DCEE124F7A9E50061070D /* DailyWeather.swift */; };
 		7F4F2A2B24E57F7A00B16E78 /* DailyWeatherView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F4F2A2A24E57F7A00B16E78 /* DailyWeatherView.swift */; };
+		7F512BE5250FB4BC007C5767 /* Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F512BE4250FB4BB007C5767 /* Coordinates.swift */; };
 		7F52487D24E3D56000D62AD4 /* WeatherDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F52487C24E3D56000D62AD4 /* WeatherDetailViewController.xib */; };
 		7F52488124E3E41C00D62AD4 /* WeatherCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F52487F24E3E41C00D62AD4 /* WeatherCollectionViewCell.swift */; };
 		7F52488224E3E41C00D62AD4 /* WeatherCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 7F52488024E3E41C00D62AD4 /* WeatherCollectionViewCell.xib */; };
@@ -78,7 +79,8 @@
 		7FE15F54250108BC00F92968 /* TemperatureParametersEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE15F53250108BC00F92968 /* TemperatureParametersEntity+CoreDataProperties.swift */; };
 		7FE15F6325010DFA00F92968 /* HourlyWeatherEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE15F6125010DFA00F92968 /* HourlyWeatherEntity+CoreDataProperties.swift */; };
 		7FE15F6425010DFA00F92968 /* HourlyWeatherEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE15F6225010DFA00F92968 /* HourlyWeatherEntity+CoreDataClass.swift */; };
-		7FF2326A2501336E009B1E1F /* Coordinates.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF232692501336E009B1E1F /* Coordinates.swift */; };
+		7FF2326E2503870E009B1E1F /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF2326D2503870E009B1E1F /* UIColor+Extensions.swift */; };
+		7FF232702503923A009B1E1F /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF2326F2503923A009B1E1F /* UIView+Extensions.swift */; };
 		E7986C545D9B8AE484A292D1 /* Pods_WeatherApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23297FA33498A4879BE6B0D4 /* Pods_WeatherApp.framework */; };
 		F6E96C692612FE2C3F216F01 /* Pods_WeatherApp_WeatherAppUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 09EF1C83BA9E29C69FD05BDA /* Pods_WeatherApp_WeatherAppUITests.framework */; };
 /* End PBXBuildFile section */
@@ -112,6 +114,7 @@
 		7F37A6EB24ED498A00EA1163 /* TemperatureParametersEntity+CoreDataClass.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "TemperatureParametersEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7F4DCEE124F7A9E50061070D /* DailyWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWeather.swift; sourceTree = "<group>"; };
 		7F4F2A2A24E57F7A00B16E78 /* DailyWeatherView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DailyWeatherView.swift; sourceTree = "<group>"; };
+		7F512BE4250FB4BB007C5767 /* Coordinates.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Coordinates.swift; sourceTree = "<group>"; };
 		7F52487C24E3D56000D62AD4 /* WeatherDetailViewController.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeatherDetailViewController.xib; sourceTree = "<group>"; };
 		7F52487F24E3E41C00D62AD4 /* WeatherCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeatherCollectionViewCell.swift; sourceTree = "<group>"; };
 		7F52488024E3E41C00D62AD4 /* WeatherCollectionViewCell.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = WeatherCollectionViewCell.xib; sourceTree = "<group>"; };
@@ -181,7 +184,8 @@
 		7FE15F53250108BC00F92968 /* TemperatureParametersEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "TemperatureParametersEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7FE15F6125010DFA00F92968 /* HourlyWeatherEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HourlyWeatherEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7FE15F6225010DFA00F92968 /* HourlyWeatherEntity+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "HourlyWeatherEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
-		7FF232692501336E009B1E1F /* Coordinates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coordinates.swift; sourceTree = "<group>"; };
+		7FF2326D2503870E009B1E1F /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
+		7FF2326F2503923A009B1E1F /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		85D15402348DA4367754CC2E /* Pods-WeatherAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherAppTests.debug.xcconfig"; path = "Target Support Files/Pods-WeatherAppTests/Pods-WeatherAppTests.debug.xcconfig"; sourceTree = "<group>"; };
 		8AA9A1E2DE942D9550F6044C /* Pods_WeatherAppTests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_WeatherAppTests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E26807ADD54B14165A21034D /* Pods-WeatherApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherApp.release.xcconfig"; path = "Target Support Files/Pods-WeatherApp/Pods-WeatherApp.release.xcconfig"; sourceTree = "<group>"; };
@@ -325,6 +329,8 @@
 				7F59C81824F8F40C009CFE1B /* UIButton+Extensions.swift */,
 				7F81C3E624F5425E00E9A164 /* UIImageView+Extensions.swift */,
 				7F81C3E524F5425E00E9A164 /* UILabel+Extensions.swift */,
+				7FF2326D2503870E009B1E1F /* UIColor+Extensions.swift */,
+				7FF2326F2503923A009B1E1F /* UIView+Extensions.swift */,
 			);
 			path = UIExtensions;
 			sourceTree = "<group>";
@@ -422,9 +428,9 @@
 		7F81C3B924F16ADB00E9A164 /* Globals */ = {
 			isa = PBXGroup;
 			children = (
+				7F512BE4250FB4BB007C5767 /* Coordinates.swift */,
 				7F595B1224E177F5006C7DF7 /* City.swift */,
 				7F354ABF24EEB33F00B23346 /* NetworkError.swift */,
-				7FF232692501336E009B1E1F /* Coordinates.swift */,
 			);
 			path = Globals;
 			sourceTree = "<group>";
@@ -576,7 +582,7 @@
 				7F8BA64324D83D8F004BFC74 /* Sources */,
 				7F8BA64424D83D8F004BFC74 /* Frameworks */,
 				7F8BA64524D83D8F004BFC74 /* Resources */,
-				53D209DE29FC388DA479C725 /* [CP] Embed Pods Frameworks */,
+				9E1C8FDF01F24376B56F4D5B /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -614,7 +620,7 @@
 				7F8BA66424D83D91004BFC74 /* Sources */,
 				7F8BA66524D83D91004BFC74 /* Frameworks */,
 				7F8BA66624D83D91004BFC74 /* Resources */,
-				C87D078534DD7C281B5545A5 /* [CP] Embed Pods Frameworks */,
+				4FD120CB04FB5CDC9484785F /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -743,24 +749,7 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		53D209DE29FC388DA479C725 /* [CP] Embed Pods Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WeatherApp/Pods-WeatherApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
-			);
-			name = "[CP] Embed Pods Frameworks";
-			outputFileListPaths = (
-				"${PODS_ROOT}/Target Support Files/Pods-WeatherApp/Pods-WeatherApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WeatherApp/Pods-WeatherApp-frameworks.sh\"\n";
-			showEnvVarsInLog = 0;
-		};
-		C87D078534DD7C281B5545A5 /* [CP] Embed Pods Frameworks */ = {
+		4FD120CB04FB5CDC9484785F /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -775,6 +764,23 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WeatherApp-WeatherAppUITests/Pods-WeatherApp-WeatherAppUITests-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+		9E1C8FDF01F24376B56F4D5B /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WeatherApp/Pods-WeatherApp-frameworks-${CONFIGURATION}-input-files.xcfilelist",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-WeatherApp/Pods-WeatherApp-frameworks-${CONFIGURATION}-output-files.xcfilelist",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-WeatherApp/Pods-WeatherApp-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 		EB0670AF2BF26B4D661723FB /* [CP] Check Pods Manifest.lock */ = {
@@ -814,7 +820,6 @@
 				7F81C3B324F1403700E9A164 /* CurrentForecastEntity+CoreDataClass.swift in Sources */,
 				7F73B4E124E2A10E00BC2451 /* HourlyWeather.swift in Sources */,
 				7F53B12424E6CB9B0033700E /* WeeklyWeatherResponse.swift in Sources */,
-				7FF2326A2501336E009B1E1F /* Coordinates.swift in Sources */,
 				7F54C56E24FE2DFB003EC689 /* URLGenerator.swift in Sources */,
 				7F956C9524F54C9100C744F9 /* WeatherDescriptionEntity+CoreDataClass.swift in Sources */,
 				7F8BA67C24D83DDD004BFC74 /* WeatherListViewController.swift in Sources */,
@@ -825,6 +830,7 @@
 				7F81C3A924EFEB0100E9A164 /* TemperatureEntity+CoreDataClass.swift in Sources */,
 				7F8BA64D24D83D8F004BFC74 /* SceneDelegate.swift in Sources */,
 				7F59E69A24EBD2A100169E30 /* WeatherDataModel.xcdatamodeld in Sources */,
+				7FF2326E2503870E009B1E1F /* UIColor+Extensions.swift in Sources */,
 				7F956C9424F54C9100C744F9 /* CurrentWeatherEntity+CoreDataProperties.swift in Sources */,
 				7F741E8624EA9BF600AEE92B /* AppDependencies.swift in Sources */,
 				7F7853D7250900DB008FAF73 /* SpinnerViewController.swift in Sources */,
@@ -857,6 +863,7 @@
 				7F8BA68724D84281004BFC74 /* Constants.swift in Sources */,
 				7F354ABA24EEACC400B23346 /* CurrentForecast.swift in Sources */,
 				7F59E6DD24EC11AC00169E30 /* DataRepository.swift in Sources */,
+				7F512BE5250FB4BC007C5767 /* Coordinates.swift in Sources */,
 				7FE15F6325010DFA00F92968 /* HourlyWeatherEntity+CoreDataProperties.swift in Sources */,
 				7FE15F54250108BC00F92968 /* TemperatureParametersEntity+CoreDataProperties.swift in Sources */,
 				7F73B4E524E2BCA600BC2451 /* ParsingService.swift in Sources */,
@@ -865,6 +872,7 @@
 				7F73B4E724E2C76000BC2451 /* HourlyForecast.swift in Sources */,
 				7F81C39E24EFE37800E9A164 /* Double+Extensions.swift in Sources */,
 				7F354AC024EEB33F00B23346 /* NetworkError.swift in Sources */,
+				7FF232702503923A009B1E1F /* UIView+Extensions.swift in Sources */,
 				7F595AFD24E13284006C7DF7 /* TemperatureParameters.swift in Sources */,
 				7F81C3E024F529FB00E9A164 /* PersistanceError.swift in Sources */,
 				7F595AFB24E1326C006C7DF7 /* WeatherDescription.swift in Sources */,

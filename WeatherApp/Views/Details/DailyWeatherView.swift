@@ -28,8 +28,8 @@ class DailyWeatherView: UIView {
     }
     
     private func setupUI() {
-        layer.borderColor = UIColor.systemGray5.cgColor
-        layer.borderWidth = 1.0
+        layer.borderColor = UIColor.gradientDarkColor.cgColor
+        layer.borderWidth = 0.1
         layer.cornerRadius = 4.0
     }
     
@@ -39,5 +39,7 @@ class DailyWeatherView: UIView {
         maxTempLabel.text = dayData.temperature.max
         minTempLabel.text = dayData.temperature.min
         weatherIcon.image = UIImage(systemName: dayData.icon)
+        weatherIcon.tintColor = dayData.icon.starts(with: "sun") ? .sunColor : .cloudColor
     }
+    
 }
