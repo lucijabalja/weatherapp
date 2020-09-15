@@ -47,6 +47,7 @@ class WeatherDetailViewModel {
             .subscribe(
                 onNext: { [weak self] (result) in
                     guard let self = self else { return }
+                    self.showLoading.accept(true)
                     
                     if case let .success(weeklyForecastEntity) = result {
                         let newWeeklyWeather = self.mapWeeklyDataToViewModel(weeklyForecastEntity)

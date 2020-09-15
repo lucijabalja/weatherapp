@@ -26,10 +26,6 @@ class AppDependencies {
         CoreDataManager(modelName: "WeatherDataModel", completion: {})
     }()
     
-    lazy var parsingService: ParsingService = {
-        ParsingService()
-    }()
-    
     lazy var locationService: LocationService = {
         LocationService()
     }()

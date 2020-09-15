@@ -23,7 +23,7 @@ class WeatherDetailViewController: UIViewController {
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private var activityIndicator = SpinnerViewController()
-
+    
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {
         super.init(nibName: nil, bundle: nil)
         
@@ -44,13 +44,8 @@ class WeatherDetailViewController: UIViewController {
         configureCollectionLayout()
     }
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillLayoutSubviews()
-    }
-    
     override func viewWillLayoutSubviews() {
         super.viewWillLayoutSubviews()
-        
         view.setupGradientBackground()
     }
     
@@ -61,7 +56,7 @@ class WeatherDetailViewController: UIViewController {
                 
                 self.updateCollectionView()
                 self.updateDailyStackView()
-            }).disposed(by: disposeBag)
+        }).disposed(by: disposeBag)
     }
     
     private func updateDailyStackView() {
@@ -95,7 +90,6 @@ extension WeatherDetailViewController: UICollectionViewDelegate {
     private func updateCollectionView() {
         DispatchQueue.main.async {
             self.hourlyWeatherCollectionView.reloadData()
-            self.refreshControl.endRefreshing()
         }
     }
     
@@ -127,15 +121,15 @@ extension WeatherDetailViewController: UICollectionViewDataSource {
 
 extension WeatherDetailViewController {
     
-     private func setupRefreshControl() {
-          scrollView.refreshControl = refreshControl
-          
-          refreshControl
-              .rx
-              .controlEvent(.valueChanged)
-              .bind(to: weatherDetailViewModel.refreshData)
-              .disposed(by: disposeBag)
-      }
+    private func setupRefreshControl() {
+        scrollView.refreshControl = refreshControl
+        
+        refreshControl
+            .rx
+            .controlEvent(.valueChanged)
+            .bind(to: weatherDetailViewModel.refreshData)
+            .disposed(by: disposeBag)
+    }
     
 }
 

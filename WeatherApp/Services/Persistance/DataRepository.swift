@@ -52,8 +52,7 @@ class DataRepository {
                 if case let .success(weeklyWeatherResponse) = result {
                     self.coreDataService.saveWeeklyForecast(weeklyWeatherResponse)
                 }
-            })
-            .flatMap { [weak self ] (_) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> in
+            }).flatMap { [weak self ] (_) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> in
                 guard
                     let self = self,
                     let loadedEntities = self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude)
