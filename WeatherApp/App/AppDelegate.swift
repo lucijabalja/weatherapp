@@ -36,10 +36,12 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     // MARK: - Setup navigation bar UI
     
     func setNavigationBarUI() {
-        UINavigationBar.appearance().barTintColor = .systemBlue
+        UINavigationBar.appearance().barTintColor = .gradientDarkColor
         UINavigationBar.appearance().tintColor = UIColor.white
         UINavigationBar.appearance().barStyle = .black
         UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+        UINavigationBar.appearance().setBackgroundImage(UIImage(), for: UIBarMetrics.default)
+        UINavigationBar.appearance().shadowImage = UIImage()
         UINavigationBar.appearance().isTranslucent = true
     }
     

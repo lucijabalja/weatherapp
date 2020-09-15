@@ -16,7 +16,9 @@ class WeatherDetailViewModel {
     private let coordinator: Coordinator
     private var dataRepository: DataRepository
     var currentWeather: CurrentWeather
-    var weeklyWeather: BehaviorRelay<WeeklyWeather>
+    var dailyWeather = BehaviorRelay<[DailyWeather]>(value: [])
+    var refreshData = PublishSubject<Void>()
+    var showLoading = BehaviorRelay<Bool>(value: true)
     let disposeBag = DisposeBag()
     
     var date: String {
@@ -26,35 +28,48 @@ class WeatherDetailViewModel {
     var time: String {
         Utils.getFormattedTime()
     }
+
+    var hourlyWeather: Observable<[SectionOfHourlyWeather]> {
+        return refreshData
+            .asObservable()
+            .flatMap{ _ -> Observable<Result<WeeklyForecastEntity, PersistanceError>> in
+                self.showLoading.accept(true)
+                return self.dataRepository.getWeeklyWeather(latitude: self.locationService.coordinates.value.latitude,
+                                                            longitude: self.locationService.coordinates.value.longitude)
+        }
+        .flatMap { (result) -> Observable<[SectionOfHourlyWeather]> in
+            switch result {
+            case .success(let weeklyForecastEntity):
+                let hourlyWeatherList = weeklyForecastEntity.hourlyWeather
+                            .map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
+                            .sorted { $0.dateTime < $1.dateTime }
+                            .map( {SectionOfHourlyWeather(items: [$0]) } )
+                
+                let dailyWeatherList = weeklyForecastEntity.dailyWeather
+                                    .map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
+                                    .sorted { $0.dateTime < $1.dateTime }
+                
+                self.dailyWeather.accept(dailyWeatherList)
+                self.showLoading.accept(false)
+                
+                return Observable.just(hourlyWeatherList)
+                
+            case .failure(let error):
+                self.showLoading.accept(false)
+                
+                return Observable.error(error)
+            }
+        }
+    }
     
     init(appDependencies: AppDependencies, currentWeather: CurrentWeather, coordinator: Coordinator) {
         self.currentWeather = currentWeather
         self.coordinator = coordinator
         self.locationService = appDependencies.locationService
         self.dataRepository = appDependencies.dataRepository
-        self.weeklyWeather = BehaviorRelay(value: WeeklyWeather(city: currentWeather.city, dailyWeatherList: [], hourlyWeatherList: []))
         
         locationService.getLocationCoordinates(location: currentWeather.city)
-        getWeeklyWeather()
-    }
-    
-    func getWeeklyWeather() {
-        dataRepository.getWeeklyWeather(latitude: locationService.coordinates.value.latitude,
-                                        longitude: locationService.coordinates.value.longitude)
-            .subscribe(
-                onNext: { [weak self] (result) in
-                    guard let self = self else { return }
-                    
-                    if case let .success(weeklyForecastEntity) = result {
-                        let hourlyWeatherList = weeklyForecastEntity.hourlyWeather.map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
-                        let dailyWeatherList = weeklyForecastEntity.dailyWeather.map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
-                        var newWeeklyWeather = WeeklyWeather(city: self.currentWeather.city, dailyWeatherList: dailyWeatherList, hourlyWeatherList: hourlyWeatherList)
-                        
-                        newWeeklyWeather.dailyWeatherList.sort { $0.dateTime < $1.dateTime }
-                        newWeeklyWeather.hourlyWeatherList.sort { $0.dateTime < $1.dateTime }
-                        self.weeklyWeather.accept(newWeeklyWeather)
-                    }
-            }).disposed(by: self.disposeBag)
+        refreshData.onNext(())
     }
     
 }
