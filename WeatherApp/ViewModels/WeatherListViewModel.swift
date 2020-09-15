@@ -20,18 +20,20 @@ class WeatherListViewModel {
     let showLoading = BehaviorRelay<Bool>(value: true)
     let searchText = BehaviorRelay<String>(value: "")
     
-    var currentWeatherList: Observable<[CurrentWeather]> {
+    var currentWeatherList: Observable<[SectionOfCurrentWeather]> {
         return refreshData
             .asObservable()
             .flatMap{ _ -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
                 self.showLoading.accept(true)
                 return self.dataRepository.getCurrentWeatherData()
         }
-        .flatMap { (result) -> Observable<[CurrentWeather]> in
+        .flatMap { (result) -> Observable<[SectionOfCurrentWeather]> in
             switch result {
             case .success(let currentWeatherList):
                 let curentWeatherItems = currentWeatherList
                     .map { CurrentWeather(from: $0) }
+                    .map( {SectionOfCurrentWeather(items: [$0]) } )
+
                 self.showLoading.accept(false)
                 
                 return Observable.just(curentWeatherItems)

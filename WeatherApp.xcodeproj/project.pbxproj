@@ -76,6 +76,7 @@
 		7FE27AEB2510F708008E4AF0 /* CityEntity+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE27AE82510F708008E4AF0 /* CityEntity+CoreDataClass.swift */; };
 		7FE27AEC2510F708008E4AF0 /* CurrentWeatherEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE27AE92510F708008E4AF0 /* CurrentWeatherEntity+CoreDataProperties.swift */; };
 		7FE27AED2510F708008E4AF0 /* CityEntity+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE27AEA2510F708008E4AF0 /* CityEntity+CoreDataProperties.swift */; };
+		7FE27AEF25110192008E4AF0 /* SectionOfCurrentWeather.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FE27AEE25110192008E4AF0 /* SectionOfCurrentWeather.swift */; };
 		7FF2326E2503870E009B1E1F /* UIColor+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF2326D2503870E009B1E1F /* UIColor+Extensions.swift */; };
 		7FF232702503923A009B1E1F /* UIView+Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7FF2326F2503923A009B1E1F /* UIView+Extensions.swift */; };
 		E7986C545D9B8AE484A292D1 /* Pods_WeatherApp.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 23297FA33498A4879BE6B0D4 /* Pods_WeatherApp.framework */; };
@@ -178,6 +179,7 @@
 		7FE27AE82510F708008E4AF0 /* CityEntity+CoreDataClass.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CityEntity+CoreDataClass.swift"; sourceTree = "<group>"; };
 		7FE27AE92510F708008E4AF0 /* CurrentWeatherEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CurrentWeatherEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
 		7FE27AEA2510F708008E4AF0 /* CityEntity+CoreDataProperties.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "CityEntity+CoreDataProperties.swift"; sourceTree = "<group>"; };
+		7FE27AEE25110192008E4AF0 /* SectionOfCurrentWeather.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SectionOfCurrentWeather.swift; sourceTree = "<group>"; };
 		7FF2326D2503870E009B1E1F /* UIColor+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIColor+Extensions.swift"; sourceTree = "<group>"; };
 		7FF2326F2503923A009B1E1F /* UIView+Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+Extensions.swift"; sourceTree = "<group>"; };
 		85D15402348DA4367754CC2E /* Pods-WeatherAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-WeatherAppTests.debug.xcconfig"; path = "Target Support Files/Pods-WeatherAppTests/Pods-WeatherAppTests.debug.xcconfig"; sourceTree = "<group>"; };
@@ -550,6 +552,7 @@
 				7F595AFE24E132A2006C7DF7 /* CurrentWeather.swift */,
 				7F8C920B24ED25A4001FBB6D /* CurrentTemperature.swift */,
 				7F81C3BE24F25FEB00E9A164 /* Condition.swift */,
+				7FE27AEE25110192008E4AF0 /* SectionOfCurrentWeather.swift */,
 			);
 			path = ViewModels;
 			sourceTree = "<group>";
@@ -822,6 +825,7 @@
 				7F4DCEE224F7A9E50061070D /* DailyWeather.swift in Sources */,
 				7F354ABE24EEB31300B23346 /* Array+Extensions.swift in Sources */,
 				7F52488124E3E41C00D62AD4 /* WeatherCollectionViewCell.swift in Sources */,
+				7FE27AEF25110192008E4AF0 /* SectionOfCurrentWeather.swift in Sources */,
 				7FE15F4C2501071C00F92968 /* WeeklyForecastEntity+CoreDataProperties.swift in Sources */,
 				7F595B0B24E1603C006C7DF7 /* WeatherDetailViewModel.swift in Sources */,
 				7F59C81924F8F40C009CFE1B /* UIButton+Extensions.swift in Sources */,
