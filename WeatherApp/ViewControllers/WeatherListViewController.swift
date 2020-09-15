@@ -13,13 +13,13 @@ import PureLayout
 
 class WeatherListViewController: UIViewController {
     
-    private let weatherListView = WeatherListView()
     private let errorView = ErrorView()
     private var weatherViewModel: WeatherListViewModel!
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
-    private var spinner = SpinnerViewController()
-
+    private var spinner = UIActivityIndicatorView(style: .large)
+    private let tableView = UITableView()
+    
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
         
@@ -34,11 +34,13 @@ class WeatherListViewController: UIViewController {
         super.viewDidLoad()
         
         setupUI()
+        setupConstraints()
+        setupRefreshControl()
+        setupTableView()
+        
         bindSpinnerIndicator()
         bindTableView()
-        setupRefreshControl()
-        setupConstraints()
-        setupTableView()
+        weatherViewModel.refreshData.onNext(())
     }
     
     override func viewWillLayoutSubviews() {
@@ -47,22 +49,22 @@ class WeatherListViewController: UIViewController {
     }
     
     private func setupTableView() {
-        weatherListView.tableView.rx.setDelegate(self).disposed(by: disposeBag)
-        weatherListView.tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
+        tableView.rx.setDelegate(self).disposed(by: disposeBag)
+        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
     
     private func bindTableView() {
         weatherViewModel
             .currentWeatherList
-            .bind(to: weatherListView.tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { [weak self] (row, currentWeather, cell) in
+            .bind(to: tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { [weak self] (row, currentWeather, cell) in
                 guard let self = self else { return }
                 
-                self.refreshControl.endRefreshing()
+                self.endRefreshing()
                 cell.setup(currentWeather)
         }
         .disposed(by: disposeBag)
         
-        weatherListView.tableView.rx.modelSelected(CurrentWeather.self)
+        tableView.rx.modelSelected(CurrentWeather.self)
             .subscribe(
                 onNext: { [weak self] (currentWeather) in
                     guard let self = self else { return }
@@ -75,8 +77,14 @@ class WeatherListViewController: UIViewController {
         weatherViewModel
             .showLoading
             .asObservable()
-            .bind(to: spinner.spinner.rx.isAnimating)
+            .bind(to: spinner.rx.isAnimating)
             .disposed(by: disposeBag)
+    }
+    
+    private func endRefreshing() {
+        DispatchQueue.main.async {
+            self.refreshControl.endRefreshing()
+        }
     }
     
 }
@@ -86,7 +94,7 @@ class WeatherListViewController: UIViewController {
 extension WeatherListViewController {
     
     private func setupRefreshControl() {
-        weatherListView.tableView.refreshControl = refreshControl
+        tableView.refreshControl = refreshControl
         
         refreshControl
             .rx
@@ -116,18 +124,27 @@ extension WeatherListViewController: UITableViewDelegate {
 extension WeatherListViewController {
     
     private func setupUI() {
-        weatherListView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(weatherListView)
+        tableView.backgroundColor = .clear
+        tableView.separatorStyle = .none
+        tableView.isHidden = false
         
-        addChild(spinner)
-        spinner.view.frame = view.frame
-        view.addSubview(spinner.view)
-        spinner.didMove(toParent: self)
+        spinner.frame = view.frame
     }
-
+    
     private func setupConstraints() {
-        view.addSubview(weatherListView)
-        weatherListView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5))
+        view.addSubview(tableView)
+        tableView.autoPinEdgesToSuperviewEdges()
+        
+        view.addSubview(spinner)
+        spinner.autoAlignAxis(toSuperviewAxis: .horizontal)
+        spinner.autoAlignAxis(toSuperviewAxis: .vertical)
+    }
+    
+    private func setAlert(with error: Error) {
+        let alert = UIAlertController(title: ErrorMessage.noInternetConnection,
+                                      message: ErrorMessage.turnInternetConnection, preferredStyle: .alert)
+        alert.addAction(UIAlertAction(title: "OK", style: .default))
+        self.present(alert, animated: true)
     }
     
 }

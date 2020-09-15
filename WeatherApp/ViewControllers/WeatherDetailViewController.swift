@@ -8,6 +8,7 @@
 
 import UIKit
 import RxSwift
+import RxDataSources
 import PureLayout
 
 class WeatherDetailViewController: UIViewController {
@@ -22,7 +23,8 @@ class WeatherDetailViewController: UIViewController {
     private var weatherDetailViewModel: WeatherDetailViewModel!
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
-    private var activityIndicator = SpinnerViewController()
+    private var spinner = UIActivityIndicatorView(style: .large)
+    private var hourlyWeatherDataSource: RxCollectionViewSectionedReloadDataSource<SectionOfHourlyWeather>!
     
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {
         super.init(nibName: nil, bundle: nil)
@@ -37,11 +39,18 @@ class WeatherDetailViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupUI()
+        setupSpinner()
+        configureCollectionLayout()
         setupCollectionView()
         setupRefreshControl()
+
+        createDataSource()
         setupWeeklyWeatherData()
-        setupUI()
-        configureCollectionLayout()
+        bindCollectionView()
+        bindSpinnerIndicator()
+        
+        weatherDetailViewModel.refreshData.onNext(())
     }
     
     override func viewWillLayoutSubviews() {
@@ -50,23 +59,47 @@ class WeatherDetailViewController: UIViewController {
     }
     
     private func setupWeeklyWeatherData() {
-        weatherDetailViewModel.weeklyWeather.subscribe(
+        weatherDetailViewModel.dailyWeather.subscribe(
             onNext: { [weak self] (_) in
                 guard let self = self else { return }
                 
-                self.updateCollectionView()
                 self.updateDailyStackView()
         }).disposed(by: disposeBag)
     }
     
     private func updateDailyStackView() {
         for (index, dailyViews) in self.dailyWeatherViews.enumerated() {
-            guard let dayData = weatherDetailViewModel.weeklyWeather.value.dailyWeatherList[safeIndex: index] else { return }
+            guard let dayData = weatherDetailViewModel.dailyWeather.value[safeIndex: index] else { return }
             
             DispatchQueue.main.async {
                 dailyViews.setupView(with: dayData)
             }
         }
+    }
+    
+    private func createDataSource() {
+        hourlyWeatherDataSource = RxCollectionViewSectionedReloadDataSource<SectionOfHourlyWeather>(
+            configureCell: { _, tableView, indexPath, item in
+                let cell = self.hourlyWeatherCollectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell
+                cell.configure(with: item)
+                self.refreshControl.endRefreshing()
+                return cell
+        })
+    }
+    
+    
+    private func bindCollectionView() {
+        weatherDetailViewModel.hourlyWeather
+            .bind(to: hourlyWeatherCollectionView.rx.items(dataSource: hourlyWeatherDataSource))
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindSpinnerIndicator() {
+        weatherDetailViewModel
+            .showLoading
+            .asObservable()
+            .bind(to: spinner.rx.isAnimating)
+            .disposed(by: disposeBag)
     }
 }
 
@@ -77,42 +110,10 @@ extension WeatherDetailViewController: UICollectionViewDelegate {
     private func setupCollectionView() {
         hourlyWeatherCollectionView.register(WeatherCollectionViewCell.nib(), forCellWithReuseIdentifier: WeatherCollectionViewCell.identifier)
         hourlyWeatherCollectionView.delegate = self
-        hourlyWeatherCollectionView.dataSource = self
-    }
-    
-    private func configureCollectionLayout() {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 70, height: 150)
-        layout.scrollDirection = .horizontal
-        hourlyWeatherCollectionView.collectionViewLayout = layout
-    }
-    
-    private func updateCollectionView() {
-        DispatchQueue.main.async {
-            self.hourlyWeatherCollectionView.reloadData()
-        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
-    }
-    
-}
-
-extension WeatherDetailViewController: UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        weatherDetailViewModel.weeklyWeather.value.hourlyWeatherList.count
-    }
-    
-    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell
-        
-        if let hourlyWeather = weatherDetailViewModel.weeklyWeather.value.hourlyWeatherList[safeIndex: indexPath.row] {
-            cell.configure(with: hourlyWeather)
-        }
-        
-        return cell
     }
     
 }
@@ -137,18 +138,25 @@ extension WeatherDetailViewController {
 
 extension WeatherDetailViewController {
     
-    private func setupSpinner() {
-        addChild(activityIndicator)
-        activityIndicator.view.frame = view.frame
-        view.addSubview(activityIndicator.view)
-        activityIndicator.didMove(toParent: self)
-    }
-    
     private func setupUI() {
         cityLabel.text = weatherDetailViewModel.currentWeather.city
         dateLabel.text = weatherDetailViewModel.date
         weatherDescription.text = weatherDetailViewModel.currentWeather.condition.conditionDescription
         hourlyWeatherCollectionView.backgroundColor = .clear
+    }
+    
+    private func configureCollectionLayout() {
+        let layout = UICollectionViewFlowLayout()
+        layout.itemSize = CGSize(width: 70, height: 150)
+        layout.scrollDirection = .horizontal
+        hourlyWeatherCollectionView.collectionViewLayout = layout
+    }
+    
+    private func setupSpinner() {
+        spinner.frame = view.frame
+        view.addSubview(spinner)
+        spinner.autoAlignAxis(toSuperviewAxis: .horizontal)
+        spinner.autoAlignAxis(toSuperviewAxis: .vertical)
     }
     
 }
