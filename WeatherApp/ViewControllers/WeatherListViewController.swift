@@ -133,7 +133,7 @@ extension WeatherListViewController {
     
     private func setupConstraints() {
         view.addSubview(tableView)
-        tableView.autoPinEdgesToSuperviewEdges()
+        tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5))
         
         view.addSubview(spinner)
         spinner.autoAlignAxis(toSuperviewAxis: .horizontal)
