@@ -38,7 +38,7 @@ class DataRepository {
                     return Observable.just(.failure(.loadingError))
             }
             
-            return Observable.of(.success(currentForecastEntity))
+            return Observable.just(.success(currentForecastEntity))
         }
     }
     

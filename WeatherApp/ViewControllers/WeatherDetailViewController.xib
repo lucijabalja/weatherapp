@@ -13,8 +13,8 @@
                 <outlet property="dateLabel" destination="V4B-jY-K69" id="617-ED-rst"/>
                 <outlet property="hourlyWeatherCollectionView" destination="J7s-Dc-e5I" id="lBp-U7-bte"/>
                 <outlet property="scrollView" destination="Fog-wA-GA9" id="UYV-s7-cev"/>
-                <outlet property="timeLabel" destination="Kcy-hl-B1I" id="OFd-wO-pJ7"/>
                 <outlet property="view" destination="iN0-l3-epB" id="o1M-de-6AC"/>
+                <outlet property="weatherDescription" destination="Kcy-hl-B1I" id="OFd-wO-pJ7"/>
                 <outletCollection property="dailyWeatherViews" destination="b0P-Ob-q8b" collectionClass="NSMutableArray" id="LcT-1r-95w"/>
                 <outletCollection property="dailyWeatherViews" destination="eZt-ni-sfp" collectionClass="NSMutableArray" id="QuB-oZ-UuT"/>
                 <outletCollection property="dailyWeatherViews" destination="YkS-z9-WxO" collectionClass="NSMutableArray" id="JuF-g3-Imh"/>
@@ -36,7 +36,7 @@
                             <rect key="frame" x="0.0" y="0.0" width="375" height="1000"/>
                             <subviews>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="zxK-wS-H6y" userLabel="Labels Stack View">
-                                    <rect key="frame" x="10" y="50" width="355" height="170"/>
+                                    <rect key="frame" x="10" y="15" width="355" height="170"/>
                                     <subviews>
                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="252" text="" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="NaK-oa-pcB" userLabel="cityLabel">
                                             <rect key="frame" x="0.0" y="0.0" width="355" height="50"/>
@@ -59,7 +59,7 @@
                                     </subviews>
                                 </stackView>
                                 <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" showsVerticalScrollIndicator="NO" dataMode="none" translatesAutoresizingMaskIntoConstraints="NO" id="J7s-Dc-e5I">
-                                    <rect key="frame" x="10" y="230" width="355" height="180"/>
+                                    <rect key="frame" x="10" y="195" width="355" height="180"/>
                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <color key="tintColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                     <constraints>
@@ -73,7 +73,7 @@
                                     </collectionViewFlowLayout>
                                 </collectionView>
                                 <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="lAP-wb-IAe" userLabel="Daily Weather Stack View">
-                                    <rect key="frame" x="5" y="430" width="365" height="398"/>
+                                    <rect key="frame" x="5" y="395" width="365" height="398"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="b0P-Ob-q8b" customClass="DailyWeatherView" customModule="WeatherApp" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="365" height="50"/>
@@ -144,7 +144,7 @@
                                 <constraint firstItem="zxK-wS-H6y" firstAttribute="centerX" secondItem="rR7-Xl-WF9" secondAttribute="centerX" id="eLo-xL-Zhb"/>
                                 <constraint firstAttribute="height" constant="1000" id="exb-xm-wrp"/>
                                 <constraint firstItem="lAP-wb-IAe" firstAttribute="centerX" secondItem="rR7-Xl-WF9" secondAttribute="centerX" id="hZT-Ql-6mG"/>
-                                <constraint firstItem="zxK-wS-H6y" firstAttribute="top" secondItem="rR7-Xl-WF9" secondAttribute="top" constant="50" id="jC7-2p-1GT"/>
+                                <constraint firstItem="zxK-wS-H6y" firstAttribute="top" secondItem="rR7-Xl-WF9" secondAttribute="top" constant="15" id="jC7-2p-1GT"/>
                                 <constraint firstItem="lAP-wb-IAe" firstAttribute="leading" secondItem="rR7-Xl-WF9" secondAttribute="leading" constant="5" id="jTW-KH-JOJ"/>
                                 <constraint firstItem="J7s-Dc-e5I" firstAttribute="centerX" secondItem="rR7-Xl-WF9" secondAttribute="centerX" id="yS6-g1-tWN"/>
                             </constraints>

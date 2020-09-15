@@ -14,15 +14,16 @@ class WeatherDetailViewController: UIViewController {
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var dateLabel: UILabel!
-    @IBOutlet weak var timeLabel: UILabel!
+    @IBOutlet weak var weatherDescription: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
     @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
+    
     private var weatherDetailViewModel: WeatherDetailViewModel!
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
-    private let spinner = SpinnerViewController()
-    
+    private var activityIndicator = SpinnerViewController()
+
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {
         super.init(nibName: nil, bundle: nil)
         
@@ -45,7 +46,6 @@ class WeatherDetailViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillLayoutSubviews()
-        setupSpinner()
     }
     
     override func viewWillLayoutSubviews() {
@@ -61,11 +61,7 @@ class WeatherDetailViewController: UIViewController {
                 
                 self.updateCollectionView()
                 self.updateDailyStackView()
-            },
-            onError: { (error) in
-                print(error)
-                
-        }).disposed(by: disposeBag)
+            }).disposed(by: disposeBag)
     }
     
     private func updateDailyStackView() {
@@ -73,7 +69,6 @@ class WeatherDetailViewController: UIViewController {
             guard let dayData = weatherDetailViewModel.weeklyWeather.value.dailyWeatherList[safeIndex: index] else { return }
             
             DispatchQueue.main.async {
-                self.endLoading()
                 dailyViews.setupView(with: dayData)
             }
         }
@@ -132,18 +127,15 @@ extension WeatherDetailViewController: UICollectionViewDataSource {
 
 extension WeatherDetailViewController {
     
-    private func setupRefreshControl() {
-        refreshControl.addTarget(self, action: #selector(refreshWeatherData(_:)), for: .valueChanged)
-        if #available(iOS 10.0, *) {
-            scrollView.refreshControl = refreshControl
-        } else {
-            scrollView.addSubview(refreshControl)
-        }
-    }
-    
-    @objc private func refreshWeatherData(_ sender: Any) {
-        weatherDetailViewModel.getWeeklyWeather()
-    }
+     private func setupRefreshControl() {
+          scrollView.refreshControl = refreshControl
+          
+          refreshControl
+              .rx
+              .controlEvent(.valueChanged)
+              .bind(to: weatherDetailViewModel.refreshData)
+              .disposed(by: disposeBag)
+      }
     
 }
 
@@ -152,22 +144,16 @@ extension WeatherDetailViewController {
 extension WeatherDetailViewController {
     
     private func setupSpinner() {
-        addChild(spinner)
-        spinner.view.frame = view.frame
-        view.addSubview(spinner.view)
-        spinner.didMove(toParent: self)
-    }
-    
-    private func endLoading() {
-        spinner.willMove(toParent: nil)
-        spinner.view.removeFromSuperview()
-        spinner.removeFromParent()
+        addChild(activityIndicator)
+        activityIndicator.view.frame = view.frame
+        view.addSubview(activityIndicator.view)
+        activityIndicator.didMove(toParent: self)
     }
     
     private func setupUI() {
         cityLabel.text = weatherDetailViewModel.currentWeather.city
         dateLabel.text = weatherDetailViewModel.date
-        timeLabel.text = weatherDetailViewModel.time
+        weatherDescription.text = weatherDetailViewModel.currentWeather.condition.conditionDescription
         hourlyWeatherCollectionView.backgroundColor = .clear
     }
     

@@ -16,12 +16,54 @@ class WeatherListViewModel {
     private let dataRepository: DataRepository
     private let disposeBag = DisposeBag()
     let currentWeatherList: BehaviorRelay<[CurrentWeather]> = BehaviorRelay(value: [])
+    let refreshData = PublishSubject<Void>()
+    let modelSelected = PublishSubject<CurrentWeather>()
+    let showLoading = BehaviorRelay<Bool>(value: true)
     
     init(coordinator: Coordinator, dataRepository: DataRepository) {
         self.coordinator = coordinator
         self.dataRepository = dataRepository
         
         getCurrentWeather()
+        bindRefreshData()
+        bindModelSelected()
+    }
+    
+    func bindRefreshData() {
+        refreshData
+            .asObservable()
+            .flatMap{ _ -> Observable<Result<CurrentForecastEntity, PersistanceError>> in
+                self.showLoading.accept(true)
+                return self.dataRepository.getCurrentWeatherData()
+        }
+        .flatMap { (result) -> Observable<[CurrentWeather]> in
+            switch result {
+            case .success(let currentForecastEntity):
+                let curentWeatherItems = currentForecastEntity.currentWeather
+                    .map { CurrentWeather(from: $0 as! CurrentWeatherEntity )}
+                self.showLoading.accept(false)
+                
+                return Observable.just(curentWeatherItems)
+                
+            case .failure(let error):
+                self.showLoading.accept(false)
+                
+                return Observable.error(error)
+            }
+        }
+        .bind(to: currentWeatherList)
+        .disposed(by: disposeBag)
+    }
+    
+    func bindModelSelected() {
+        modelSelected
+            .asObserver()
+            .subscribe(onNext: { [weak self] (currentWeather) in
+                guard let self = self else { return }
+                
+                self.pushToDetailView(with: currentWeather)
+            })
+            .disposed(by: disposeBag)
     }
     
     func getCurrentWeather() {
@@ -32,6 +74,7 @@ class WeatherListViewModel {
                 let curentWeatherList = currentForecastEntity.currentWeather
                     .map { CurrentWeather(from: $0 as! CurrentWeatherEntity )}
                 self.currentWeatherList.accept(curentWeatherList)
+                self.showLoading.accept(false)
             }
         }).disposed(by: disposeBag)
     }
