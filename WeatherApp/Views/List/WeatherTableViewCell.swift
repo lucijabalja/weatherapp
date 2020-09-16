@@ -32,16 +32,6 @@ class WeatherTableViewCell: UITableViewCell {
         super.init(coder: aDecoder)
     }
     
-    func setup(_ weather: CurrentWeather) {
-        let params = weather.parameters
-        weatherIcon.image = UIImage(systemName: weather.condition.icon)
-        weatherIcon.tintColor = weather.condition.icon.starts(with: "sun") ? .sunColor : .cloudColor
-        cityLabel.text = weather.city
-        currentTempLabel.text = params.now
-        minTempLabel.text = params.min
-        maxTempLabel.text = params.max
-    }
-    
     override func layoutSubviews() {
         super.layoutSubviews()
         
@@ -50,6 +40,16 @@ class WeatherTableViewCell: UITableViewCell {
         caLayer.backgroundColor = UIColor.black.cgColor
         caLayer.frame = CGRect(x: bounds.origin.x, y: bounds.origin.y, width: bounds.width, height: bounds.height).insetBy(dx: 5, dy: 10)
         layer.mask = caLayer
+    }
+    
+    func setup(_ weather: CurrentWeather) {
+        let params = weather.parameters
+        weatherIcon.image = UIImage(systemName: weather.condition.icon)
+        weatherIcon.tintColor = weather.condition.icon.starts(with: "sun") ? .sunColor : .cloudColor
+        cityLabel.text = weather.city
+        currentTempLabel.text = params.now
+        minTempLabel.text = params.min
+        maxTempLabel.text = params.max
     }
     
     private func setupUI() {
@@ -85,13 +85,13 @@ class WeatherTableViewCell: UITableViewCell {
         weatherIcon.autoPinEdge(.left, to: .left, of: self.contentView, withOffset: labelsDistance)
         weatherIcon.autoAlignAxis(.horizontal, toSameAxisOf: self.contentView)
         weatherIcon.autoSetDimensions(to: CGSize(width: iconDimension, height: iconDimension))
-
+        
         contentView.addSubview(cityLabel)
         cityLabel.autoPinEdge(.top, to: .top, of: self.contentView)
         cityLabel.autoPinEdge(.left, to: .right, of: self.weatherIcon, withOffset: labelsDistance)
         cityLabel.autoSetDimension(.width, toSize: cityLabelsWidth)
         cityLabel.autoAlignAxis(.horizontal, toSameAxisOf: self.contentView)
-
+        
         contentView.addSubview(temperatureView)
         temperatureView.autoPinEdge(.top, to: .top, of: self.contentView)
         temperatureView.autoPinEdge(.bottom, to: .bottom, of: self.contentView)
@@ -106,7 +106,7 @@ class WeatherTableViewCell: UITableViewCell {
         temperatureView.addSubview(maxTempLabel)
         maxTempLabel.autoPinEdge(.top, to: .bottom, of: self.currentTempLabel, withOffset: tempDistance)
         maxTempLabel.autoPinEdge(.bottom, to: .bottom, of: self.temperatureView, withOffset: -labelsDistance)
-
+        
         temperatureView.addSubview(minTempLabel)
         minTempLabel.autoPinEdge(.top, to: .bottom, of: self.currentTempLabel, withOffset: tempDistance)
         minTempLabel.autoPinEdge(.bottom, to: .bottom, of: self.temperatureView, withOffset: -labelsDistance)

@@ -28,7 +28,7 @@ class WeatherDetailViewModel {
     var time: String {
         Utils.getFormattedTime()
     }
-
+    
     var hourlyWeather: Observable<[SectionOfHourlyWeather]> {
         return refreshData
             .asObservable()
@@ -41,13 +41,13 @@ class WeatherDetailViewModel {
             switch result {
             case .success(let weeklyForecastEntity):
                 let hourlyWeatherList = weeklyForecastEntity.hourlyWeather
-                            .map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
-                            .sorted { $0.dateTime < $1.dateTime }
-                            .map( {SectionOfHourlyWeather(items: [$0]) } )
+                    .map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
+                    .sorted { $0.dateTime < $1.dateTime }
+                    .map( {SectionOfHourlyWeather(items: [$0]) } )
                 
                 let dailyWeatherList = weeklyForecastEntity.dailyWeather
-                                    .map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
-                                    .sorted { $0.dateTime < $1.dateTime }
+                    .map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
+                    .sorted { $0.dateTime < $1.dateTime }
                 
                 self.dailyWeather.accept(dailyWeatherList)
                 self.showLoading.accept(false)

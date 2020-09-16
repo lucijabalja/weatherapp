@@ -16,7 +16,9 @@ class WeatherListViewController: UIViewController {
     
     private var searchBar = UISearchBar()
     private var weatherViewModel: WeatherListViewModel!
-    private let disposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
+    private var loadingDisposeBag = DisposeBag()
+    private var refreshDisposeBag = DisposeBag()
     private var timerDisposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private var spinner = UIActivityIndicatorView(style: .large)
@@ -77,19 +79,20 @@ class WeatherListViewController: UIViewController {
             configureCell: { _, tableView, indexPath, item in
                 let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
                 cell.setup(item)
-                self.refreshControl.endRefreshing()
+                self.endRefreshing()
                 return cell
-        }, canEditRowAtIndexPath: {_,_ in
-            return true
         })
     }
     
     private func bindTableView() {
+        disposeBag = DisposeBag()
+        
         weatherViewModel.currentWeatherList
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
-        tableView.rx
+        tableView
+            .rx
             .modelSelected(CurrentWeather.self)
             .subscribe(
                 onNext: { [weak self] (currentWeather) in
@@ -98,26 +101,41 @@ class WeatherListViewController: UIViewController {
                     self.weatherViewModel.modelSelected.onNext(currentWeather)
             }).disposed(by: disposeBag)
         
+        tableView
+            .rx
+            .itemDeleted
+            .subscribe { (indexPath) in
+                print(indexPath)
+        }
+    .disposed(by: disposeBag)
     }
     
     private func bindSearchBar() {
-        searchBar.rx.cancelButtonClicked.subscribe(onNext: { [weak self] (_)  in
-            guard let self = self else { return }
-            
-            self.search(shouldShow: false)
-            self.searchBar.resignFirstResponder()
-        }).disposed(by: disposeBag)
+        searchBar
+            .rx
+            .cancelButtonClicked
+            .subscribe(onNext: { [weak self] (_)  in
+                guard let self = self else { return }
+                
+                self.search(shouldShow: false)
+                self.searchBar.resignFirstResponder()
+            })
+            .disposed(by: disposeBag)
         
-        searchBar.rx.searchButtonClicked.subscribe(onNext: { [weak self] (_) in
-            guard let self = self else { return }
-            
-            if let city = self.searchBar.text {
-                self.weatherViewModel.searchText.accept(city)
+        searchBar
+            .rx
+            .searchButtonClicked
+            .subscribe(onNext: { [weak self] (_) in
+                guard let self = self else { return }
+                
+                if let city = self.searchBar.text {
+                    self.weatherViewModel.searchText.accept(city)
+                }
                 self.weatherViewModel.refreshData.onNext(())
-            }
-            self.searchBar.resignFirstResponder()
-            self.searchBar.text = ""
-        }).disposed(by: disposeBag)
+                self.searchBar.resignFirstResponder()
+                self.searchBar.text = ""
+            })
+            .disposed(by: disposeBag)
     }
     
 }
@@ -143,7 +161,7 @@ extension WeatherListViewController {
             .showLoading
             .asObservable()
             .bind(to: spinner.rx.isAnimating)
-            .disposed(by: disposeBag)
+            .disposed(by: loadingDisposeBag)
     }
     
     private func endRefreshing() {
@@ -163,9 +181,9 @@ extension WeatherListViewController {
         
         refreshControl
             .rx
-            .controlEvent(.valueChanged)
+            .controlEvent(.allEvents)
             .bind(to: weatherViewModel.refreshData)
-            .disposed(by: disposeBag)
+            .disposed(by: refreshDisposeBag)
     }
     
 }
@@ -208,13 +226,6 @@ extension WeatherListViewController {
         view.addSubview(spinner)
         spinner.autoAlignAxis(toSuperviewAxis: .horizontal)
         spinner.autoAlignAxis(toSuperviewAxis: .vertical)
-    }
-    
-    private func setAlert(with error: Error) {
-        let alert = UIAlertController(title: ErrorMessage.noInternetConnection,
-                                      message: ErrorMessage.turnInternetConnection, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        self.present(alert, animated: true)
     }
     
 }

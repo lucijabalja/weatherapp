@@ -35,6 +35,9 @@ class DataRepository {
             guard let self = self else {  return Observable.just(.failure(.loadingError)) }
             
             let currentWeatherEntities = self.coreDataService.loadCurrentForecastData()
+            guard currentWeatherEntities.count > 0 else {
+                return Observable.just(.failure(.loadingError))
+            }
             
             return Observable.of(.success(currentWeatherEntities))
         }

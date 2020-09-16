@@ -33,7 +33,7 @@ class WeatherListViewModel {
                 let curentWeatherItems = currentWeatherList
                     .map { CurrentWeather(from: $0) }
                     .map( {SectionOfCurrentWeather(items: [$0]) } )
-
+                
                 self.showLoading.accept(false)
                 
                 return Observable.just(curentWeatherItems)
@@ -41,7 +41,8 @@ class WeatherListViewModel {
             case .failure(let error):
                 self.showLoading.accept(false)
                 
-                return Observable.error(error)
+                self.coordinator.presentAlert(with: error)
+                return Observable.just([])
             }
         }
     }
@@ -53,7 +54,7 @@ class WeatherListViewModel {
         bindModelSelected()
         bindSearchCity()
     }
-
+    
     func bindModelSelected() {
         modelSelected
             .asObserver()
