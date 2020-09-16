@@ -58,6 +58,10 @@ class WeatherDetailViewController: UIViewController {
         view.setupGradientBackground()
     }
     
+    override func viewWillAppear(_ animated: Bool) {
+        self.navigationController?.navigationBar.isTranslucent = true
+    }
+    
     private func setupWeeklyWeatherData() {
         weatherDetailViewModel.dailyWeather.subscribe(
             onNext: { [weak self] (_) in
@@ -112,13 +116,13 @@ extension WeatherDetailViewController {
 
 extension WeatherDetailViewController: UICollectionViewDelegate {
     
-    private func setupCollectionView() {
-        hourlyWeatherCollectionView.register(WeatherCollectionViewCell.nib(), forCellWithReuseIdentifier: WeatherCollectionViewCell.identifier)
-        hourlyWeatherCollectionView.delegate = self
-    }
-    
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         collectionView.deselectItem(at: indexPath, animated: true)
+    }
+    
+    private func setupCollectionView() {
+        hourlyWeatherCollectionView.register(WeatherCollectionViewCell.nib(), forCellWithReuseIdentifier: WeatherCollectionViewCell.identifier)
+        hourlyWeatherCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
 }

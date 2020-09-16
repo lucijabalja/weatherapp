@@ -34,7 +34,7 @@ class Coordinator {
     
     func presentAlert(with error: PersistanceError) {
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: error.getMessages().0, message:error.getMessages().1, preferredStyle: .alert)
+            let alert = UIAlertController(title: error.resolveMessage().0, message:error.resolveMessage().1, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             
             if !(self.navigationController?.visibleViewController?.isKind(of: UIAlertController.self))! {

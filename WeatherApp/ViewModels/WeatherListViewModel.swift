@@ -24,26 +24,29 @@ class WeatherListViewModel {
     var currentWeatherData: Observable<[SectionOfCurrentWeather]> {
         return refreshData
             .asObservable()
-            .flatMap{ _ -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
+            .flatMap{ [weak self] (_) -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
+                guard let self = self else { return Observable.just(.failure(.loadingError)) }
+                
                 self.showLoading.accept(true)
                 return self.dataRepository.getCurrentWeatherData()
         }
-        .flatMap { (result) -> Observable<[SectionOfCurrentWeather]> in
+        .flatMap { [weak self] (result) -> Observable<[SectionOfCurrentWeather]> in
+            guard let self = self else { return Observable.just([]) }
+            
             switch result {
             case .success(let currentWeatherList):
                 let currentWeatherItems = currentWeatherList.map { CurrentWeather(from: $0) }
                 
                 self.currentWeatherList.append(contentsOf: currentWeatherItems)
-                let sectionOfCurrentWeatherList = currentWeatherItems.map( {SectionOfCurrentWeather(items: [$0]) } )
-
+                let sectionOfCurrentWeatherList = currentWeatherItems.map{ SectionOfCurrentWeather(items: [$0]) }
                 self.showLoading.accept(false)
                 
                 return Observable.just(sectionOfCurrentWeatherList)
                 
             case .failure(let error):
                 self.showLoading.accept(false)
-                
                 self.coordinator.presentAlert(with: error)
+                
                 return Observable.just([])
             }
         }
@@ -69,12 +72,14 @@ class WeatherListViewModel {
     }
     
     func bindSearchCity() {
-        searchText.subscribe(onNext: { [weak self] (city) in
-            guard let self = self else { return }
-            
-            self.dataRepository.getCurrentCityWeather(for: city)
-            self.refreshData.onNext(())
-        }).disposed(by: disposeBag)
+        searchText
+            .subscribe(onNext: { [weak self] (city) in
+                guard let self = self else { return }
+                
+                self.dataRepository.getCurrentCityWeather(for: city)
+                self.refreshData.onNext(())
+            })
+            .disposed(by: disposeBag)
     }
     
     func pushToDetailView(with selectedCity: CurrentWeather) {

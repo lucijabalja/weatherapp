@@ -32,12 +32,16 @@ class WeatherDetailViewModel {
     var hourlyWeather: Observable<[SectionOfHourlyWeather]> {
         return refreshData
             .asObservable()
-            .flatMap{ _ -> Observable<Result<WeeklyForecastEntity, PersistanceError>> in
+            .flatMap{ [weak self] (_) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> in
+                guard let self = self else { return Observable.just(.failure(.loadingError))}
+                
                 self.showLoading.accept(true)
                 return self.dataRepository.getWeeklyWeather(latitude: self.locationService.coordinates.value.latitude,
                                                             longitude: self.locationService.coordinates.value.longitude)
         }
-        .flatMap { (result) -> Observable<[SectionOfHourlyWeather]> in
+        .flatMap { [weak self] (result) -> Observable<[SectionOfHourlyWeather]> in
+            guard let self = self else { return Observable.just([])}
+            
             switch result {
             case .success(let weeklyForecastEntity):
                 let hourlyWeatherList = weeklyForecastEntity.hourlyWeather

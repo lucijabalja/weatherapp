@@ -15,15 +15,15 @@ class URLGenerator {
     static let units = "units=metric"
     static let exclusions = "exclude=minutely"
     
-    static func currentWeather(ids: String) -> String {
+    class func currentWeather(ids: String) -> String {
         "\(baseURL)/group?\(apiKey)&\(exclusions)&\(units)&id=\(ids)"
     }
     
-    static func currentCityWeather(city: String) -> String {
+    class func currentCityWeather(city: String) -> String {
         "\(baseURL)/weather?q=\(city)&\(apiKey)&\(units)"
     }
     
-    static func weeklyWeather(latitude: Double, longitude: Double) -> String {
+    class func weeklyWeather(latitude: Double, longitude: Double) -> String {
         "\(baseURL)/onecall?\(apiKey)&\(units)&lat=\(latitude)&lon=\(longitude)&\(exclusions)"
     }
     

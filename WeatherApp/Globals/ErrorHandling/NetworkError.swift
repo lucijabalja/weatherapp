@@ -10,10 +10,7 @@ import Foundation
 
 enum NetworkError: Error {
     
-    case decodingError
-    case unwrappingError
-    case URLSessionError
-    case invalidURLError
+    case decodingError, unwrappingError, URLSessionError, invalidURLError
     
 }
 

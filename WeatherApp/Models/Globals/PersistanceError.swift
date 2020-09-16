@@ -12,7 +12,7 @@ enum PersistanceError: Error {
     
     case loadingError, savingError, noEntitiesFound
     
-    func getMessages() -> (String, String) {
+    func resolveMessage() -> (String, String) {
         switch self {
         case .loadingError:
             return (ErrorMessage.loadingError, ErrorMessage.tryAgain)

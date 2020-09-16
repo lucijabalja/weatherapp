@@ -20,6 +20,7 @@ class WeatherListViewController: UIViewController {
     private var loadingDisposeBag = DisposeBag()
     private var refreshDisposeBag = DisposeBag()
     private var timerDisposeBag = DisposeBag()
+    private var deleteDisposeBag = DisposeBag()
     private var timerPeriod = 600
     private let refreshControl = UIRefreshControl()
     private var spinner = UIActivityIndicatorView(style: .large)
@@ -98,6 +99,17 @@ extension WeatherListViewController {
     private func bindTableView() {
         disposeBag = DisposeBag()
         
+        tableView
+            .rx
+            .itemDeleted
+            .debug("d")
+            .subscribe(onNext: { (currentWeather) in
+                print(currentWeather)
+            }, onError: { (error) in
+                print(error)
+            })
+        .disposed(by: deleteDisposeBag)
+        
         weatherViewModel.currentWeatherData
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
@@ -108,6 +120,7 @@ extension WeatherListViewController {
             .subscribe(
                 onNext: { [weak self] (currentWeather) in
                     guard let self = self else { return }
+                    
                     self.weatherViewModel.modelSelected.onNext(currentWeather)
             }).disposed(by: disposeBag)
     }
@@ -202,7 +215,7 @@ extension WeatherListViewController: UITableViewDelegate {
         tableView.rx.setDelegate(self).disposed(by: disposeBag)
         tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
-    
+
 }
 
 // MARK:- Setup UI
