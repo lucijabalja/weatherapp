@@ -89,6 +89,12 @@ class WeatherListViewController: UIViewController {
         })
     }
     
+}
+
+// MARK:- Bindings
+
+extension WeatherListViewController {
+    
     private func bindTableView() {
         disposeBag = DisposeBag()
         
@@ -134,6 +140,14 @@ class WeatherListViewController: UIViewController {
             .disposed(by: disposeBag)
     }
     
+    private func bindSpinnerIndicator() {
+        weatherViewModel
+            .showLoading
+            .asObservable()
+            .bind(to: spinner.rx.isAnimating)
+            .disposed(by: loadingDisposeBag)
+    }
+    
 }
 
 // MARK:- UI Setup
@@ -150,14 +164,6 @@ extension WeatherListViewController {
         searchBar.isHidden = !shouldShow
         searchBar.showsCancelButton = shouldShow
         navigationItem.rightBarButtonItem = shouldShow ? nil : UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBar))
-    }
-    
-    private func bindSpinnerIndicator() {
-        weatherViewModel
-            .showLoading
-            .asObservable()
-            .bind(to: spinner.rx.isAnimating)
-            .disposed(by: loadingDisposeBag)
     }
     
     private func endRefreshing() {

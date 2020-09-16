@@ -57,7 +57,8 @@ class WeatherDetailViewModel {
             case .failure(let error):
                 self.showLoading.accept(false)
                 
-                return Observable.error(error)
+                self.coordinator.presentAlert(with: error)
+                return Observable.just([])
             }
         }
     }

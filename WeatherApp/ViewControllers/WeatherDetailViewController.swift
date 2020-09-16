@@ -44,7 +44,7 @@ class WeatherDetailViewController: UIViewController {
         configureCollectionLayout()
         setupCollectionView()
         setupRefreshControl()
-
+        
         createDataSource()
         setupWeeklyWeatherData()
         bindCollectionView()
@@ -87,6 +87,11 @@ class WeatherDetailViewController: UIViewController {
         })
     }
     
+}
+
+//MARK:- Bindings
+
+extension WeatherDetailViewController {
     
     private func bindCollectionView() {
         weatherDetailViewModel.hourlyWeather
