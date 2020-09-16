@@ -14,7 +14,7 @@ class WeatherDetailViewModel {
     
     private let locationService: LocationService
     private let coordinator: Coordinator
-    private var dataRepository: DataRepository
+    private var dataRepository: DetailWeatherDataRepository
     var currentWeather: CurrentWeather
     var dailyWeather = BehaviorRelay<[DailyWeather]>(value: [])
     var refreshData = PublishSubject<Void>()

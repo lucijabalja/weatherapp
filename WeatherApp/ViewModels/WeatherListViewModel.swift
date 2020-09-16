@@ -13,14 +13,15 @@ import RxCocoa
 class WeatherListViewModel {
     
     private let coordinator: Coordinator
-    private let dataRepository: DataRepository
+    private let dataRepository: MainWeatherDataRepository
     private let disposeBag = DisposeBag()
     let refreshData = PublishSubject<Void>()
     let modelSelected = PublishSubject<CurrentWeather>()
     let showLoading = BehaviorRelay<Bool>(value: true)
     let searchText = BehaviorRelay<String>(value: "")
+    var currentWeatherList: [CurrentWeather] = []
     
-    var currentWeatherList: Observable<[SectionOfCurrentWeather]> {
+    var currentWeatherData: Observable<[SectionOfCurrentWeather]> {
         return refreshData
             .asObservable()
             .flatMap{ _ -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
@@ -30,13 +31,14 @@ class WeatherListViewModel {
         .flatMap { (result) -> Observable<[SectionOfCurrentWeather]> in
             switch result {
             case .success(let currentWeatherList):
-                let curentWeatherItems = currentWeatherList
-                    .map { CurrentWeather(from: $0) }
-                    .map( {SectionOfCurrentWeather(items: [$0]) } )
+                let currentWeatherItems = currentWeatherList.map { CurrentWeather(from: $0) }
                 
+                self.currentWeatherList.append(contentsOf: currentWeatherItems)
+                let sectionOfCurrentWeatherList = currentWeatherItems.map( {SectionOfCurrentWeather(items: [$0]) } )
+
                 self.showLoading.accept(false)
                 
-                return Observable.just(curentWeatherItems)
+                return Observable.just(sectionOfCurrentWeatherList)
                 
             case .failure(let error):
                 self.showLoading.accept(false)
@@ -47,7 +49,7 @@ class WeatherListViewModel {
         }
     }
     
-    init(coordinator: Coordinator, dataRepository: DataRepository) {
+    init(coordinator: Coordinator, dataRepository: MainWeatherDataRepository) {
         self.coordinator = coordinator
         self.dataRepository = dataRepository
         

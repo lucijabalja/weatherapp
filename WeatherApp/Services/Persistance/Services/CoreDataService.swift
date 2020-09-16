@@ -26,7 +26,7 @@ class CoreDataService {
         saveChanges()
     }
     
-    func loadCurrentForecastData() -> [CurrentWeatherEntity] {
+    func loadCurrentWeatherData() -> [CurrentWeatherEntity] {
         CurrentWeatherEntity.loadCurrentWeatherData(context: mainObjectContext)
     }
     

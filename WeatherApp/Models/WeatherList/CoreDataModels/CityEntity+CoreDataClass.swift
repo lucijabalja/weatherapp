@@ -15,8 +15,13 @@ public class CityEntity: NSManagedObject {
     class func createFrom(_ name: String,_ id: Double, context: NSManagedObjectContext) -> CityEntity {
         let cityEntity = CityEntity(context: context)
         cityEntity.name = name
-        cityEntity.id = id
+        cityEntity.id = Int64(id)
         return cityEntity
+    }
+    
+    func update(with city: String, _ id: Double){
+        self.name = city
+        self.id = Int64(id)
     }
     
     class func loadCities(context: NSManagedObjectContext) -> [CityEntity] {

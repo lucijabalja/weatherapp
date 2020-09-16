@@ -13,11 +13,18 @@ import UIKit
 public class CurrentWeatherEntity: NSManagedObject {
     
     class func createFrom(_ currentForecast: CurrentForecast, context: NSManagedObjectContext) {
-        if let currentWeather = CurrentWeatherEntity.firstOrCreate(withCity: currentForecast.city, context: context) {
-            currentWeather.city = CityEntity.createFrom(currentForecast.city, currentForecast.id, context: context)
-            currentWeather.parameters = TemperatureParametersEntity.createFrom(currentForecast.temperatureParameters, context: context)
-            currentWeather.weatherDescription = WeatherDescriptionEntity.createFrom(currentForecast.weatherDescription[0], context: context)
+        guard let currentWeather = CurrentWeatherEntity.firstOrCreate(withCity: currentForecast.city, context: context)
+            else {
+                let currentWeatherEntity = CurrentWeatherEntity(context: context)
+                currentWeatherEntity.city = CityEntity.createFrom(currentForecast.city, currentForecast.id, context: context)
+                currentWeatherEntity.parameters = TemperatureParametersEntity.createFrom(currentForecast.temperatureParameters, context: context)
+                currentWeatherEntity.weatherDescription = WeatherDescriptionEntity.createFrom(currentForecast.weatherDescription[0], context: context)
+                return
         }
+        
+        currentWeather.city.update(with: currentForecast.city, currentForecast.id)
+        currentWeather.parameters.update(with: currentForecast.temperatureParameters)
+        currentWeather.weatherDescription.update(with: currentForecast.weatherDescription[0])
     }
     
     class func firstOrCreate(withCity city: String, context: NSManagedObjectContext) -> CurrentWeatherEntity? {
@@ -30,14 +37,13 @@ public class CurrentWeatherEntity: NSManagedObject {
             if let currentWeather = currentWeatherEntity.first {
                 return currentWeather
             } else {
-                let newCurrentWeatherEntity = CurrentWeatherEntity(context: context)
-                return newCurrentWeatherEntity
+                return nil
             }
         } catch {
             return nil
         }
     }
-
+    
     class func loadCurrentWeatherData(context: NSManagedObjectContext) -> [CurrentWeatherEntity] {
         let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
         
