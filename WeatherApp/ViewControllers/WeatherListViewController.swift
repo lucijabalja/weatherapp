@@ -20,6 +20,7 @@ class WeatherListViewController: UIViewController {
     private var loadingDisposeBag = DisposeBag()
     private var refreshDisposeBag = DisposeBag()
     private var timerDisposeBag = DisposeBag()
+    private var timerPeriod = 600
     private let refreshControl = UIRefreshControl()
     private var spinner = UIActivityIndicatorView(style: .large)
     private let tableView = UITableView()
@@ -69,7 +70,7 @@ class WeatherListViewController: UIViewController {
         timerDisposeBag = DisposeBag()
         
         Observable<Int>
-            .timer(.seconds(0), period: .seconds(600), scheduler: MainScheduler.instance)
+            .timer(.seconds(0), period: .seconds(timerPeriod), scheduler: MainScheduler.instance)
             .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
                 
@@ -188,7 +189,7 @@ extension WeatherListViewController {
 extension WeatherListViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        110
+        WeatherTableViewCell.height
     }
     
     private func setupTableView() {

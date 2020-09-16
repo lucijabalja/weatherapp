@@ -41,7 +41,7 @@ extension DataRepository: MainWeatherDataRepository {
                 
                 let currentWeatherEntities = self.coreDataService.loadCurrentWeatherData()
                 guard currentWeatherEntities.count > 0 else {
-                    return Observable.just(.failure(.loadingError))
+                    return Observable.just(.failure(.noEntitiesFound))
                 }
                 
                 return Observable.of(.success(currentWeatherEntities))

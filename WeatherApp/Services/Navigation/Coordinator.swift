@@ -32,10 +32,9 @@ class Coordinator {
         navigationController?.pushViewController(weatherDetailViewController, animated: true)
     }
     
-    func presentAlert(with error: Error) {
+    func presentAlert(with error: PersistanceError) {
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: ErrorMessage.noInternetConnection,
-                                          message: ErrorMessage.turnInternetConnection, preferredStyle: .alert)
+            let alert = UIAlertController(title: error.getMessages().0, message:error.getMessages().1, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             
             if !(self.navigationController?.visibleViewController?.isKind(of: UIAlertController.self))! {

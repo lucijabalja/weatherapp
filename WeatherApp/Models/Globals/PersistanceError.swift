@@ -10,6 +10,16 @@ import Foundation
 
 enum PersistanceError: Error {
     
-    case loadingError
-    case savingError
+    case loadingError, savingError, noEntitiesFound
+    
+    func getMessages() -> (String, String) {
+        switch self {
+        case .loadingError:
+            return (ErrorMessage.loadingError, ErrorMessage.tryAgain)
+        case .noEntitiesFound:
+            return (ErrorMessage.noInternetConnection, ErrorMessage.turnInternetConnection)
+        case .savingError:
+            return ( ErrorMessage.savingError, ErrorMessage.tryAgain)
+        }
+    }
 }
