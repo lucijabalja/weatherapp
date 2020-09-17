@@ -6,9 +6,9 @@
         <relationship name="currentWeather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentWeatherEntity" inverseName="city" inverseEntity="CurrentWeatherEntity"/>
     </entity>
     <entity name="CurrentWeatherEntity" representedClassName=".CurrentWeatherEntity" syncable="YES">
-        <relationship name="city" maxCount="1" deletionRule="Nullify" destinationEntity="CityEntity" inverseName="currentWeather" inverseEntity="CityEntity"/>
-        <relationship name="parameters" maxCount="1" deletionRule="Nullify" destinationEntity="TemperatureParametersEntity" inverseName="currentWeather" inverseEntity="TemperatureParametersEntity"/>
-        <relationship name="weatherDescription" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="WeatherDescriptionEntity" inverseName="currentWeather" inverseEntity="WeatherDescriptionEntity"/>
+        <relationship name="city" maxCount="1" deletionRule="Cascade" destinationEntity="CityEntity" inverseName="currentWeather" inverseEntity="CityEntity"/>
+        <relationship name="parameters" maxCount="1" deletionRule="Cascade" destinationEntity="TemperatureParametersEntity" inverseName="currentWeather" inverseEntity="TemperatureParametersEntity"/>
+        <relationship name="weatherDescription" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WeatherDescriptionEntity" inverseName="currentWeather" inverseEntity="WeatherDescriptionEntity"/>
     </entity>
     <entity name="DailyWeatherEntity" representedClassName=".DailyWeatherEntity" syncable="YES">
         <attribute name="conditionID" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>

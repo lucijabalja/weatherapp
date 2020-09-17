@@ -7,14 +7,18 @@
 //
 
 import Foundation
+import RxDataSources
 
-struct CurrentWeather {
-    
+struct CurrentWeather: Equatable, IdentifiableType {
+    typealias Identity = Int
+
+    var identity: Int
     let city: String
     let parameters: CurrentTemperature
     let condition: Condition
     
     init(from currentWeatherEntity: CurrentWeatherEntity) {
+        self.identity = Int(currentWeatherEntity.city.id)
         self.city = currentWeatherEntity.city.name
         self.condition = Condition(icon:  Utils.resolveWeatherIcon(Int(currentWeatherEntity.weatherDescription.conditionID)),
                                    conditionDescription: currentWeatherEntity.weatherDescription.conditionDescription)
@@ -22,6 +26,10 @@ struct CurrentWeather {
         self.parameters = CurrentTemperature(now: Utils.getFormattedTemperature(currentWeatherEntity.parameters.current),
                                              min: Utils.getFormattedTemperature(currentWeatherEntity.parameters.min),
                                              max: Utils.getFormattedTemperature(currentWeatherEntity.parameters.max))
+    }
+    
+    static func == (lhs: CurrentWeather, rhs: CurrentWeather) -> Bool {
+        lhs.city.elementsEqual(rhs.city)
     }
     
 }

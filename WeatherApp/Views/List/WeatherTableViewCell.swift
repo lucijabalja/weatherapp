@@ -64,7 +64,8 @@ class WeatherTableViewCell: UITableViewCell {
         maxTempLabel.style(fontSize: 15, textAlignment: .right)
         minTempLabel.style(fontSize: 15, textAlignment: .left)
         
-        cityLabel.numberOfLines = 0
+        cityLabel.numberOfLines = 1
+        cityLabel.minimumScaleFactor = 0.6
         minTempLabel.textColor = .mainLabelColor
         temperatureView.clipsToBounds = true
     }
@@ -75,7 +76,7 @@ class WeatherTableViewCell: UITableViewCell {
         let edgeMargin: CGFloat = 15
         let tempDistance: CGFloat = 5
         let labelsDistance: CGFloat = 20
-        let cityLabelsWidth: CGFloat = 150
+        let cityLabelsWidth: CGFloat = 130
         
         contentView.addSubview(containerView)
         containerView.autoPinEdgesToSuperviewEdges()

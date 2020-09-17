@@ -12,7 +12,13 @@ struct SectionOfCurrentWeather {
     var items: [Item]
 }
 
-extension SectionOfCurrentWeather: SectionModelType {
+extension SectionOfCurrentWeather: AnimatableSectionModelType {
+    var identity: String {
+        return ""
+    }
+    
+    typealias Identity = String
+    
     typealias Item = CurrentWeather
     
     init(original: SectionOfCurrentWeather, items: [Item]) {

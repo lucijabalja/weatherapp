@@ -14,5 +14,7 @@ protocol MainWeatherDataRepository {
     func getCurrentWeatherData() -> Observable<Result<[CurrentWeatherEntity],PersistanceError>>
     
     func getCurrentCityWeather(for city: String)
+
+    func removeCurrentWeather(with city: String)
     
 }

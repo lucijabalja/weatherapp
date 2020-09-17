@@ -14,17 +14,24 @@ import PureLayout
 
 class WeatherListViewController: UIViewController {
     
-    private var searchBar = UISearchBar()
     private var weatherViewModel: WeatherListViewModel!
     private var disposeBag = DisposeBag()
     private var loadingDisposeBag = DisposeBag()
     private var refreshDisposeBag = DisposeBag()
     private var timerDisposeBag = DisposeBag()
     private var timerPeriod = 600
+    
+    // UI variables
+    private var searchBar = UISearchBar()
     private let refreshControl = UIRefreshControl()
     private var spinner = UIActivityIndicatorView(style: .large)
+    private var editBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: nil)
+    private var searchBarButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: nil)
     private let tableView = UITableView()
-    private var dataSource: RxTableViewSectionedReloadDataSource<SectionOfCurrentWeather>!
+    
+    // datasource
+    typealias CurrentWeatherSectionModel = AnimatableSectionModel<String, CurrentWeather>
+    private var dataSource: RxTableViewSectionedAnimatedDataSource<CurrentWeatherSectionModel>!
     
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -41,15 +48,12 @@ class WeatherListViewController: UIViewController {
         
         setupUI()
         setupConstraints()
-        setupRefreshControl()
         setupTableView()
         
         createDataSource()
         createTimer()
+        bindViewModel()
         
-        bindSpinnerIndicator()
-        bindTableView()
-        bindSearchBar()
         weatherViewModel.refreshData.onNext(())
     }
     
@@ -59,7 +63,9 @@ class WeatherListViewController: UIViewController {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBar))
+        navigationItem.leftBarButtonItem = searchBarButton
+        navigationItem.rightBarButtonItem = editBarButton
+        self.navigationController?.navigationBar.isTranslucent = false
     }
     
     private func createTimer() {
@@ -75,26 +81,64 @@ class WeatherListViewController: UIViewController {
             .disposed(by: timerDisposeBag)
     }
     
-    private func createDataSource() {
-        dataSource = RxTableViewSectionedReloadDataSource<SectionOfCurrentWeather>(
-            configureCell: { _, tableView, indexPath, item in
-                let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
-                cell.setup(item)
-                self.endRefreshing()
-                return cell
-        })
-    }
-    
 }
 
+// MARK:- Data source
+extension WeatherListViewController {
+    
+    private func createDataSource() {
+        dataSource = RxTableViewSectionedAnimatedDataSource<CurrentWeatherSectionModel>(
+            animationConfiguration: AnimationConfiguration(
+                insertAnimation: .right,
+                reloadAnimation: .none,
+                deleteAnimation: .left),
+            configureCell: configureCell,
+            canEditRowAtIndexPath: canEditRowAtIndexPath,
+            canMoveRowAtIndexPath: canMoveRowAtIndexPath)
+    }
+    
+    private var configureCell: RxTableViewSectionedAnimatedDataSource<CurrentWeatherSectionModel>.ConfigureCell {
+        return { _, tableView, indexPath, item in
+            let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
+            cell.setup(item)
+            return cell
+        }
+    }
+    
+    private var canEditRowAtIndexPath: RxTableViewSectionedAnimatedDataSource<CurrentWeatherSectionModel>.CanEditRowAtIndexPath {
+        return { [unowned self] _, _ in
+            if self.tableView.isEditing {
+                return true
+            } else {
+                return false
+            }
+        }
+    }
+    
+    private var canMoveRowAtIndexPath: RxTableViewSectionedAnimatedDataSource<CurrentWeatherSectionModel>.CanMoveRowAtIndexPath {
+        return { _, _ in
+            return true
+        }
+    }
+}
 // MARK:- Bindings
 
 extension WeatherListViewController {
+    
+    func bindViewModel() {
+        bindTableView()
+        bindSearchBar()
+        bindSpinnerIndicator()
+        bindRefreshControl()
+        bindEditButton()
+        bindSearchButton()
+    }
     
     private func bindTableView() {
         disposeBag = DisposeBag()
         
         weatherViewModel.currentWeatherData
+            .map{ [CurrentWeatherSectionModel(model: "", items: $0) ]}
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
@@ -110,6 +154,17 @@ extension WeatherListViewController {
                         self.tableView.deselectRow(at: index, animated: true)
                     }
             }).disposed(by: disposeBag)
+        
+        tableView
+            .rx
+            .modelDeleted(CurrentWeather.self)
+            .asDriver()
+            .drive(onNext: { (currentWeather) in
+                self.weatherViewModel.removeCurrentWeather(with: currentWeather.city)
+                self.weatherViewModel.refreshData.onNext(())
+            })
+            .disposed(by: disposeBag)
+        
     }
     
     private func bindSearchBar() {
@@ -148,13 +203,49 @@ extension WeatherListViewController {
             .disposed(by: loadingDisposeBag)
     }
     
+    private func bindRefreshControl() {
+        tableView.refreshControl = refreshControl
+        
+        refreshControl
+            .rx
+            .controlEvent(.allEvents)
+            .startWith()
+            .debug("refresh")
+            .bind(to: weatherViewModel.refreshData)
+            .disposed(by: refreshDisposeBag)
+    }
+    
+    private func bindEditButton() {
+        editBarButton
+            .rx
+            .tap
+            .asDriver()
+            .map { [unowned self] in self.tableView.isEditing }
+            .drive(onNext: { [unowned self] result in
+                self.tableView.setEditing(!result, animated: true)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    private func bindSearchButton() {
+        searchBarButton
+            .rx
+            .tap
+            .asDriver()
+            .map { [unowned self] in self.tableView.isEditing }
+            .drive(onNext: { [unowned self] result in
+                self.showSearchBar()
+            })
+            .disposed(by: disposeBag)
+    }
+    
 }
 
 // MARK:- UI Setup
 
 extension WeatherListViewController {
     
-    @objc func showSearchBar() {
+    func showSearchBar() {
         search(shouldShow: true)
         navigationItem.titleView = searchBar
         searchBar.becomeFirstResponder()
@@ -163,31 +254,9 @@ extension WeatherListViewController {
     private func search(shouldShow: Bool) {
         searchBar.isHidden = !shouldShow
         searchBar.showsCancelButton = shouldShow
-        navigationItem.rightBarButtonItem = shouldShow ? nil : UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBar))
+        navigationItem.leftBarButtonItem = shouldShow ? nil : searchBarButton
+        navigationItem.rightBarButtonItem = shouldShow ? nil : editBarButton
     }
-    
-    private func endRefreshing() {
-        DispatchQueue.main.async {
-            self.refreshControl.endRefreshing()
-        }
-    }
-    
-}
-
-// MARK:- Refresh Control setup
-
-extension WeatherListViewController {
-    
-    private func setupRefreshControl() {
-        tableView.refreshControl = refreshControl
-        
-        refreshControl
-            .rx
-            .controlEvent(.allEvents)
-            .bind(to: weatherViewModel.refreshData)
-            .disposed(by: refreshDisposeBag)
-    }
-    
 }
 
 // MARK:- TableView setup

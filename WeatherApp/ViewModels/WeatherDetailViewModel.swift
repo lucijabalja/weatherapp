@@ -29,10 +29,12 @@ class WeatherDetailViewModel {
         Utils.getFormattedTime()
     }
     
+    typealias WeeklyWeatherResult = Observable<Result<WeeklyForecastEntity, PersistanceError>>
+    
     var hourlyWeather: Observable<[SectionOfHourlyWeather]> {
         return refreshData
             .asObservable()
-            .flatMap{ [weak self] (_) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> in
+            .flatMap{ [weak self] (_) -> WeeklyWeatherResult in
                 guard let self = self else { return Observable.just(.failure(.loadingError))}
                 
                 self.showLoading.accept(true)

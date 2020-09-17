@@ -20,23 +20,24 @@ class WeatherListViewModel {
     let showLoading = BehaviorRelay<Bool>(value: true)
     let searchText = BehaviorRelay<String>(value: "")
     
-    var currentWeatherData: Observable<[SectionOfCurrentWeather]> {
+    typealias CurrentWeatherResult = Observable<Result<[CurrentWeatherEntity], PersistanceError>>
+    
+    var currentWeatherData: Observable<[CurrentWeather]> {
         return refreshData
             .asObservable()
-            .flatMap{ [weak self] (_) -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
+            .flatMap{ [weak self] (_) -> CurrentWeatherResult in
                 guard let self = self else { return Observable.just(.failure(.loadingError)) }
                 
                 self.showLoading.accept(true)
                 return self.dataRepository.getCurrentWeatherData()
         }
-        .flatMap { [weak self] (result) -> Observable<[SectionOfCurrentWeather]> in
+        .flatMap { [weak self] (result) -> Observable<[CurrentWeather]> in
             guard let self = self else { return Observable.just([]) }
             
             switch result {
             case .success(let currentWeatherList):
                 let currentWeatherItems = currentWeatherList
                     .map { CurrentWeather(from: $0) }
-                    .map{ SectionOfCurrentWeather(items: [$0]) }
                 self.showLoading.accept(false)
                 
                 return Observable.just(currentWeatherItems)
@@ -78,6 +79,10 @@ class WeatherListViewModel {
                 self.refreshData.onNext(())
             })
             .disposed(by: disposeBag)
+    }
+    
+    func removeCurrentWeather(with city: String) {
+        dataRepository.removeCurrentWeather(with: city)
     }
     
     func pushToDetailView(with selectedCity: CurrentWeather) {
