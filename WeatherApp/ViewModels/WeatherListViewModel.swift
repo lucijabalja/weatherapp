@@ -19,7 +19,6 @@ class WeatherListViewModel {
     let modelSelected = PublishSubject<CurrentWeather>()
     let showLoading = BehaviorRelay<Bool>(value: true)
     let searchText = BehaviorRelay<String>(value: "")
-    var currentWeatherList: [CurrentWeather] = []
     
     var currentWeatherData: Observable<[SectionOfCurrentWeather]> {
         return refreshData
@@ -35,13 +34,12 @@ class WeatherListViewModel {
             
             switch result {
             case .success(let currentWeatherList):
-                let currentWeatherItems = currentWeatherList.map { CurrentWeather(from: $0) }
-                
-                self.currentWeatherList.append(contentsOf: currentWeatherItems)
-                let sectionOfCurrentWeatherList = currentWeatherItems.map{ SectionOfCurrentWeather(items: [$0]) }
+                let currentWeatherItems = currentWeatherList
+                    .map { CurrentWeather(from: $0) }
+                    .map{ SectionOfCurrentWeather(items: [$0]) }
                 self.showLoading.accept(false)
                 
-                return Observable.just(sectionOfCurrentWeatherList)
+                return Observable.just(currentWeatherItems)
                 
             case .failure(let error):
                 self.showLoading.accept(false)
