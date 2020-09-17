@@ -60,10 +60,6 @@ class WeatherListViewController: UIViewController {
     
     override func viewWillAppear(_ animated: Bool) {
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBar))
-        
-        if let index = self.tableView.indexPathForSelectedRow {
-            self.tableView.deselectRow(at: index, animated: true)
-        }
     }
     
     private func createTimer() {
@@ -110,6 +106,9 @@ extension WeatherListViewController {
                     guard let self = self else { return }
                     
                     self.weatherViewModel.modelSelected.onNext(currentWeather)
+                    if let index = self.tableView.indexPathForSelectedRow {
+                        self.tableView.deselectRow(at: index, animated: true)
+                    }
             }).disposed(by: disposeBag)
     }
     
@@ -193,17 +192,13 @@ extension WeatherListViewController {
 
 // MARK:- TableView setup
 
-extension WeatherListViewController: UITableViewDelegate {
-    
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        WeatherTableViewCell.height
-    }
+extension WeatherListViewController {
     
     private func setupTableView() {
-        tableView.rx.setDelegate(self).disposed(by: disposeBag)
+        tableView.rowHeight = WeatherTableViewCell.height
         tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
-
+    
 }
 
 // MARK:- Setup UI

@@ -63,12 +63,14 @@ class WeatherDetailViewController: UIViewController {
     }
     
     private func setupWeeklyWeatherData() {
-        weatherDetailViewModel.dailyWeather.subscribe(
-            onNext: { [weak self] (_) in
-                guard let self = self else { return }
-                
-                self.updateDailyStackView()
-        }).disposed(by: disposeBag)
+        weatherDetailViewModel.dailyWeather
+            .subscribe(
+                onNext: { [weak self] (_) in
+                    guard let self = self else { return }
+                    
+                    self.updateDailyStackView()
+            })
+            .disposed(by: disposeBag)
     }
     
     private func updateDailyStackView() {
@@ -114,15 +116,10 @@ extension WeatherDetailViewController {
 
 // MARK:- CollectionView setup
 
-extension WeatherDetailViewController: UICollectionViewDelegate {
-    
-    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
-        collectionView.deselectItem(at: indexPath, animated: true)
-    }
+extension WeatherDetailViewController {
     
     private func setupCollectionView() {
         hourlyWeatherCollectionView.register(WeatherCollectionViewCell.nib(), forCellWithReuseIdentifier: WeatherCollectionViewCell.identifier)
-        hourlyWeatherCollectionView.rx.setDelegate(self).disposed(by: disposeBag)
     }
     
 }
@@ -156,7 +153,7 @@ extension WeatherDetailViewController {
     
     private func configureCollectionLayout() {
         let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: 70, height: 150)
+        layout.itemSize = CGSize(width: WeatherCollectionViewCell.width, height: WeatherCollectionViewCell.height)
         layout.scrollDirection = .horizontal
         hourlyWeatherCollectionView.collectionViewLayout = layout
     }
