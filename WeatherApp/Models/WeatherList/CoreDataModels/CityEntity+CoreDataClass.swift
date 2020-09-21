@@ -24,8 +24,7 @@ public class CityEntity: NSManagedObject {
         self.id = Int64(id)
     }
     
-    class func loadCities(context: NSManagedObjectContext) -> [CityEntity] {
-        let request: NSFetchRequest<CityEntity> = CityEntity.fetchRequest()
+    class func load(with request: NSFetchRequest<CityEntity>, context: NSManagedObjectContext) -> [CityEntity] {
         do {
             let cities = try context.fetch(request)
             return cities

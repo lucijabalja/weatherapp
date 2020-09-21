@@ -29,7 +29,7 @@ public class HourlyWeatherEntity: NSManagedObject {
         self.time = Int64(hourlyForecast.dateTime)
     }
     
-    class func loadHourlyWeather(withParent weeklyForecastEntity: WeeklyForecastEntity, index: Int, context: NSManagedObjectContext) -> HourlyWeatherEntity? {
+    class func load(withParent weeklyForecastEntity: WeeklyForecastEntity, index: Int, context: NSManagedObjectContext) -> HourlyWeatherEntity? {
         let request: NSFetchRequest<HourlyWeatherEntity> = HourlyWeatherEntity.fetchRequest()
         let hourlyPredicate = NSPredicate(format: "weeklyForecast = %@ AND id = %d", weeklyForecastEntity, index)
         request.predicate = hourlyPredicate

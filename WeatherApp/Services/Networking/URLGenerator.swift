@@ -19,11 +19,12 @@ class URLGenerator {
         "\(baseURL)/group?\(apiKey)&\(exclusions)&\(units)&id=\(ids)"
     }
     
-    class func currentCityWeather(city: String) -> String {
-        "\(baseURL)/weather?q=\(city)&\(apiKey)&\(units)"
+    class func currentCityWeather(forCity city: String) -> String {
+        let encodedCity = city.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? city
+        return "\(baseURL)/weather?q=\(encodedCity)&\(apiKey)&\(units)"
     }
     
-    class func weeklyWeather(latitude: Double, longitude: Double) -> String {
+    class func weeklyWeather(with latitude: Double,_ longitude: Double) -> String {
         "\(baseURL)/onecall?\(apiKey)&\(units)&lat=\(latitude)&lon=\(longitude)&\(exclusions)"
     }
     

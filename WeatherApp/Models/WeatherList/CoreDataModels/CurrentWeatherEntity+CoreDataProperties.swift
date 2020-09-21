@@ -17,6 +17,7 @@ extension CurrentWeatherEntity {
         return NSFetchRequest<CurrentWeatherEntity>(entityName: "CurrentWeatherEntity")
     }
 
+    @NSManaged public var orderNumber: Int64
     @NSManaged public var city: CityEntity
     @NSManaged public var parameters: TemperatureParametersEntity
     @NSManaged public var weatherDescription: WeatherDescriptionEntity

@@ -11,7 +11,7 @@ import RxSwift
 import RxDataSources
 import PureLayout
 
-class WeatherDetailViewController: UIViewController {
+final class WeatherDetailViewController: UIViewController {
     
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var dateLabel: UILabel!
@@ -20,11 +20,12 @@ class WeatherDetailViewController: UIViewController {
     @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
     @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
     
-    private var weatherDetailViewModel: WeatherDetailViewModel!
     private let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
-    private var spinner = UIActivityIndicatorView(style: .large)
     private var hourlyWeatherDataSource: RxCollectionViewSectionedReloadDataSource<SectionOfHourlyWeather>!
+    
+    var weatherDetailViewModel: WeatherDetailViewModel!
+    var spinner = UIActivityIndicatorView(style: .large)
     
     init(with weatherDetailViewModel: WeatherDetailViewModel ) {
         super.init(nibName: nil, bundle: nil)
@@ -42,11 +43,11 @@ class WeatherDetailViewController: UIViewController {
         setupUI()
         setupSpinner()
         configureCollectionLayout()
-        setupCollectionView()
-        setupRefreshControl()
+        registerHourlyWeatherCell()
         
         createDataSource()
         setupWeeklyWeatherData()
+        bindRefreshControl()
         bindCollectionView()
         bindSpinnerIndicator()
         
@@ -69,7 +70,7 @@ class WeatherDetailViewController: UIViewController {
                     guard let self = self else { return }
                     
                     self.updateDailyStackView()
-            })
+                })
             .disposed(by: disposeBag)
     }
     
@@ -90,7 +91,7 @@ class WeatherDetailViewController: UIViewController {
                 cell.configure(with: item)
                 self.refreshControl.endRefreshing()
                 return cell
-        })
+            })
     }
     
 }
@@ -112,23 +113,8 @@ extension WeatherDetailViewController {
             .bind(to: spinner.rx.isAnimating)
             .disposed(by: disposeBag)
     }
-}
-
-// MARK:- CollectionView setup
-
-extension WeatherDetailViewController {
     
-    private func setupCollectionView() {
-        hourlyWeatherCollectionView.register(WeatherCollectionViewCell.nib(), forCellWithReuseIdentifier: WeatherCollectionViewCell.identifier)
-    }
-    
-}
-
-// MARK:- Refresh Control setup
-
-extension WeatherDetailViewController {
-    
-    private func setupRefreshControl() {
+    private func bindRefreshControl() {
         scrollView.refreshControl = refreshControl
         
         refreshControl
@@ -136,33 +122,6 @@ extension WeatherDetailViewController {
             .controlEvent(.valueChanged)
             .bind(to: weatherDetailViewModel.refreshData)
             .disposed(by: disposeBag)
-    }
-    
-}
-
-// MARK:- UI Setup
-
-extension WeatherDetailViewController {
-    
-    private func setupUI() {
-        cityLabel.text = weatherDetailViewModel.currentWeather.city
-        dateLabel.text = weatherDetailViewModel.date
-        weatherDescription.text = weatherDetailViewModel.currentWeather.condition.conditionDescription
-        hourlyWeatherCollectionView.backgroundColor = .clear
-    }
-    
-    private func configureCollectionLayout() {
-        let layout = UICollectionViewFlowLayout()
-        layout.itemSize = CGSize(width: WeatherCollectionViewCell.width, height: WeatherCollectionViewCell.height)
-        layout.scrollDirection = .horizontal
-        hourlyWeatherCollectionView.collectionViewLayout = layout
-    }
-    
-    private func setupSpinner() {
-        spinner.frame = view.frame
-        view.addSubview(spinner)
-        spinner.autoAlignAxis(toSuperviewAxis: .horizontal)
-        spinner.autoAlignAxis(toSuperviewAxis: .vertical)
     }
     
 }

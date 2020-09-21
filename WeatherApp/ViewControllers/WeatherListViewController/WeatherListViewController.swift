@@ -12,7 +12,7 @@ import RxDataSources
 import RxCocoa
 import PureLayout
 
-class WeatherListViewController: UIViewController {
+final class WeatherListViewController: UIViewController {
     
     private var weatherViewModel: WeatherListViewModel!
     private var disposeBag = DisposeBag()
@@ -22,12 +22,12 @@ class WeatherListViewController: UIViewController {
     private var timerPeriod = 600
     
     // UI variables
-    private var searchBar = UISearchBar()
-    private let refreshControl = UIRefreshControl()
-    private var spinner = UIActivityIndicatorView(style: .large)
-    private var editBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: nil)
-    private var searchBarButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: nil)
-    private let tableView = UITableView()
+    var searchBar = UISearchBar()
+    let refreshControl = UIRefreshControl()
+    var spinner = UIActivityIndicatorView(style: .large)
+    var editBarButton = UIBarButtonItem(barButtonSystemItem: .edit, target: self, action: nil)
+    var searchBarButton = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: nil)
+    let tableView = UITableView()
     
     // datasource
     typealias CurrentWeatherSectionModel = AnimatableSectionModel<String, CurrentWeather>
@@ -155,7 +155,7 @@ extension WeatherListViewController {
                     if let index = self.tableView.indexPathForSelectedRow {
                         self.tableView.deselectRow(at: index, animated: true)
                     }
-            }).disposed(by: disposeBag)
+                }).disposed(by: disposeBag)
         
         tableView
             .rx
@@ -207,7 +207,7 @@ extension WeatherListViewController {
     
     private func bindRefreshControl() {
         tableView.refreshControl = refreshControl
-
+        
         refreshControl
             .rx
             .controlEvent(.valueChanged)
@@ -237,58 +237,6 @@ extension WeatherListViewController {
                 self.showSearchBar()
             })
             .disposed(by: disposeBag)
-    }
-    
-}
-
-// MARK:- UI Setup
-
-extension WeatherListViewController {
-    
-    func showSearchBar() {
-        search(shouldShow: true)
-        navigationItem.titleView = searchBar
-        searchBar.becomeFirstResponder()
-    }
-    
-    private func search(shouldShow: Bool) {
-        searchBar.isHidden = !shouldShow
-        searchBar.showsCancelButton = shouldShow
-        navigationItem.leftBarButtonItem = shouldShow ? nil : searchBarButton
-        navigationItem.rightBarButtonItem = shouldShow ? nil : editBarButton
-    }
-}
-
-// MARK:- TableView setup
-
-extension WeatherListViewController {
-    
-    private func setupTableView() {
-        tableView.rowHeight = WeatherTableViewCell.height
-        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
-    }
-    
-}
-
-// MARK:- Setup UI
-
-extension WeatherListViewController {
-    
-    private func setupUI() {
-        tableView.backgroundColor = .clear
-        tableView.separatorStyle = .none
-        tableView.isHidden = false
-        
-        spinner.frame = view.frame
-    }
-    
-    private func setupConstraints() {
-        view.addSubview(tableView)
-        tableView.autoPinEdgesToSuperviewEdges(with: UIEdgeInsets(top: 5, left: 5, bottom: 5, right: 5))
-        
-        view.addSubview(spinner)
-        spinner.autoAlignAxis(toSuperviewAxis: .horizontal)
-        spinner.autoAlignAxis(toSuperviewAxis: .vertical)
     }
     
 }

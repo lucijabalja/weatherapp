@@ -13,7 +13,7 @@ import RxCocoa
 class WeatherListViewModel {
     
     private let coordinator: Coordinator
-    private let dataRepository: MainWeatherDataRepository
+    private let dataRepository: WeatherListDataRepository
     private let disposeBag = DisposeBag()
     let refreshData = PublishSubject<Void>()
     let modelSelected = PublishSubject<CurrentWeather>()
@@ -39,7 +39,7 @@ class WeatherListViewModel {
             }
     }
     
-    init(coordinator: Coordinator, dataRepository: MainWeatherDataRepository) {
+    init(coordinator: Coordinator, dataRepository: WeatherListDataRepository) {
         self.coordinator = coordinator
         self.dataRepository = dataRepository
         
@@ -64,14 +64,14 @@ class WeatherListViewModel {
             .subscribe(onNext: { [weak self] (city) in
                 guard let self = self else { return }
                 
-                self.dataRepository.getCurrentCityWeather(for: city)
+                self.dataRepository.getCurrentWeatherData(for: city)
                 self.refreshData.onNext(())
             })
             .disposed(by: disposeBag)
     }
     
     func removeCurrentWeather(with city: String) {
-        dataRepository.removeCurrentWeather(with: city)
+        dataRepository.removeCurrentWeather(for: city)
     }
     
     func pushToDetailView(with selectedCity: CurrentWeather) {

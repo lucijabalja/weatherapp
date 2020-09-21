@@ -13,31 +13,17 @@ import CoreData
 
 public class WeeklyForecastEntity: NSManagedObject {
     
-    class func createFrom(_ weeklyWeatherResponse: WeeklyWeatherResponse, context: NSManagedObjectContext) {
-        guard let weeklyForecastEntity = loadWeeklyForecast(with: weeklyWeatherResponse.latitude, weeklyWeatherResponse.longitude, context: context) else {
-            createNewEntity(with: weeklyWeatherResponse, context: context)
+    class func createOrUpdate(_ weeklyWeatherResponse: WeeklyWeatherResponse, context: NSManagedObjectContext) {
+        guard let weeklyForecastEntity = load(with: weeklyWeatherResponse.latitude, weeklyWeatherResponse.longitude, context: context) else {
+            createNew(with: weeklyWeatherResponse, context: context)
             return
         }
         
-        for (index, dailyForecast) in weeklyWeatherResponse.dailyForecast.enumerated() {
-            guard let dailyWeatherEntity = DailyWeatherEntity.loadDailyWeather(withParent: weeklyForecastEntity, index: index, context: context) else {
-                return
-            }
-            
-            dailyWeatherEntity.update(with: dailyForecast, index: index)
-        }
+        update(entity: weeklyForecastEntity, with: weeklyWeatherResponse, context: context)
         
-        for (index, hourlyForecast) in weeklyWeatherResponse.hourlyForecast.enumerated() {
-            guard let hourlyWeatherEntity = HourlyWeatherEntity.loadHourlyWeather(withParent: weeklyForecastEntity, index: index, context: context) else {
-                return
-            }
-            
-            hourlyWeatherEntity.update(with: hourlyForecast, index: index)
-        }
-
     }
     
-    class func createNewEntity(with weeklyWeatherResponse: WeeklyWeatherResponse, context: NSManagedObjectContext) {
+    class func createNew(with weeklyWeatherResponse: WeeklyWeatherResponse, context: NSManagedObjectContext) {
         let weeklyForecastEntity = WeeklyForecastEntity(context: context)
         weeklyForecastEntity.latitude = weeklyWeatherResponse.latitude
         weeklyForecastEntity.longitude = weeklyWeatherResponse.longitude
@@ -56,7 +42,25 @@ public class WeeklyForecastEntity: NSManagedObject {
         }
     }
     
-    class func loadWeeklyForecast(with latitude: Double, _ longitude: Double, context: NSManagedObjectContext) -> WeeklyForecastEntity? {
+    class func update(entity: WeeklyForecastEntity, with weeklyWeatherResponse: WeeklyWeatherResponse, context: NSManagedObjectContext) {
+        for (index, dailyForecast) in weeklyWeatherResponse.dailyForecast.enumerated() {
+            guard let dailyWeatherEntity = DailyWeatherEntity.load(withParent: entity, index: index, context: context) else {
+                return
+            }
+            
+            dailyWeatherEntity.update(with: dailyForecast, index: index)
+        }
+        
+        for (index, hourlyForecast) in weeklyWeatherResponse.hourlyForecast.enumerated() {
+            guard let hourlyWeatherEntity = HourlyWeatherEntity.load(withParent: entity, index: index, context: context) else {
+                return
+            }
+            
+            hourlyWeatherEntity.update(with: hourlyForecast, index: index)
+        }
+    }
+    
+    class func load(with latitude: Double, _ longitude: Double, context: NSManagedObjectContext) -> WeeklyForecastEntity? {
         let request: NSFetchRequest<WeeklyForecastEntity> = WeeklyForecastEntity.fetchRequest()
         let epsilon = 0.000001;
         let coordinatesPredicate = NSPredicate(format: "latitude > %lf AND latitude < %lf AND longitude > %lf AND longitude < %lf",

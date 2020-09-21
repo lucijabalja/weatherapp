@@ -23,7 +23,7 @@ class CoreDataService {
     }
     
     func saveCurrentWeatherData(_ currentForecastList: [CurrentForecast]) {
-        currentForecastList.forEach { CurrentWeatherEntity.createFrom($0, context: privateObjectContext) }
+        currentForecastList.forEach { CurrentWeatherEntity.createOrUpdate($0, context: privateObjectContext) }
         saveChanges()
     }
     
@@ -44,7 +44,7 @@ class CoreDataService {
     func deleteCurrentWeather(with city: String) {
         let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
         request.predicate = NSPredicate(format: "city.name = %@", city)
-        guard let entity = CurrentWeatherEntity.loadCurrentWeatherData(with: request, context: mainObjectContext).first else {
+        guard let entity = CurrentWeatherEntity.load(with: request, context: mainObjectContext).first else {
             return
         }
         CurrentWeatherEntity.delete(entity, context: mainObjectContext)
@@ -52,7 +52,7 @@ class CoreDataService {
     }
     
     func saveWeeklyForecast(_ weeklyWeatherResponse: WeeklyWeatherResponse) {
-        WeeklyForecastEntity.createFrom(weeklyWeatherResponse, context: privateObjectContext)
+        WeeklyForecastEntity.createOrUpdate(weeklyWeatherResponse, context: privateObjectContext)
         saveChanges()
     }
     
@@ -76,7 +76,8 @@ class CoreDataService {
     }
     
     func loadCityEntites() -> [CityEntity] {
-        CityEntity.loadCities(context: mainObjectContext) 
+        let request: NSFetchRequest<CityEntity> = CityEntity.fetchRequest()
+        return CityEntity.load(with: request, context: mainObjectContext)
     }
 
     func saveChanges() {

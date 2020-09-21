@@ -30,7 +30,7 @@ public class DailyWeatherEntity: NSManagedObject {
         self.temperature.update(with: dailyForecast.temperature)
     }
     
-    class func loadDailyWeather(withParent weeklyForecastEntity: WeeklyForecastEntity, index: Int, context: NSManagedObjectContext) -> DailyWeatherEntity? {
+    class func load(withParent weeklyForecastEntity: WeeklyForecastEntity, index: Int, context: NSManagedObjectContext) -> DailyWeatherEntity? {
         let request: NSFetchRequest<DailyWeatherEntity> = DailyWeatherEntity.fetchRequest()
         let dailyPredicate = NSPredicate(format: "weeklyForecast = %@ AND id = %d", weeklyForecastEntity, index)
         request.predicate = dailyPredicate

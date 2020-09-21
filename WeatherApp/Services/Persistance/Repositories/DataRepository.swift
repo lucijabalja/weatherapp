@@ -18,7 +18,6 @@ class DataRepository {
     
     typealias WeatherResponse = Observable<Result<CurrentWeatherResponse, NetworkError>>
     typealias ForecastResponse = Observable<Result<CurrentForecast, NetworkError>>
-    typealias WeeklyWeatherResult = Observable<Result<WeeklyForecastEntity, PersistanceError>>
     typealias WeeklyResponse = Observable<Result<WeeklyWeatherResponse, NetworkError>>
     
     init(weatherApiService: WeatherApiService, coreDataService: CoreDataService) {
@@ -28,7 +27,7 @@ class DataRepository {
     
 }
 
-extension DataRepository: MainWeatherDataRepository {
+extension DataRepository: WeatherListDataRepository {
     
     func getCurrentWeatherData() -> Observable<[CurrentWeatherEntity]> {
         let apiURL = URLGenerator.currentWeather(ids: getCurrentCityIds())
@@ -48,8 +47,8 @@ extension DataRepository: MainWeatherDataRepository {
         }
     }
     
-    func getCurrentCityWeather(for city: String) {
-        let apiURL = URLGenerator.currentCityWeather(city: city.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? city)
+    func getCurrentWeatherData(for city: String) {
+        let apiURL = URLGenerator.currentCityWeather(forCity: city)
         let weatherData: ForecastResponse = weatherApiService.fetchData(urlString: apiURL)
         
         weatherData
@@ -63,7 +62,7 @@ extension DataRepository: MainWeatherDataRepository {
             .disposed(by: disposeBag)
     }
     
-    func removeCurrentWeather(with city: String) {
+    func removeCurrentWeather(for city: String) {
         coreDataService.deleteCurrentWeather(with: city)
     }
     
@@ -77,7 +76,7 @@ extension DataRepository: MainWeatherDataRepository {
 extension DataRepository: DetailWeatherDataRepository {
     
     func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<[WeeklyForecastEntity]> {
-        let apiURL = URLGenerator.weeklyWeather(latitude: latitude, longitude: longitude)
+        let apiURL = URLGenerator.weeklyWeather(with: latitude, longitude)
         let weeklyWeatherResponse: WeeklyResponse = weatherApiService.fetchData(urlString: apiURL)
         
         return weeklyWeatherResponse
@@ -88,9 +87,7 @@ extension DataRepository: DetailWeatherDataRepository {
                     self.coreDataService.saveWeeklyForecast(weeklyWeatherResponse)
                 }
             }).flatMap { [weak self ] (_) -> Observable<[WeeklyForecastEntity]> in
-                guard let self = self else {
-                        return Observable.just([])
-                }
+                guard let self = self else { return Observable.just([]) }
                 
                 return self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude)
         }

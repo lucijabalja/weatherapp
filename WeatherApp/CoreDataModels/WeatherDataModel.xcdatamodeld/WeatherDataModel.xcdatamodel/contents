@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="16119" systemVersion="19G2021" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17192" systemVersion="19G2021" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="CityEntity" representedClassName=".CityEntity" syncable="YES">
         <attribute name="id" attributeType="Integer 64" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="name" attributeType="String"/>
         <relationship name="currentWeather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentWeatherEntity" inverseName="city" inverseEntity="CurrentWeatherEntity"/>
     </entity>
     <entity name="CurrentWeatherEntity" representedClassName=".CurrentWeatherEntity" syncable="YES">
+        <attribute name="orderPosition" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="city" maxCount="1" deletionRule="Cascade" destinationEntity="CityEntity" inverseName="currentWeather" inverseEntity="CityEntity"/>
         <relationship name="parameters" maxCount="1" deletionRule="Cascade" destinationEntity="TemperatureParametersEntity" inverseName="currentWeather" inverseEntity="TemperatureParametersEntity"/>
         <relationship name="weatherDescription" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WeatherDescriptionEntity" inverseName="currentWeather" inverseEntity="WeatherDescriptionEntity"/>
@@ -48,7 +49,7 @@
     </entity>
     <elements>
         <element name="CityEntity" positionX="-81" positionY="45" width="128" height="88"/>
-        <element name="CurrentWeatherEntity" positionX="-43.96875" positionY="-92.11328125" width="128" height="88"/>
+        <element name="CurrentWeatherEntity" positionX="-43.96875" positionY="-92.11328125" width="128" height="103"/>
         <element name="DailyWeatherEntity" positionX="128.8515625" positionY="265.453125" width="128" height="118"/>
         <element name="HourlyWeatherEntity" positionX="312.04296875" positionY="-109.4375" width="128" height="118"/>
         <element name="TemperatureEntity" positionX="394.33984375" positionY="279.6171875" width="128" height="88"/>
