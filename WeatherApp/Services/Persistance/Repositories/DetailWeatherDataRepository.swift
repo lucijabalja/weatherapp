@@ -10,6 +10,6 @@ import RxSwift
 
 protocol DetailWeatherDataRepository {
     
-    func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<Result<WeeklyForecastEntity, PersistanceError>>
+    func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<[WeeklyForecastEntity]>
     
 }

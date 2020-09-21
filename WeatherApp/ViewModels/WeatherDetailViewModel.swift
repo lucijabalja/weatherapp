@@ -29,23 +29,24 @@ class WeatherDetailViewModel {
         Utils.getFormattedTime()
     }
     
-    typealias WeeklyWeatherResult = Observable<Result<WeeklyForecastEntity, PersistanceError>>
-    
     var hourlyWeather: Observable<[SectionOfHourlyWeather]> {
         return refreshData
             .asObservable()
-            .flatMap{ [weak self] (_) -> WeeklyWeatherResult in
-                guard let self = self else { return Observable.just(.failure(.loadingError))}
+            .flatMap{ [weak self] (_) -> Observable<[WeeklyForecastEntity]> in
+                guard let self = self else { return Observable.just([])}
                 
                 self.showLoading.accept(true)
                 return self.dataRepository.getWeeklyWeather(latitude: self.locationService.coordinates.value.latitude,
                                                             longitude: self.locationService.coordinates.value.longitude)
-        }
-        .flatMap { [weak self] (result) -> Observable<[SectionOfHourlyWeather]> in
-            guard let self = self else { return Observable.just([])}
-            
-            switch result {
-            case .success(let weeklyForecastEntity):
+            }
+            .flatMap { [weak self] (weeklyForecastEntities) -> Observable<[SectionOfHourlyWeather]> in
+                guard
+                    let self = self,
+                    let weeklyForecastEntity = weeklyForecastEntities.first
+                else {
+                    return Observable.just([])
+                }
+                
                 let hourlyWeatherList = weeklyForecastEntity.hourlyWeather
                     .map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
                     .sorted { $0.dateTime < $1.dateTime }
@@ -59,14 +60,7 @@ class WeatherDetailViewModel {
                 self.showLoading.accept(false)
                 
                 return Observable.just(hourlyWeatherList)
-                
-            case .failure(let error):
-                self.showLoading.accept(false)
-                
-                self.coordinator.presentAlert(with: error)
-                return Observable.just([])
             }
-        }
     }
     
     init(appDependencies: AppDependencies, currentWeather: CurrentWeather, coordinator: Coordinator) {

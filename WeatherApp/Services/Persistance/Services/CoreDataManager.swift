@@ -9,7 +9,7 @@
 import Foundation
 import CoreData
 
-class CoreDataManager {
+class CoreDataManager: CoreDataManagerProtocol {
     
     public typealias CoreDataManagerCompletion = () -> ()
     private let completion: CoreDataManagerCompletion
@@ -21,6 +21,52 @@ class CoreDataManager {
         self.completion = completion
         
         setupCoreDataStack()
+    }
+    
+    //MARK:- Public use
+    
+    public private(set) lazy var mainManagedObjectContext: NSManagedObjectContext = {
+        // Initialize Managed Object Context
+        let managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
+        
+        // Configure Managed Object Context
+        managedObjectContext.parent = self.privateManagedObjectContext
+        
+        return managedObjectContext
+    }()
+    
+    public func saveChanges() {
+        mainManagedObjectContext.performAndWait {
+            do {
+                if self.mainManagedObjectContext.hasChanges {
+                    try self.mainManagedObjectContext.save()
+                }
+            } catch {
+                print("Unable to Save Changes of Main Managed Object Context")
+                print("\(error), \(error.localizedDescription)")
+            }
+        }
+        
+        privateManagedObjectContext.perform {
+            do {
+                if self.privateManagedObjectContext.hasChanges {
+                    try self.privateManagedObjectContext.save()
+                }
+            } catch {
+                print("Unable to Save Changes of Private Managed Object Context")
+                print("\(error), \(error.localizedDescription)")
+            }
+        }
+    }
+    
+    public func privateChildManagedObjectContext() -> NSManagedObjectContext {
+        // Initialize Managed Object Context
+        let managedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
+        
+        // Configure Managed Object Context
+        managedObjectContext.parent = mainManagedObjectContext
+        
+        return managedObjectContext
     }
     
     //MARK: - Core Sata Stack Setup
@@ -95,51 +141,5 @@ class CoreDataManager {
         
         return managedObjectContext
     }()
-    
-    //MARK:- Public use
-    
-    public private(set) lazy var mainManagedObjectContext: NSManagedObjectContext = {
-        // Initialize Managed Object Context
-        let managedObjectContext = NSManagedObjectContext(concurrencyType: .mainQueueConcurrencyType)
-        
-        // Configure Managed Object Context
-        managedObjectContext.parent = self.privateManagedObjectContext
-        
-        return managedObjectContext
-    }()
-    
-    public func saveChanges() {
-        mainManagedObjectContext.performAndWait {
-            do {
-                if self.mainManagedObjectContext.hasChanges {
-                    try self.mainManagedObjectContext.save()
-                }
-            } catch {
-                print("Unable to Save Changes of Main Managed Object Context")
-                print("\(error), \(error.localizedDescription)")
-            }
-        }
-        
-        privateManagedObjectContext.perform {
-            do {
-                if self.privateManagedObjectContext.hasChanges {
-                    try self.privateManagedObjectContext.save()
-                }
-            } catch {
-                print("Unable to Save Changes of Private Managed Object Context")
-                print("\(error), \(error.localizedDescription)")
-            }
-        }
-    }
-    
-    public func privateChildManagedObjectContext() -> NSManagedObjectContext {
-        // Initialize Managed Object Context
-        let managedObjectContext = NSManagedObjectContext(concurrencyType: .privateQueueConcurrencyType)
-        
-        // Configure Managed Object Context
-        managedObjectContext.parent = mainManagedObjectContext
-        
-        return managedObjectContext
-    }
     
 }

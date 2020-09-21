@@ -8,14 +8,15 @@
 
 import UIKit
 import CoreData
+import RxSwift
 
 class CoreDataService {
     
-    let coreDataManager: CoreDataManager
+    let coreDataManager: CoreDataManagerProtocol
     let mainObjectContext: NSManagedObjectContext
     let privateObjectContext: NSManagedObjectContext
     
-    init(coreDataManager: CoreDataManager) {
+    init(coreDataManager: CoreDataManagerProtocol) {
         self.coreDataManager = coreDataManager
         self.mainObjectContext = coreDataManager.mainManagedObjectContext
         self.privateObjectContext = coreDataManager.privateChildManagedObjectContext()
@@ -26,9 +27,18 @@ class CoreDataService {
         saveChanges()
     }
     
-    func loadCurrentWeatherData() -> [CurrentWeatherEntity] {
+    func loadCurrentWeatherData() -> Observable<[CurrentWeatherEntity]> {
         let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
-        return CurrentWeatherEntity.loadCurrentWeatherData(with: request, context: mainObjectContext)
+        request.sortDescriptors = [NSSortDescriptor(key: "city.name", ascending: true)]
+        
+        return mainObjectContext
+            .rx_entities(request as! NSFetchRequest<NSFetchRequestResult>)
+            .flatMap{ loadedManagedObject -> Observable<[CurrentWeatherEntity]> in
+                guard let loadedCurrentWeather = loadedManagedObject as? [CurrentWeatherEntity] else {
+                    return .just([])
+                }
+                return .just(loadedCurrentWeather)
+            }
     }
     
     func deleteCurrentWeather(with city: String) {
@@ -46,8 +56,23 @@ class CoreDataService {
         saveChanges()
     }
     
-    func loadWeeklyForecast(withCoordinates latitude: Double, _ longitude: Double) -> WeeklyForecastEntity? {
-        WeeklyForecastEntity.loadWeeklyForecast(with: latitude, longitude, context: mainObjectContext)
+    func loadWeeklyForecast(withCoordinates latitude: Double, _ longitude: Double) -> Observable<[WeeklyForecastEntity]> {
+        let request: NSFetchRequest<WeeklyForecastEntity> = WeeklyForecastEntity.fetchRequest()
+        let epsilon = 0.000001;
+        let coordinatesPredicate = NSPredicate(format: "latitude > %lf AND latitude < %lf AND longitude > %lf AND longitude < %lf",
+                                               latitude - epsilon,  latitude + epsilon, longitude - epsilon, longitude + epsilon)
+        request.predicate = coordinatesPredicate
+        request.sortDescriptors = []
+        
+        return mainObjectContext
+            .rx_entities(request as! NSFetchRequest<NSFetchRequestResult>)
+            .flatMap { (loadedManagedObject) -> Observable<[WeeklyForecastEntity]> in
+                guard let loadedWeeklyForecastEntity = loadedManagedObject as? [WeeklyForecastEntity] else {
+                    return .just([])
+                }
+                return .just(loadedWeeklyForecastEntity)
+                
+            }
     }
     
     func loadCityEntites() -> [CityEntity] {

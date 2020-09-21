@@ -11,7 +11,7 @@ import RxSwift
 
 protocol MainWeatherDataRepository {
     
-    func getCurrentWeatherData() -> Observable<Result<[CurrentWeatherEntity],PersistanceError>>
+    func getCurrentWeatherData() -> Observable<[CurrentWeatherEntity]>
     
     func getCurrentCityWeather(for city: String)
 

@@ -20,35 +20,23 @@ class WeatherListViewModel {
     let showLoading = BehaviorRelay<Bool>(value: true)
     let searchText = BehaviorRelay<String>(value: "")
     
-    typealias CurrentWeatherResult = Observable<Result<[CurrentWeatherEntity], PersistanceError>>
-    
     var currentWeatherData: Observable<[CurrentWeather]> {
         return refreshData
             .asObservable()
-            .flatMap{ [weak self] (_) -> CurrentWeatherResult in
-                guard let self = self else { return Observable.just(.failure(.loadingError)) }
+            .flatMap{ [weak self] (_) -> Observable<[CurrentWeatherEntity]> in
+                guard let self = self else { return Observable.just([]) }
                 
                 self.showLoading.accept(true)
                 return self.dataRepository.getCurrentWeatherData()
-        }
-        .flatMap { [weak self] (result) -> Observable<[CurrentWeather]> in
-            guard let self = self else { return Observable.just([]) }
-            
-            switch result {
-            case .success(let currentWeatherList):
-                let currentWeatherItems = currentWeatherList
-                    .map { CurrentWeather(from: $0) }
+            }
+            .flatMap { [weak self] (currentWeatherList) -> Observable<[CurrentWeather]> in
+                guard let self = self else { return Observable.just([]) }
+                
+                let currentWeatherItems = currentWeatherList.map { CurrentWeather(from: $0) }
                 self.showLoading.accept(false)
                 
                 return Observable.just(currentWeatherItems)
-                
-            case .failure(let error):
-                self.showLoading.accept(false)
-                self.coordinator.presentAlert(with: error)
-                
-                return Observable.just([])
             }
-        }
     }
     
     init(coordinator: Coordinator, dataRepository: MainWeatherDataRepository) {
@@ -57,6 +45,7 @@ class WeatherListViewModel {
         
         bindModelSelected()
         bindSearchCity()
+        refreshData.onNext(())
     }
     
     func bindModelSelected() {
