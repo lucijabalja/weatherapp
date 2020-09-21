@@ -66,6 +66,11 @@ extension DataRepository: WeatherListDataRepository {
         coreDataService.deleteCurrentWeather(with: city)
     }
     
+    func reorderCurrentWeatherList(_ currentWeatherEntity: CurrentWeatherEntity,_ sourceIndex: Int,_ destinationIndex: Int) {
+        coreDataService.reorderCurrentWeatherList(currentWeatherEntity, sourceIndex, destinationIndex)
+    }
+
+    
     private func getCurrentCityIds() -> String {
         let cityIds = coreDataService.loadCityEntites().map { String($0.id) }
         return cityIds.count > 0 ? cityIds.map { $0 }.joined(separator:",") : Constants.defaultCityIds

@@ -65,6 +65,7 @@ final class WeatherListViewController: UIViewController {
     override func viewWillAppear(_ animated: Bool) {
         navigationItem.leftBarButtonItem = searchBarButton
         navigationItem.rightBarButtonItem = editBarButton
+        search(shouldShow: false)
         self.navigationController?.navigationBar.isTranslucent = false
     }
     
@@ -89,7 +90,7 @@ extension WeatherListViewController {
     private func createDataSource() {
         dataSource = RxTableViewSectionedAnimatedDataSource<CurrentWeatherSectionModel>(
             animationConfiguration: AnimationConfiguration(
-                insertAnimation: .right,
+                insertAnimation: .fade,
                 reloadAnimation: .none,
                 deleteAnimation: .left),
             configureCell: configureCell,
@@ -163,9 +164,20 @@ extension WeatherListViewController {
             .asDriver()
             .drive(onNext: { (currentWeather) in
                 self.weatherViewModel.removeCurrentWeather(with: currentWeather.city)
-                self.weatherViewModel.refreshData.onNext(())
             })
             .disposed(by: disposeBag)
+        
+        tableView
+            .rx
+            .itemMoved
+            .asDriver()
+            .drive { [weak self] (sourceIndex, destinationIndex) in
+                guard sourceIndex != destinationIndex else { return }
+                guard let self = self else { return }
+                print(sourceIndex.row)
+                self.weatherViewModel.reorderCurrentWeatherList(sourceIndex.row, destinationIndex.row)
+            }.disposed(by: disposeBag)
+
         
     }
     
@@ -190,9 +202,9 @@ extension WeatherListViewController {
                 if let city = self.searchBar.text {
                     self.weatherViewModel.searchText.accept(city)
                 }
-                self.weatherViewModel.refreshData.onNext(())
                 self.searchBar.resignFirstResponder()
                 self.searchBar.text = ""
+                self.refreshControl.endRefreshing()
             })
             .disposed(by: disposeBag)
     }

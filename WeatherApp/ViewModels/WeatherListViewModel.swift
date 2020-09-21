@@ -23,7 +23,7 @@ class WeatherListViewModel {
     var currentWeatherData: Observable<[CurrentWeather]> {
         return refreshData
             .asObservable()
-            .flatMap{ [weak self] (_) -> Observable<[CurrentWeatherEntity]> in
+            .flatMap { [weak self] (_) -> Observable<[CurrentWeatherEntity]> in
                 guard let self = self else { return Observable.just([]) }
                 
                 self.showLoading.accept(true)
@@ -72,6 +72,21 @@ class WeatherListViewModel {
     
     func removeCurrentWeather(with city: String) {
         dataRepository.removeCurrentWeather(for: city)
+    }
+    
+    func reorderCurrentWeatherList(_ sourceIndex: Int,_ destinationIndex: Int) {
+        dataRepository
+            .getCurrentWeatherData()
+            .take(1)
+            .subscribe(onNext: { data in
+                guard let currentWeather = data[safeIndex: sourceIndex] else {
+                    return
+                }
+                self.dataRepository.reorderCurrentWeatherList(currentWeather, sourceIndex, destinationIndex)
+
+            }).disposed(by: disposeBag)
+       
+       // dadataRepository.reorderCurrentWeatherList(sourceIndex, destinationIndex)
     }
     
     func pushToDetailView(with selectedCity: CurrentWeather) {

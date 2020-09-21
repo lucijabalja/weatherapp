@@ -23,21 +23,25 @@ class CoreDataService {
     }
     
     func saveCurrentWeatherData(_ currentForecastList: [CurrentForecast]) {
-        currentForecastList.forEach { CurrentWeatherEntity.createOrUpdate($0, context: privateObjectContext) }
+        currentForecastList.forEach { CurrentForecastEntity.createOrUpdate($0, context: privateObjectContext) }
         saveChanges()
     }
     
     func loadCurrentWeatherData() -> Observable<[CurrentWeatherEntity]> {
-        let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
-        request.sortDescriptors = [NSSortDescriptor(key: "city.name", ascending: true)]
+        let request: NSFetchRequest<CurrentForecastEntity> = CurrentForecastEntity.fetchRequest()
+        request.sortDescriptors = []
         
         return mainObjectContext
             .rx_entities(request as! NSFetchRequest<NSFetchRequestResult>)
             .flatMap{ loadedManagedObject -> Observable<[CurrentWeatherEntity]> in
-                guard let loadedCurrentWeather = loadedManagedObject as? [CurrentWeatherEntity] else {
+                guard
+                    let loadedCurrentWeather = loadedManagedObject as? [CurrentForecastEntity],
+                    let entities = loadedCurrentWeather.first?.currentWeatherEntities?.array as? [CurrentWeatherEntity]
+                else {
                     return .just([])
                 }
-                return .just(loadedCurrentWeather)
+          
+                return .just(entities)
             }
     }
     
@@ -49,6 +53,10 @@ class CoreDataService {
         }
         CurrentWeatherEntity.delete(entity, context: mainObjectContext)
         saveChanges()
+    }
+    
+    func reorderCurrentWeatherList(_ currentWeatherEntity: CurrentWeatherEntity,_ sourceIndex: Int,_ destinationIndex: Int) {
+        CurrentForecastEntity.reorder(currentWeatherEntity, sourceIndex, destinationIndex, context: mainObjectContext)
     }
     
     func saveWeeklyForecast(_ weeklyWeatherResponse: WeeklyWeatherResponse) {

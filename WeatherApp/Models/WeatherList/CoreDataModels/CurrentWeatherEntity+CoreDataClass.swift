@@ -14,24 +14,25 @@ public class CurrentWeatherEntity: NSManagedObject {
     
     typealias CurrentWeatherRequest = NSFetchRequest<CurrentWeatherEntity>
     
-    class func createOrUpdate(_ currentForecast: CurrentForecast, context: NSManagedObjectContext) {
+    class func createOrUpdate(_ currentForecast: CurrentForecast, context: NSManagedObjectContext) -> CurrentWeatherEntity {
         let request: CurrentWeatherRequest = CurrentWeatherEntity.fetchRequest()
         request.predicate = NSPredicate(format: "city.name = %@", currentForecast.city)
         request.returnsObjectsAsFaults = false
         
         guard let currentWeather = load(with: request, context: context).first else {
-            createFrom(currentForecast, context: context)
-            return
+            return createFrom(currentForecast, context: context)
         }
         
         update(entity: currentWeather, with: currentForecast)
+        return currentWeather
     }
     
-    class func createFrom(_ currentForecast: CurrentForecast, context: NSManagedObjectContext) {
+    class func createFrom(_ currentForecast: CurrentForecast, context: NSManagedObjectContext) -> CurrentWeatherEntity {
         let currentWeatherEntity = CurrentWeatherEntity(context: context)
         currentWeatherEntity.city = CityEntity.createFrom(currentForecast.city, currentForecast.id, context: context)
         currentWeatherEntity.parameters = TemperatureParametersEntity.createFrom(currentForecast.temperatureParameters, context: context)
         currentWeatherEntity.weatherDescription = WeatherDescriptionEntity.createFrom(currentForecast.weatherDescription[0], context: context)
+        return currentWeatherEntity
     }
     
     class func update(entity: CurrentWeatherEntity, with currentForecast: CurrentForecast) {

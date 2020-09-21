@@ -17,4 +17,5 @@ protocol WeatherListDataRepository {
 
     func removeCurrentWeather(for city: String)
     
+    func reorderCurrentWeatherList(_ currentWeatherEntity: CurrentWeatherEntity,_ sourceIndex: Int,_ destinationIndex: Int)
 }

@@ -5,9 +5,12 @@
         <attribute name="name" attributeType="String"/>
         <relationship name="currentWeather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentWeatherEntity" inverseName="city" inverseEntity="CurrentWeatherEntity"/>
     </entity>
+    <entity name="CurrentForecastEntity" representedClassName=".CurrentForecastEntity" syncable="YES">
+        <relationship name="currentWeatherEntities" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="CurrentWeatherEntity" inverseName="currentForecast" inverseEntity="CurrentWeatherEntity"/>
+    </entity>
     <entity name="CurrentWeatherEntity" representedClassName=".CurrentWeatherEntity" syncable="YES">
-        <attribute name="orderPosition" optional="YES" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
         <relationship name="city" maxCount="1" deletionRule="Cascade" destinationEntity="CityEntity" inverseName="currentWeather" inverseEntity="CityEntity"/>
+        <relationship name="currentForecast" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentForecastEntity" inverseName="currentWeatherEntities" inverseEntity="CurrentForecastEntity"/>
         <relationship name="parameters" maxCount="1" deletionRule="Cascade" destinationEntity="TemperatureParametersEntity" inverseName="currentWeather" inverseEntity="TemperatureParametersEntity"/>
         <relationship name="weatherDescription" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WeatherDescriptionEntity" inverseName="currentWeather" inverseEntity="WeatherDescriptionEntity"/>
     </entity>
@@ -56,5 +59,6 @@
         <element name="TemperatureParametersEntity" positionX="241.7578125" positionY="4.34765625" width="128" height="103"/>
         <element name="WeatherDescriptionEntity" positionX="-289.23046875" positionY="107.16796875" width="128" height="88"/>
         <element name="WeeklyForecastEntity" positionX="-166.10546875" positionY="260.0703125" width="128" height="103"/>
+        <element name="CurrentForecastEntity" positionX="-81" positionY="45" width="128" height="58"/>
     </elements>
 </model>

@@ -15,7 +15,7 @@ public class WeeklyForecastEntity: NSManagedObject {
     
     class func createOrUpdate(_ weeklyWeatherResponse: WeeklyWeatherResponse, context: NSManagedObjectContext) {
         guard let weeklyForecastEntity = load(with: weeklyWeatherResponse.latitude, weeklyWeatherResponse.longitude, context: context) else {
-            createNew(with: weeklyWeatherResponse, context: context)
+            createFrom(weeklyWeatherResponse, context: context)
             return
         }
         
@@ -23,7 +23,7 @@ public class WeeklyForecastEntity: NSManagedObject {
         
     }
     
-    class func createNew(with weeklyWeatherResponse: WeeklyWeatherResponse, context: NSManagedObjectContext) {
+    class func createFrom(_ weeklyWeatherResponse: WeeklyWeatherResponse, context: NSManagedObjectContext) {
         let weeklyForecastEntity = WeeklyForecastEntity(context: context)
         weeklyForecastEntity.latitude = weeklyWeatherResponse.latitude
         weeklyForecastEntity.longitude = weeklyWeatherResponse.longitude
