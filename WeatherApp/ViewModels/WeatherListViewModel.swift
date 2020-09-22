@@ -13,41 +13,49 @@ import RxCocoa
 class WeatherListViewModel {
     
     private let coordinator: Coordinator
-    private let dataRepository: DataRepository
+    private let dataRepository: MainWeatherDataRepository
     private let disposeBag = DisposeBag()
     let refreshData = PublishSubject<Void>()
     let modelSelected = PublishSubject<CurrentWeather>()
     let showLoading = BehaviorRelay<Bool>(value: true)
+    let searchText = BehaviorRelay<String>(value: "")
     
-    var currentWeatherList: Observable<[CurrentWeather]> {
+    var currentWeatherData: Observable<[SectionOfCurrentWeather]> {
         return refreshData
             .asObservable()
-            .flatMap{ _ -> Observable<Result<CurrentForecastEntity, PersistanceError>> in
+            .flatMap{ [weak self] (_) -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
+                guard let self = self else { return Observable.just(.failure(.loadingError)) }
+                
                 self.showLoading.accept(true)
                 return self.dataRepository.getCurrentWeatherData()
         }
-        .flatMap { (result) -> Observable<[CurrentWeather]> in
+        .flatMap { [weak self] (result) -> Observable<[SectionOfCurrentWeather]> in
+            guard let self = self else { return Observable.just([]) }
+            
             switch result {
-            case .success(let currentForecastEntity):
-                let curentWeatherItems = currentForecastEntity.currentWeather
-                    .map { CurrentWeather(from: $0 as! CurrentWeatherEntity )}
+            case .success(let currentWeatherList):
+                let currentWeatherItems = currentWeatherList
+                    .map { CurrentWeather(from: $0) }
+                    .map{ SectionOfCurrentWeather(items: [$0]) }
                 self.showLoading.accept(false)
                 
-                return Observable.just(curentWeatherItems)
+                return Observable.just(currentWeatherItems)
                 
             case .failure(let error):
                 self.showLoading.accept(false)
+                self.coordinator.presentAlert(with: error)
                 
-                return Observable.error(error)
+                return Observable.just([])
             }
         }
     }
     
-    init(coordinator: Coordinator, dataRepository: DataRepository) {
+    init(coordinator: Coordinator, dataRepository: MainWeatherDataRepository) {
         self.coordinator = coordinator
         self.dataRepository = dataRepository
         
         bindModelSelected()
+        bindSearchCity()
     }
     
     func bindModelSelected() {
@@ -57,6 +65,17 @@ class WeatherListViewModel {
                 guard let self = self else { return }
                 
                 self.pushToDetailView(with: currentWeather)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func bindSearchCity() {
+        searchText
+            .subscribe(onNext: { [weak self] (city) in
+                guard let self = self else { return }
+                
+                self.dataRepository.getCurrentCityWeather(for: city)
+                self.refreshData.onNext(())
             })
             .disposed(by: disposeBag)
     }

@@ -18,5 +18,6 @@ class ErrorMessage {
     static let parsingError = "Cannot parse data correctly."
     static let noInternetConnection = "Mobile Data is Turned Off"
     static let turnInternetConnection = "Turn on mobile data or Wi-Fi and pull to access data."
+    static let tryAgain = "Try again."
     
 }

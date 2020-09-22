@@ -12,25 +12,47 @@ import UIKit
 
 public class CurrentWeatherEntity: NSManagedObject {
     
-    class func createFrom(_ currentForecast: CurrentForecast, context: NSManagedObjectContext) -> CurrentWeatherEntity {
-        let currentWeatherEntity = CurrentWeatherEntity(context: context)
-        currentWeatherEntity.city = currentForecast.city
+    class func createFrom(_ currentForecast: CurrentForecast, context: NSManagedObjectContext) {
+        guard let currentWeather = CurrentWeatherEntity.firstOrCreate(withCity: currentForecast.city, context: context)
+            else {
+                let currentWeatherEntity = CurrentWeatherEntity(context: context)
+                currentWeatherEntity.city = CityEntity.createFrom(currentForecast.city, currentForecast.id, context: context)
+                currentWeatherEntity.parameters = TemperatureParametersEntity.createFrom(currentForecast.temperatureParameters, context: context)
+                currentWeatherEntity.weatherDescription = WeatherDescriptionEntity.createFrom(currentForecast.weatherDescription[0], context: context)
+                return
+        }
         
-        return currentWeatherEntity
+        currentWeather.city.update(with: currentForecast.city, currentForecast.id)
+        currentWeather.parameters.update(with: currentForecast.temperatureParameters)
+        currentWeather.weatherDescription.update(with: currentForecast.weatherDescription[0])
     }
     
-    
-    class func loadCurrentWeather(forCity city: String, context: NSManagedObjectContext) -> CurrentWeatherEntity? {
+    class func firstOrCreate(withCity city: String, context: NSManagedObjectContext) -> CurrentWeatherEntity? {
         let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
-        let cityPredicate = NSPredicate(format: "city = %@", city)
-        request.predicate = cityPredicate
+        request.predicate = NSPredicate(format: "city.name = %@", city)
+        request.returnsObjectsAsFaults = false
         
         do {
-            let cityWeatherEntity = try context.fetch(request)
-            return cityWeatherEntity.first
+            let currentWeatherEntity = try context.fetch(request)
+            if let currentWeather = currentWeatherEntity.first {
+                return currentWeather
+            } else {
+                return nil
+            }
+        } catch {
+            return nil
+        }
+    }
+    
+    class func loadCurrentWeatherData(context: NSManagedObjectContext) -> [CurrentWeatherEntity] {
+        let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
+        
+        do {
+            let currentWeatherEntity = try context.fetch(request)
+            return currentWeatherEntity
         } catch {
             print("\(error)")
-            return nil
+            return []
         }
     }
     

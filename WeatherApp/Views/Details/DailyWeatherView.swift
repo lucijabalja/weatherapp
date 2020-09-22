@@ -22,15 +22,9 @@ class DailyWeatherView: UIView {
             setupUI()
         }
     }
-
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-    }
-    
-    private func setupUI() {
-        layer.borderColor = UIColor.gradientDarkColor.cgColor
-        layer.borderWidth = 0.1
-        layer.cornerRadius = 4.0
     }
     
     func setupView(with dayData: DailyWeather) {
@@ -40,6 +34,12 @@ class DailyWeatherView: UIView {
         minTempLabel.text = dayData.temperature.min
         weatherIcon.image = UIImage(systemName: dayData.icon)
         weatherIcon.tintColor = dayData.icon.starts(with: "sun") ? .sunColor : .cloudColor
+    }
+    
+    private func setupUI() {
+        layer.borderColor = UIColor.gradientDarkColor.cgColor
+        layer.borderWidth = 0.1
+        layer.cornerRadius = 4.0
     }
     
 }

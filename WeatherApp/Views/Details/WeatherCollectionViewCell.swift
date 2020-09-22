@@ -13,7 +13,10 @@ class WeatherCollectionViewCell: UICollectionViewCell {
     @IBOutlet weak var timeLabel: UILabel!
     @IBOutlet weak var weatherIcon: UIImageView!
     @IBOutlet weak var temperatureLabel: UILabel!
+    
     static let identifier = "WeatherCollectionViewCell"
+    static let height = 150
+    static let width = 70
     
     public func configure(with hourlyWeather: HourlyWeather) {
         let date = Date(timeIntervalSince1970: TimeInterval(hourlyWeather.dateTime))

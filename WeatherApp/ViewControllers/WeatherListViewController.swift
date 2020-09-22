@@ -8,17 +8,23 @@
 
 import UIKit
 import RxSwift
+import RxDataSources
 import RxCocoa
 import PureLayout
 
 class WeatherListViewController: UIViewController {
     
-    private let errorView = ErrorView()
+    private var searchBar = UISearchBar()
     private var weatherViewModel: WeatherListViewModel!
-    private let disposeBag = DisposeBag()
+    private var disposeBag = DisposeBag()
+    private var loadingDisposeBag = DisposeBag()
+    private var refreshDisposeBag = DisposeBag()
+    private var timerDisposeBag = DisposeBag()
+    private var timerPeriod = 600
     private let refreshControl = UIRefreshControl()
     private var spinner = UIActivityIndicatorView(style: .large)
     private let tableView = UITableView()
+    private var dataSource: RxTableViewSectionedReloadDataSource<SectionOfCurrentWeather>!
     
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
@@ -38,8 +44,12 @@ class WeatherListViewController: UIViewController {
         setupRefreshControl()
         setupTableView()
         
+        createDataSource()
+        createTimer()
+        
         bindSpinnerIndicator()
         bindTableView()
+        bindSearchBar()
         weatherViewModel.refreshData.onNext(())
     }
     
@@ -48,29 +58,86 @@ class WeatherListViewController: UIViewController {
         view.setupGradientBackground()
     }
     
-    private func setupTableView() {
-        tableView.rx.setDelegate(self).disposed(by: disposeBag)
-        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
+    override func viewWillAppear(_ animated: Bool) {
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBar))
     }
     
-    private func bindTableView() {
-        weatherViewModel
-            .currentWeatherList
-            .bind(to: tableView.rx.items(cellIdentifier: WeatherTableViewCell.identifier, cellType: WeatherTableViewCell.self)) { [weak self] (row, currentWeather, cell) in
+    private func createTimer() {
+        timerDisposeBag = DisposeBag()
+        
+        Observable<Int>
+            .timer(.seconds(0), period: .seconds(timerPeriod), scheduler: MainScheduler.instance)
+            .subscribe(onNext: { [weak self] _ in
                 guard let self = self else { return }
                 
+                self.weatherViewModel.refreshData.onNext(())
+            })
+            .disposed(by: timerDisposeBag)
+    }
+    
+    private func createDataSource() {
+        dataSource = RxTableViewSectionedReloadDataSource<SectionOfCurrentWeather>(
+            configureCell: { _, tableView, indexPath, item in
+                let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
+                cell.setup(item)
                 self.endRefreshing()
-                cell.setup(currentWeather)
-        }
-        .disposed(by: disposeBag)
+                return cell
+        })
+    }
+    
+}
+
+// MARK:- Bindings
+
+extension WeatherListViewController {
+    
+    private func bindTableView() {
+        disposeBag = DisposeBag()
         
-        tableView.rx.modelSelected(CurrentWeather.self)
+        weatherViewModel.currentWeatherData
+            .bind(to: tableView.rx.items(dataSource: dataSource))
+            .disposed(by: disposeBag)
+        
+        tableView
+            .rx
+            .modelSelected(CurrentWeather.self)
             .subscribe(
                 onNext: { [weak self] (currentWeather) in
                     guard let self = self else { return }
                     
                     self.weatherViewModel.modelSelected.onNext(currentWeather)
+                    if let index = self.tableView.indexPathForSelectedRow {
+                        self.tableView.deselectRow(at: index, animated: true)
+                    }
             }).disposed(by: disposeBag)
+    }
+    
+    private func bindSearchBar() {
+        searchBar
+            .rx
+            .cancelButtonClicked
+            .subscribe(onNext: { [weak self] (_)  in
+                guard let self = self else { return }
+                
+                self.search(shouldShow: false)
+                self.searchBar.resignFirstResponder()
+            })
+            .disposed(by: disposeBag)
+        
+        searchBar
+            .rx
+            .searchButtonClicked
+            .subscribe(onNext: { [weak self] (_) in
+                guard let self = self else { return }
+                
+                if let city = self.searchBar.text {
+                    self.weatherViewModel.searchText.accept(city)
+                }
+                self.weatherViewModel.refreshData.onNext(())
+                self.searchBar.resignFirstResponder()
+                self.searchBar.text = ""
+            })
+            .disposed(by: disposeBag)
     }
     
     private func bindSpinnerIndicator() {
@@ -78,7 +145,25 @@ class WeatherListViewController: UIViewController {
             .showLoading
             .asObservable()
             .bind(to: spinner.rx.isAnimating)
-            .disposed(by: disposeBag)
+            .disposed(by: loadingDisposeBag)
+    }
+    
+}
+
+// MARK:- UI Setup
+
+extension WeatherListViewController {
+    
+    @objc func showSearchBar() {
+        search(shouldShow: true)
+        navigationItem.titleView = searchBar
+        searchBar.becomeFirstResponder()
+    }
+    
+    private func search(shouldShow: Bool) {
+        searchBar.isHidden = !shouldShow
+        searchBar.showsCancelButton = shouldShow
+        navigationItem.rightBarButtonItem = shouldShow ? nil : UIBarButtonItem(barButtonSystemItem: .search, target: self, action: #selector(showSearchBar))
     }
     
     private func endRefreshing() {
@@ -98,23 +183,20 @@ extension WeatherListViewController {
         
         refreshControl
             .rx
-            .controlEvent(.valueChanged)
+            .controlEvent(.allEvents)
             .bind(to: weatherViewModel.refreshData)
-            .disposed(by: disposeBag)
+            .disposed(by: refreshDisposeBag)
     }
     
 }
 
-// MARK:- TableViewDelegate setup
+// MARK:- TableView setup
 
-extension WeatherListViewController: UITableViewDelegate {
+extension WeatherListViewController {
     
-    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
-        110
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        tableView.deselectRow(at: indexPath, animated: false)
+    private func setupTableView() {
+        tableView.rowHeight = WeatherTableViewCell.height
+        tableView.register(WeatherTableViewCell.self, forCellReuseIdentifier: WeatherTableViewCell.identifier)
     }
     
 }
@@ -138,13 +220,6 @@ extension WeatherListViewController {
         view.addSubview(spinner)
         spinner.autoAlignAxis(toSuperviewAxis: .horizontal)
         spinner.autoAlignAxis(toSuperviewAxis: .vertical)
-    }
-    
-    private func setAlert(with error: Error) {
-        let alert = UIAlertController(title: ErrorMessage.noInternetConnection,
-                                      message: ErrorMessage.turnInternetConnection, preferredStyle: .alert)
-        alert.addAction(UIAlertAction(title: "OK", style: .default))
-        self.present(alert, animated: true)
     }
     
 }
