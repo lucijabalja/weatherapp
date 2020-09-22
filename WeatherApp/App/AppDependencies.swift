@@ -11,7 +11,7 @@ import Foundation
 class AppDependencies {
     
     lazy var weatherApiService: WeatherApiService = {
-        WeatherApiService(parsingService: parsingService)
+        WeatherApiService()
     }()
     
     lazy var coreDataService: CoreDataService = {
@@ -26,12 +26,8 @@ class AppDependencies {
         CoreDataManager(modelName: "WeatherDataModel", completion: {})
     }()
     
-    lazy var parsingService: ParsingService = {
-        ParsingService()
-    }()
-    
     lazy var locationService: LocationService = {
         LocationService()
     }()
-    
+ 
 }

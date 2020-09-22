@@ -16,4 +16,8 @@ class ErrorMessage {
     static let urlSessionError = "URL session failed. Try again."
     static let unwrappingError = "Cannot unwrap data correctly."
     static let parsingError = "Cannot parse data correctly."
+    static let noInternetConnection = "Mobile Data is Turned Off"
+    static let turnInternetConnection = "Turn on mobile data or Wi-Fi and pull to access data."
+    static let tryAgain = "Try again."
+    
 }

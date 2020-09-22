@@ -21,13 +21,13 @@ class CoreDataService {
         self.privateObjectContext = coreDataManager.privateChildManagedObjectContext()
     }
     
-    func saveCurrentWeatherData(_ currentWeatherResponse: CurrentWeatherResponse) {
-        CurrentForecastEntity.createFrom(currentWeatherResponse, context: privateObjectContext)
+    func saveCurrentWeatherData(_ currentForecastList: [CurrentForecast]) {
+        currentForecastList.forEach { CurrentWeatherEntity.createFrom($0, context: privateObjectContext) }
         saveChanges()
     }
     
-    func loadCurrentForecastData() -> CurrentForecastEntity? {
-        CurrentForecastEntity.loadCurrentForecast(context: mainObjectContext)
+    func loadCurrentWeatherData() -> [CurrentWeatherEntity] {
+        CurrentWeatherEntity.loadCurrentWeatherData(context: mainObjectContext)
     }
     
     func saveWeeklyForecast(_ weeklyWeatherResponse: WeeklyWeatherResponse) {
@@ -37,6 +37,10 @@ class CoreDataService {
     
     func loadWeeklyForecast(withCoordinates latitude: Double, _ longitude: Double) -> WeeklyForecastEntity? {
         WeeklyForecastEntity.loadWeeklyForecast(with: latitude, longitude, context: mainObjectContext)
+    }
+    
+    func loadCityEntites() -> [CityEntity] {
+        CityEntity.loadCities(context: mainObjectContext) 
     }
 
     func saveChanges() {

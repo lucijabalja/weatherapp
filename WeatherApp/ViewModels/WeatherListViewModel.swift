@@ -7,45 +7,81 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 class WeatherListViewModel {
     
     private let coordinator: Coordinator
-    private let dataRepository: DataRepository
-    private let cities = City.allCases
-    var currentWeatherList = [CurrentWeather]()
+    private let dataRepository: MainWeatherDataRepository
+    private let disposeBag = DisposeBag()
+    let refreshData = PublishSubject<Void>()
+    let modelSelected = PublishSubject<CurrentWeather>()
+    let showLoading = BehaviorRelay<Bool>(value: true)
+    let searchText = BehaviorRelay<String>(value: "")
     
-    init(coordinator: Coordinator, dataRepository: DataRepository) {
-        self.coordinator = coordinator
-        self.dataRepository = dataRepository
-    }
-    
-    func getCurrentWeather(completionHandler: @escaping (Result<Bool,Error>) -> Void) {
-        dataRepository.getCurrentWeatherData() { [weak self] (result) in
+    var currentWeatherData: Observable<[SectionOfCurrentWeather]> {
+        return refreshData
+            .asObservable()
+            .flatMap{ [weak self] (_) -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
+                guard let self = self else { return Observable.just(.failure(.loadingError)) }
+                
+                self.showLoading.accept(true)
+                return self.dataRepository.getCurrentWeatherData()
+        }
+        .flatMap { [weak self] (result) -> Observable<[SectionOfCurrentWeather]> in
+            guard let self = self else { return Observable.just([]) }
+            
             switch result {
-            case .success(let currentForecastEntity):
-                self?.saveCurrentWeather(from: currentForecastEntity)
-                completionHandler(.success(true))
+            case .success(let currentWeatherList):
+                let currentWeatherItems = currentWeatherList
+                    .map { CurrentWeather(from: $0) }
+                    .map{ SectionOfCurrentWeather(items: [$0]) }
+                self.showLoading.accept(false)
+                
+                return Observable.just(currentWeatherItems)
                 
             case .failure(let error):
-                completionHandler(.failure(error))
+                self.showLoading.accept(false)
+                self.coordinator.presentAlert(with: error)
+                
+                return Observable.just([])
             }
         }
     }
     
-    func pushToDetailView(at index: Int) {
-        guard let selectedCity = currentWeatherList[safeIndex: index] else { return }
+    init(coordinator: Coordinator, dataRepository: MainWeatherDataRepository) {
+        self.coordinator = coordinator
+        self.dataRepository = dataRepository
         
+        bindModelSelected()
+        bindSearchCity()
+    }
+    
+    func bindModelSelected() {
+        modelSelected
+            .asObserver()
+            .subscribe(onNext: { [weak self] (currentWeather) in
+                guard let self = self else { return }
+                
+                self.pushToDetailView(with: currentWeather)
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func bindSearchCity() {
+        searchText
+            .subscribe(onNext: { [weak self] (city) in
+                guard let self = self else { return }
+                
+                self.dataRepository.getCurrentCityWeather(for: city)
+                self.refreshData.onNext(())
+            })
+            .disposed(by: disposeBag)
+    }
+    
+    func pushToDetailView(with selectedCity: CurrentWeather) {
         coordinator.pushDetailViewController(with: selectedCity)
     }
     
-    func saveCurrentWeather(from currentForecastEntity: CurrentForecastEntity) {
-        for currentWeather in currentForecastEntity.currentWeather {
-            let currentWeatherEntity = currentWeather as! CurrentWeatherEntity
-            
-            let current = CurrentWeather(from: currentWeatherEntity)
-            self.currentWeatherList.append(current)
-        }
-    }
-
 }

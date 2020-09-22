@@ -7,14 +7,19 @@
 //
 
 import Foundation
+import RxSwift
+import RxCocoa
 
 class WeatherDetailViewModel {
     
     private let locationService: LocationService
     private let coordinator: Coordinator
-    private var dataRepository: DataRepository
+    private var dataRepository: DetailWeatherDataRepository
     var currentWeather: CurrentWeather
-    var weeklyWeather: WeeklyWeather
+    var dailyWeather = BehaviorRelay<[DailyWeather]>(value: [])
+    var refreshData = PublishSubject<Void>()
+    var showLoading = BehaviorRelay<Bool>(value: true)
+    let disposeBag = DisposeBag()
     
     var date: String {
         Utils.getFormattedDate()
@@ -24,39 +29,53 @@ class WeatherDetailViewModel {
         Utils.getFormattedTime()
     }
     
+    var hourlyWeather: Observable<[SectionOfHourlyWeather]> {
+        return refreshData
+            .asObservable()
+            .flatMap{ [weak self] (_) -> Observable<Result<WeeklyForecastEntity, PersistanceError>> in
+                guard let self = self else { return Observable.just(.failure(.loadingError))}
+                
+                self.showLoading.accept(true)
+                return self.dataRepository.getWeeklyWeather(latitude: self.locationService.coordinates.value.latitude,
+                                                            longitude: self.locationService.coordinates.value.longitude)
+        }
+        .flatMap { [weak self] (result) -> Observable<[SectionOfHourlyWeather]> in
+            guard let self = self else { return Observable.just([])}
+            
+            switch result {
+            case .success(let weeklyForecastEntity):
+                let hourlyWeatherList = weeklyForecastEntity.hourlyWeather
+                    .map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
+                    .sorted { $0.dateTime < $1.dateTime }
+                    .map( {SectionOfHourlyWeather(items: [$0]) } )
+                
+                let dailyWeatherList = weeklyForecastEntity.dailyWeather
+                    .map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
+                    .sorted { $0.dateTime < $1.dateTime }
+                
+                self.dailyWeather.accept(dailyWeatherList)
+                self.showLoading.accept(false)
+                
+                return Observable.just(hourlyWeatherList)
+                
+            case .failure(let error):
+                self.showLoading.accept(false)
+                
+                self.coordinator.presentAlert(with: error)
+                return Observable.just([])
+            }
+        }
+    }
+    
     init(appDependencies: AppDependencies, currentWeather: CurrentWeather, coordinator: Coordinator) {
         self.currentWeather = currentWeather
         self.coordinator = coordinator
         self.locationService = appDependencies.locationService
         self.dataRepository = appDependencies.dataRepository
-        self.weeklyWeather = WeeklyWeather(city: currentWeather.city, dailyWeatherList: [], hourlyWeatherList: [])
-    }
-    
-    func getWeeklyWeather(completion: @escaping (Result<Bool, Error>) -> Void) {
-        locationService.getLocationCoordinates(location: currentWeather.city) { (latitude, longitude ) in
-            self.dataRepository.getWeeklyWeather(latitude: latitude, longitude: longitude) { (result) in
-                switch result {
-                case .success(let weeklyForecastEntity):
-                    self.saveToWeeklyWeather(with: weeklyForecastEntity)
-                    
-                    completion(.success(true))
-                    
-                case .failure(let error):
-                    completion(.failure(error))
-                }
-            }
-        }
-    }
-    
-    func saveToWeeklyWeather(with weeklyForecastEntity: WeeklyForecastEntity) {
-        let dailyList = weeklyForecastEntity.dailyWeather.map { DailyWeather(from: $0 as! DailyWeatherEntity) }
-        weeklyWeather.dailyWeatherList.append(contentsOf: dailyList)
         
-        let hourlyList = weeklyForecastEntity.hourlyWeather.map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
-        weeklyWeather.hourlyWeatherList.append(contentsOf: hourlyList)
-        
-        weeklyWeather.dailyWeatherList.sort { $0.dateTime < $1.dateTime }
-        weeklyWeather.hourlyWeatherList.sort { $0.dateTime < $1.dateTime }
+        locationService.getLocationCoordinates(location: currentWeather.city)
+        refreshData.onNext(())
     }
     
 }
+
