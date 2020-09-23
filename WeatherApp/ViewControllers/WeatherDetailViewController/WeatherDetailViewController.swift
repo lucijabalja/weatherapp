@@ -89,7 +89,6 @@ final class WeatherDetailViewController: UIViewController {
             configureCell: { _, tableView, indexPath, item in
                 let cell = self.hourlyWeatherCollectionView.dequeueReusableCell(withReuseIdentifier: WeatherCollectionViewCell.identifier, for: indexPath) as! WeatherCollectionViewCell
                 cell.configure(with: item)
-                self.refreshControl.endRefreshing()
                 return cell
             })
     }

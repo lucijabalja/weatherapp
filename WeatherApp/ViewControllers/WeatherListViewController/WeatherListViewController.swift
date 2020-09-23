@@ -17,7 +17,6 @@ final class WeatherListViewController: UIViewController {
     private var weatherViewModel: WeatherListViewModel!
     private var disposeBag = DisposeBag()
     private var loadingDisposeBag = DisposeBag()
-    private var refreshDisposeBag = DisposeBag()
     private var timerDisposeBag = DisposeBag()
     private var timerPeriod = 600
     
@@ -102,7 +101,6 @@ extension WeatherListViewController {
         return { _, tableView, indexPath, item in
             let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
             cell.setup(item)
-            self.refreshControl.endRefreshing()
             return cell
         }
     }
@@ -173,8 +171,9 @@ extension WeatherListViewController {
             .asDriver()
             .drive { [weak self] (sourceIndex, destinationIndex) in
                 guard sourceIndex != destinationIndex else { return }
+               
                 guard let self = self else { return }
-                print(sourceIndex.row)
+
                 self.weatherViewModel.reorderCurrentWeatherList(sourceIndex.row, destinationIndex.row)
             }.disposed(by: disposeBag)
 
@@ -204,7 +203,6 @@ extension WeatherListViewController {
                 }
                 self.searchBar.resignFirstResponder()
                 self.searchBar.text = ""
-                self.refreshControl.endRefreshing()
             })
             .disposed(by: disposeBag)
     }
@@ -224,7 +222,7 @@ extension WeatherListViewController {
             .rx
             .controlEvent(.valueChanged)
             .bind(to: weatherViewModel.refreshData)
-            .disposed(by: refreshDisposeBag)
+            .disposed(by: disposeBag)
     }
     
     private func bindEditButton() {

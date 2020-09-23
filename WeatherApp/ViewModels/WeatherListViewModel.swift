@@ -78,15 +78,15 @@ class WeatherListViewModel {
         dataRepository
             .getCurrentWeatherData()
             .take(1)
-            .subscribe(onNext: { data in
+            .subscribe(onNext: { data in 
                 guard let currentWeather = data[safeIndex: sourceIndex] else {
                     return
                 }
+
                 self.dataRepository.reorderCurrentWeatherList(currentWeather, sourceIndex, destinationIndex)
 
             }).disposed(by: disposeBag)
        
-       // dadataRepository.reorderCurrentWeatherList(sourceIndex, destinationIndex)
     }
     
     func pushToDetailView(with selectedCity: CurrentWeather) {

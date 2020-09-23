@@ -1,5 +1,5 @@
 //
-//  MainWeatherDataRepository.swift
+//  WeatherListDataRepository.swift
 //  WeatherApp
 //
 //  Created by Lucija Balja on 16/09/2020.

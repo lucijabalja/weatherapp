@@ -57,6 +57,7 @@ class CoreDataService {
     
     func reorderCurrentWeatherList(_ currentWeatherEntity: CurrentWeatherEntity,_ sourceIndex: Int,_ destinationIndex: Int) {
         CurrentForecastEntity.reorder(currentWeatherEntity, sourceIndex, destinationIndex, context: mainObjectContext)
+        saveChanges()
     }
     
     func saveWeeklyForecast(_ weeklyWeatherResponse: WeeklyWeatherResponse) {
@@ -87,7 +88,7 @@ class CoreDataService {
         let request: NSFetchRequest<CityEntity> = CityEntity.fetchRequest()
         return CityEntity.load(with: request, context: mainObjectContext)
     }
-
+    
     func saveChanges() {
         privateObjectContext.performAndWait {
             do {
