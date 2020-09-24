@@ -9,9 +9,11 @@
 import Foundation
 import RxSwift
 import RxCocoa
+import CoreLocation
 
 class WeatherListViewModel {
     
+    private let locationService: LocationService
     private let coordinator: Coordinator
     private let dataRepository: MainWeatherDataRepository
     private let disposeBag = DisposeBag()
@@ -19,6 +21,7 @@ class WeatherListViewModel {
     let modelSelected = PublishSubject<CurrentWeather>()
     let showLoading = BehaviorRelay<Bool>(value: true)
     let searchText = BehaviorRelay<String>(value: "")
+    let currentLocation: BehaviorRelay<String>
     
     var currentWeatherData: Observable<[SectionOfCurrentWeather]> {
         return refreshData
@@ -50,10 +53,13 @@ class WeatherListViewModel {
         }
     }
     
-    init(coordinator: Coordinator, dataRepository: MainWeatherDataRepository) {
+    init(coordinator: Coordinator, dataRepository: MainWeatherDataRepository, locationService: LocationService) {
         self.coordinator = coordinator
         self.dataRepository = dataRepository
+        self.locationService = locationService
+        self.currentLocation = BehaviorRelay(value: "")
         
+        bindCurrentLocation()
         bindModelSelected()
         bindSearchCity()
     }
@@ -82,6 +88,32 @@ class WeatherListViewModel {
     
     func pushToDetailView(with selectedCity: CurrentWeather) {
         coordinator.pushDetailViewController(with: selectedCity)
+    }
+    
+    func bindCurrentLocation() {
+       locationService
+            .currentCoordinates
+            .map({ (coordinates) in
+                return self.locationService.getLocationName(coordinates: coordinates)
+            })
+            .bind(to: currentLocation)
+            .disposed(by: disposeBag)
+    
+    }
+
+    func getCurrentWeatherList() -> Observable<Result<[CurrentWeatherEntity], PersistanceError>>  {
+        return refreshData
+            .asObservable()
+            .flatMap{ [weak self] (_) -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
+                guard let self = self else { return Observable.just(.failure(.loadingError)) }
+                
+                self.showLoading.accept(true)
+                return self.dataRepository.getCurrentWeatherData()
+        }
+    }
+    
+    func getCurrentLocationWeather() {
+        
     }
     
 }

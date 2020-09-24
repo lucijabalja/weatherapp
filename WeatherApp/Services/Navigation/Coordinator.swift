@@ -19,7 +19,9 @@ class Coordinator {
     }
     
     func setRootViewController() {
-        let viewModel = WeatherListViewModel(coordinator: self, dataRepository: appDependencies.dataRepository)
+        let viewModel = WeatherListViewModel(coordinator: self,
+                                             dataRepository: appDependencies.dataRepository,
+                                             locationService: appDependencies.locationService)
         let rootViewController = WeatherListViewController(with: viewModel)
         rootViewController.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(rootViewController, animated: true)

@@ -7,6 +7,8 @@
 //
 
 import UIKit
+import CoreLocation
+import RxCoreLocation
 import RxSwift
 import RxDataSources
 import RxCocoa
@@ -26,6 +28,8 @@ class WeatherListViewController: UIViewController {
     private let tableView = UITableView()
     private var dataSource: RxTableViewSectionedReloadDataSource<SectionOfCurrentWeather>!
     
+    private var locationManager = CLLocationManager()
+    
     init(with weatherViewModel: WeatherListViewModel) {
         super.init(nibName: nil, bundle: nil)
         
@@ -38,6 +42,10 @@ class WeatherListViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        locationManager.requestWhenInUseAuthorization()
+        locationManager.startUpdatingLocation()
+        bindLocationManager()
         
         setupUI()
         setupConstraints()
@@ -82,7 +90,7 @@ class WeatherListViewController: UIViewController {
                 cell.setup(item)
                 self.endRefreshing()
                 return cell
-        })
+            })
     }
     
 }
@@ -109,7 +117,7 @@ extension WeatherListViewController {
                     if let index = self.tableView.indexPathForSelectedRow {
                         self.tableView.deselectRow(at: index, animated: true)
                     }
-            }).disposed(by: disposeBag)
+                }).disposed(by: disposeBag)
     }
     
     private func bindSearchBar() {
@@ -146,6 +154,20 @@ extension WeatherListViewController {
             .asObservable()
             .bind(to: spinner.rx.isAnimating)
             .disposed(by: loadingDisposeBag)
+    }
+    
+    private func bindLocationManager() {
+        let coordinates: Observable<Coordinates> = locationManager
+            .rx
+            .didUpdateLocations
+            .filter { !$1.isEmpty }
+            .map { locationManager, locations in
+                guard let coord = locations.last?.coordinate else {
+                    return Coordinates(latitude: 0, longitude: 0)
+                }
+                return Coordinates(latitude: coord.latitude, longitude: coord.longitude)
+            }
+
     }
     
 }
@@ -223,3 +245,4 @@ extension WeatherListViewController {
     }
     
 }
+
