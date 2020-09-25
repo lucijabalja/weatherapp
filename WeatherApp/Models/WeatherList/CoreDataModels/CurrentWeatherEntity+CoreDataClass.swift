@@ -44,9 +44,7 @@ public class CurrentWeatherEntity: NSManagedObject {
         }
     }
     
-    class func loadCurrentWeatherData(context: NSManagedObjectContext) -> [CurrentWeatherEntity] {
-        let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
-        
+    class func loadCurrentWeatherData(request: NSFetchRequest<CurrentWeatherEntity>, context: NSManagedObjectContext) -> [CurrentWeatherEntity] {
         do {
             let currentWeatherEntity = try context.fetch(request)
             return currentWeatherEntity

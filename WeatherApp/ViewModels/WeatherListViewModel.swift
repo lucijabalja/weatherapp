@@ -62,6 +62,7 @@ class WeatherListViewModel {
         bindCurrentLocation()
         bindModelSelected()
         bindSearchCity()
+        getCurrentLocationWeather()
     }
     
     func bindModelSelected() {
@@ -100,20 +101,14 @@ class WeatherListViewModel {
             .disposed(by: disposeBag)
     
     }
-
-    func getCurrentWeatherList() -> Observable<Result<[CurrentWeatherEntity], PersistanceError>>  {
-        return refreshData
-            .asObservable()
-            .flatMap{ [weak self] (_) -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
-                guard let self = self else { return Observable.just(.failure(.loadingError)) }
-                
-                self.showLoading.accept(true)
-                return self.dataRepository.getCurrentWeatherData()
-        }
-    }
     
     func getCurrentLocationWeather() {
-        
+        currentLocation
+            .asObservable()
+            .map { (location) in
+                self.dataRepository.getCurrentCityWeather(for: location)
+            }
+           
     }
     
 }

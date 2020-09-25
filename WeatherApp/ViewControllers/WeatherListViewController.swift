@@ -103,6 +103,7 @@ extension WeatherListViewController {
         disposeBag = DisposeBag()
         
         weatherViewModel.currentWeatherData
+            .observeOn(MainScheduler.instance)
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         

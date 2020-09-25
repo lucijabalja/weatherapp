@@ -27,7 +27,20 @@ class CoreDataService {
     }
     
     func loadCurrentWeatherData() -> [CurrentWeatherEntity] {
-        CurrentWeatherEntity.loadCurrentWeatherData(context: mainObjectContext)
+        let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
+       // request.predicate = NSPredicate(format: "city.name = %@", city)
+        request.returnsObjectsAsFaults = false
+        
+        return CurrentWeatherEntity.loadCurrentWeatherData(request: request, context: mainObjectContext)
+    }
+    
+    func loadCurrentWeatherData(forCity city: String) -> CurrentWeatherEntity? {
+        let request: NSFetchRequest<CurrentWeatherEntity> = CurrentWeatherEntity.fetchRequest()
+        request.predicate = NSPredicate(format: "city.name = %@", city)
+        request.returnsObjectsAsFaults = false
+        let entities = CurrentWeatherEntity.loadCurrentWeatherData(request: request, context: mainObjectContext)
+       
+        return entities.first
     }
     
     func saveWeeklyForecast(_ weeklyWeatherResponse: WeeklyWeatherResponse) {
