@@ -11,7 +11,6 @@ target 'WeatherApp' do
     pod 'PureLayout'
     pod 'RxDataSources'
     pod 'RxCoreLocation', '~> 1.4' 
-
     
   target 'WeatherAppTests' do
     inherit! :search_paths

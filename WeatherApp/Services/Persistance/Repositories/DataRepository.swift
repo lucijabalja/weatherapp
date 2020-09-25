@@ -62,7 +62,7 @@ extension DataRepository: WeatherListDataRepository {
                 guard let self = self else { return }
                 
                 if case let .success(currentWeatherResponse) = result {
-                    self.coreDataService.saveCurrentWeatherData([currentWeatherResponse])
+                    self.coreDataService.saveCurrentLocationWeather(currentForecast: currentWeatherResponse)
                 }
             })
             .disposed(by: disposeBag)
@@ -75,7 +75,6 @@ extension DataRepository: WeatherListDataRepository {
     func reorderCurrentWeatherList(_ currentWeatherEntity: CurrentWeatherEntity,_ sourceIndex: Int,_ destinationIndex: Int) {
         coreDataService.reorderCurrentWeatherList(currentWeatherEntity, sourceIndex, destinationIndex)
     }
-
     
     private func getCurrentCityIds() -> String {
         let cityIds = coreDataService.loadCityEntites().map { String($0.id) }

@@ -15,8 +15,10 @@ public class CurrentForecastEntity: NSManagedObject {
     
     typealias CurrentForecastRequest = NSFetchRequest<CurrentForecastEntity>
 
-    class func createOrUpdate(_ currentForecast: CurrentForecast, context: NSManagedObjectContext) {
-        let currentWeatherEntity = CurrentWeatherEntity.createOrUpdate(currentForecast, context: context)
+    class func createOrUpdate(_ currentForecast: CurrentForecast, context: NSManagedObjectContext, at index: Int) {
+        guard let currentWeatherEntity = CurrentWeatherEntity.createOrUpdate(currentForecast, context: context) else {
+            return
+        }
          
         let request: CurrentForecastRequest = CurrentForecastEntity.fetchRequest()
         guard let currentForecastEntity = load(with: request, context: context) else {
@@ -24,7 +26,7 @@ public class CurrentForecastEntity: NSManagedObject {
             currentForecast.addToCurrentWeatherEntities(currentWeatherEntity)
             return
         }
-        currentForecastEntity.addToCurrentWeatherEntities(currentWeatherEntity)
+        currentForecastEntity.insertIntoCurrentWeatherEntities(currentWeatherEntity, at: index)
     }
     
     class func reorder(_ currentWeatherEntity: CurrentWeatherEntity,_ sourceIndex: Int,_ destinationIndex: Int, context: NSManagedObjectContext) {
