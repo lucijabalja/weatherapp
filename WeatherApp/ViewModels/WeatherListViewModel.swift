@@ -21,23 +21,33 @@ class WeatherListViewModel {
     let searchText = BehaviorRelay<String>(value: "")
     
     var currentWeatherData: Observable<[CurrentWeather]> {
-        return refreshData
-            .asObservable()
-            .flatMap { [weak self] (_) -> Observable<[CurrentWeatherEntity]> in
-                guard let self = self else { return Observable.just([]) }
-                
-                self.showLoading.accept(true)
-                return self.dataRepository.getCurrentWeatherData()
-            }
-            .flatMap { [weak self] (currentWeatherList) -> Observable<[CurrentWeather]> in
-                guard let self = self else { return Observable.just([]) }
-                
-                let currentWeatherItems = currentWeatherList.map { CurrentWeather(from: $0) }
-                self.showLoading.accept(false)
-                
-                return Observable.just(currentWeatherItems)
-            }
-    }
+           return refreshData
+               .asObservable()
+               .flatMap{ [weak self] (_) -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
+                   guard let self = self else { return Observable.just(.failure(.loadingError)) }
+                   
+                   self.showLoading.accept(true)
+                   return self.dataRepository.getCurrentWeatherData()
+           }
+           .flatMap { [weak self] (result) -> Observable<[CurrentWeather]> in
+               guard let self = self else { return Observable.just([]) }
+               
+               switch result {
+               case .success(let currentWeatherList):
+                   let currentWeatherItems = currentWeatherList
+                       .map { CurrentWeather(from: $0) }
+                   self.showLoading.accept(false)
+                   
+                   return Observable.just(currentWeatherItems)
+                   
+               case .failure(let error):
+                   self.showLoading.accept(false)
+                   self.coordinator.presentAlert(with: error)
+                   
+                   return Observable.just([])
+               }
+           }
+       }
     
     init(coordinator: Coordinator, dataRepository: WeatherListDataRepository) {
         self.coordinator = coordinator
@@ -78,13 +88,13 @@ class WeatherListViewModel {
         dataRepository
             .getCurrentWeatherData()
             .take(1)
-            .subscribe(onNext: { data in 
-                guard let currentWeather = data[safeIndex: sourceIndex] else {
-                    return
+            .subscribe(onNext: { result in
+                if case let .success(data) = result {
+                    guard let currentWeather = data[safeIndex: sourceIndex] else {
+                        return
+                    }
+                    self.dataRepository.reorderCurrentWeatherList(currentWeather, sourceIndex, destinationIndex)
                 }
-
-                self.dataRepository.reorderCurrentWeatherList(currentWeather, sourceIndex, destinationIndex)
-
             }).disposed(by: disposeBag)
        
     }

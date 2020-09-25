@@ -29,7 +29,7 @@ class DataRepository {
 
 extension DataRepository: WeatherListDataRepository {
     
-    func getCurrentWeatherData() -> Observable<[CurrentWeatherEntity]> {
+    func getCurrentWeatherData() -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> {
         let apiURL = URLGenerator.currentWeather(ids: getCurrentCityIds())
         let weatherData: WeatherResponse = weatherApiService.fetchData(urlString: apiURL)
         
@@ -44,7 +44,13 @@ extension DataRepository: WeatherListDataRepository {
                 guard let self = self else {  return Observable.just([]) }
                 
                 return self.coreDataService.loadCurrentWeatherData()
-        }
+            }.flatMap { (currentWeatherEntities) -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
+                guard currentWeatherEntities.count > 0 else {
+                    return Observable.just(.failure(.loadingError))
+                }
+                
+                return Observable.just(.success(currentWeatherEntities))
+            }
     }
     
     func getCurrentWeatherData(for city: String) {

@@ -139,7 +139,7 @@ extension WeatherListViewController {
         
         weatherViewModel.currentWeatherData
             .map{ [CurrentWeatherSectionModel(model: "", items: $0) ]}
-            .observeOn(MainScheduler.instance)
+            .observeOn(MainScheduler.asyncInstance)
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         
@@ -176,8 +176,6 @@ extension WeatherListViewController {
 
                 self.weatherViewModel.reorderCurrentWeatherList(sourceIndex.row, destinationIndex.row)
             }.disposed(by: disposeBag)
-
-        
     }
     
     private func bindSearchBar() {
@@ -221,6 +219,7 @@ extension WeatherListViewController {
         refreshControl
             .rx
             .controlEvent(.valueChanged)
+            .observeOn(MainScheduler.instance)
             .bind(to: weatherViewModel.refreshData)
             .disposed(by: disposeBag)
     }
