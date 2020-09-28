@@ -76,7 +76,7 @@ class WeatherTableViewCell: UITableViewCell {
         let edgeMargin: CGFloat = 15
         let tempDistance: CGFloat = 5
         let labelsDistance: CGFloat = 20
-        let cityLabelsWidth: CGFloat = 130
+        let cityLabelsWidth: CGFloat = 170
         
         contentView.addSubview(containerView)
         containerView.autoPinEdgesToSuperviewEdges()

@@ -22,13 +22,13 @@ class CoreDataService {
         self.privateObjectContext = coreDataManager.privateChildManagedObjectContext()
     }
     
-    func saveCurrentLocationWeather(currentForecast: CurrentForecast) {
+    func saveCurrentLocationWeather(_ currentForecast: CurrentForecast) {
         CurrentForecastEntity.createOrUpdate(currentForecast, context: privateObjectContext, at: 0)
         saveChanges()
     }
     
     func saveCurrentWeatherData(_ currentForecastList: [CurrentForecast]) {
-        currentForecastList.forEach { CurrentForecastEntity.createOrUpdate($0, context: privateObjectContext, at: 1) }
+        currentForecastList.forEach { CurrentForecastEntity.createOrUpdate($0, context: privateObjectContext, at: 0) }
         saveChanges()
     }
     

@@ -13,8 +13,8 @@ protocol WeatherListDataRepository {
     
     func getCurrentWeatherData() -> Observable<Result<[CurrentWeatherEntity], PersistanceError>>
     
-    func getCurrentWeatherData(for city: String)
-
+    func getCurrentWeatherData(for city: String) -> Observable<Result<CurrentForecast, NetworkError>>
+    
     func removeCurrentWeather(for city: String)
     
     func reorderCurrentWeatherList(_ currentWeatherEntity: CurrentWeatherEntity,_ sourceIndex: Int,_ destinationIndex: Int)

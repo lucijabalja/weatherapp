@@ -20,9 +20,14 @@ class WeatherApiService {
         let request = URLRequest(url: url)
         
         return URLSession.shared.rx.response(request: request).flatMap { (response, data) -> Observable<Result<T, NetworkError>> in
+            if response.statusCode == 404 {
+                return Observable.just(.failure(.termNotFound))
+            }
+            
             if response.statusCode != 200 {
                 return Observable.just(.failure(.URLSessionError))
             }
+        
             do {
                 let values = try JSONDecoder().decode(T.self, from: data)
                 return Observable.just(.success(values))

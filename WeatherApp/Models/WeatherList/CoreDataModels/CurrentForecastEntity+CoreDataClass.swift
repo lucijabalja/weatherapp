@@ -26,7 +26,7 @@ public class CurrentForecastEntity: NSManagedObject {
             currentForecast.addToCurrentWeatherEntities(currentWeatherEntity)
             return
         }
-        currentForecastEntity.insertIntoCurrentWeatherEntities(currentWeatherEntity, at: index)
+        currentForecastEntity.addToCurrentWeatherEntities(currentWeatherEntity)
     }
     
     class func reorder(_ currentWeatherEntity: CurrentWeatherEntity,_ sourceIndex: Int,_ destinationIndex: Int, context: NSManagedObjectContext) {

@@ -21,7 +21,6 @@ class WeatherListViewModel {
     let showLoading = BehaviorRelay<Bool>(value: true)
     let searchText = BehaviorRelay<String>(value: "")
     private var currentLocation: BehaviorRelay<Coordinates>
-    private var location: BehaviorRelay<String>
     
     var currentWeatherData: Observable<[CurrentWeather]> {
         return refreshData
@@ -57,13 +56,12 @@ class WeatherListViewModel {
         self.dataRepository = dataRepository
         self.locationService = locationService
         self.currentLocation = BehaviorRelay<Coordinates>(value: Coordinates(latitude: 0, longitude: 0))
-        self.location = BehaviorRelay<String>(value: "")
         
         bindCurrentLocationWeather()
         bindModelSelected()
         bindSearchCity()
-        refreshData.onNext(())
         getCurrentLocationWeather()
+        refreshData.onNext(())
     }
     
     func bindCurrentLocationWeather() {
@@ -77,15 +75,23 @@ class WeatherListViewModel {
         currentLocation
             .asObservable()
             .skip(1)
-            .flatMap { coordinates in
+            .flatMap { coordinates -> Observable<Result<String, NetworkError>> in
                 return self.locationService.getLocationName(with: coordinates)
-            }.subscribe(onNext: { location in
-                self.dataRepository.getCurrentWeatherData(for: location)
-            }, onError: { (error) in
-                print("Could not find city.")
-            })
-            .disposed(by: disposeBag)
-        
+            }
+            .flatMap { (result) -> Observable<Result<CurrentForecast, NetworkError>> in
+                switch result {
+                case .success(let location):
+                    return self.dataRepository.getCurrentWeatherData(for: location)
+                case .failure(let error):
+                    return .just(.failure(error))
+                }
+            }
+            .subscribe(onNext: { result in
+                if case let .failure(error) = result {
+                    self.coordinator.presentAlert(with: SearchError.locationUnavailable)
+                }
+            }).disposed(by: disposeBag)
+
     }
     
     func bindModelSelected() {
@@ -101,11 +107,16 @@ class WeatherListViewModel {
     
     func bindSearchCity() {
         searchText
-            .subscribe(onNext: { [weak self] (city) in
-                guard let self = self else { return }
-                if !city.isEmpty {
-                    self.dataRepository.getCurrentWeatherData(for: city)
-                    self.refreshData.onNext(())
+            .skip(1)
+            .flatMap { city -> Observable<Result<CurrentForecast, NetworkError>> in
+                if city.isEmpty {
+                    self.coordinator.presentAlert(with: SearchError.emptyInput)
+                }
+                return self.dataRepository.getCurrentWeatherData(for: city)
+            }
+            .subscribe(onNext: { result in
+                if case let .failure(error) = result {
+                    self.coordinator.presentAlert(with: error)
                 }
             })
             .disposed(by: disposeBag)

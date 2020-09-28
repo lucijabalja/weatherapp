@@ -30,6 +30,7 @@ class DataRepository {
 extension DataRepository: WeatherListDataRepository {
     
     func getCurrentWeatherData() -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> {
+        print("ITS CALLED")
         let apiURL = URLGenerator.currentWeather(ids: getCurrentCityIds())
         let weatherData: WeatherResponse = weatherApiService.fetchData(urlString: apiURL)
         
@@ -37,8 +38,8 @@ extension DataRepository: WeatherListDataRepository {
             .do(onNext: { [weak self] (result) in
                 guard let self = self else { return }
                 
-                if case let .success(currentWeatherResponse) = result {
-                    self.coreDataService.saveCurrentWeatherData(currentWeatherResponse.currentForecastList)
+                if case let .success(currentForecast) = result {
+                    self.coreDataService.saveCurrentWeatherData(currentForecast.currentForecastList)
                 }
             }).flatMap { [weak self ] (_) -> Observable<[CurrentWeatherEntity]> in
                 guard let self = self else {  return Observable.just([]) }
@@ -53,19 +54,21 @@ extension DataRepository: WeatherListDataRepository {
             }
     }
     
-    func getCurrentWeatherData(for city: String) {
+    func getCurrentWeatherData(for city: String) -> ForecastResponse {
         let apiURL = URLGenerator.currentCityWeather(forCity: city)
         let weatherData: ForecastResponse = weatherApiService.fetchData(urlString: apiURL)
         
-        weatherData
-            .subscribe(onNext: { [weak self] (result) in
+        return weatherData
+            .do(onNext: { [weak self] (result) in
                 guard let self = self else { return }
                 
-                if case let .success(currentWeatherResponse) = result {
-                    self.coreDataService.saveCurrentLocationWeather(currentForecast: currentWeatherResponse)
+                if case let .success(currentForecast) = result {
+                    self.coreDataService.saveCurrentWeatherData([currentForecast])
                 }
             })
-            .disposed(by: disposeBag)
+            .flatMap { (result) -> ForecastResponse in
+                return .just(result)
+            }
     }
     
     func removeCurrentWeather(for city: String) {

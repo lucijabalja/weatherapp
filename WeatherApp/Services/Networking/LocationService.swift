@@ -49,7 +49,7 @@ class LocationService {
         }
     }
     
-    func getLocationName(with coordinates: Coordinates) -> Observable<String> {
+    func getLocationName(with coordinates: Coordinates) -> Observable<Result<String, NetworkError>> {
         return Observable.create { observer in
             let location = CLLocation(latitude: coordinates.latitude, longitude: coordinates.longitude)
             self.geoCoder.reverseGeocodeLocation(location) { placemarks, _ in
@@ -57,11 +57,11 @@ class LocationService {
                     let placemark = placemarks?.first,
                     let location = placemark.locality
                 else {
-                    observer.onError(NetworkError.decodingError)
+                    observer.onNext(.failure(.termNotFound))
                     return
                 }
                 
-                observer.onNext(location)
+                observer.onNext(.success(location))
             }
             return Disposables.create {
                 observer.onCompleted()

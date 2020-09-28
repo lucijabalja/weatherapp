@@ -34,7 +34,7 @@ class Coordinator {
         navigationController?.pushViewController(weatherDetailViewController, animated: true)
     }
     
-    func presentAlert(with error: PersistanceError) {
+    func presentAlert(with error: WeatherErrorHandler) {
         DispatchQueue.main.async {
             let alert = UIAlertController(title: error.resolveMessage().0, message:error.resolveMessage().1, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))

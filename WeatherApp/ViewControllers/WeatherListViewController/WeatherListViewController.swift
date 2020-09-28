@@ -52,8 +52,6 @@ final class WeatherListViewController: UIViewController {
         createDataSource()
         createTimer()
         bindViewModel()
-        
-        weatherViewModel.refreshData.onNext(())
     }
     
     override func viewWillLayoutSubviews() {
@@ -101,6 +99,7 @@ extension WeatherListViewController {
         return { _, tableView, indexPath, item in
             let cell = tableView.dequeueReusableCell(withIdentifier: WeatherTableViewCell.identifier, for: indexPath) as! WeatherTableViewCell
             cell.setup(item)
+            self.refreshControl.endRefreshing()
             return cell
         }
     }
@@ -139,6 +138,7 @@ extension WeatherListViewController {
         
         weatherViewModel.currentWeatherData
             .observeOn(MainScheduler.instance)
+            .debug("current")
             .map{ [CurrentWeatherSectionModel(model: "", items: $0) ]}
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)

@@ -16,8 +16,13 @@ class ErrorMessage {
     static let urlSessionError = "URL session failed. Try again."
     static let unwrappingError = "Cannot unwrap data correctly."
     static let parsingError = "Cannot parse data correctly."
-    static let noInternetConnection = "Mobile Data is Turned Off"
-    static let turnInternetConnection = "Turn on mobile data or Wi-Fi and pull to access data."
-    static let tryAgain = "Try again."
+    static let noInternetConnection = "Internet connection is turned off"
+    static let turnInternetConnection = "Turn on internet connection or Wi-Fi to access data."
+    static let tryAgain = "Try again"
+    static let noLocationFound = "Location not found"
+    static let locationUnavailable = "Current location is temporaraly unavailable"
+    static let emptyInput = "Input cannot be empty"
+    static let searchBarInput = "Enter location name and try again"
+    static let searchError = "Search bar error happened"
     
 }

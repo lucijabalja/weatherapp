@@ -8,7 +8,7 @@
 
 import Foundation
 
-enum PersistanceError: Error {
+enum PersistanceError: Error, WeatherErrorHandler {
     
     case loadingError, savingError, noEntitiesFound
     
@@ -19,7 +19,7 @@ enum PersistanceError: Error {
         case .noEntitiesFound:
             return (ErrorMessage.noInternetConnection, ErrorMessage.turnInternetConnection)
         case .savingError:
-            return ( ErrorMessage.savingError, ErrorMessage.tryAgain)
+            return (ErrorMessage.savingError, ErrorMessage.tryAgain)
         }
     }
 }
