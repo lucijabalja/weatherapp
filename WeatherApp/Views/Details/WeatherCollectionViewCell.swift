@@ -20,7 +20,7 @@ class WeatherCollectionViewCell: UICollectionViewCell {
     
     public func configure(with hourlyWeather: HourlyWeather) {
         let date = Date(timeIntervalSince1970: TimeInterval(hourlyWeather.dateTime))
-        timeLabel.text = Utils.getFormattedTime(with: date)
+        timeLabel.text = Utils.formatTime(with: date)
         weatherIcon.image = UIImage(systemName: hourlyWeather.icon)
         temperatureLabel.text = hourlyWeather.temperature
         weatherIcon.tintColor = hourlyWeather.icon.starts(with: "sun") ? .sunColor : .cloudColor

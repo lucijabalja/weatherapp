@@ -5,12 +5,21 @@
         <attribute name="name" attributeType="String"/>
         <relationship name="currentWeather" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentWeatherEntity" inverseName="city" inverseEntity="CurrentWeatherEntity"/>
     </entity>
+    <entity name="CurrentDetailsEntity" representedClassName=".CurrentDetailsEntity" syncable="YES">
+        <attribute name="feelsLike" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
+        <attribute name="humidity" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="pressure" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sunrise" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="sunset" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="visibility" attributeType="Integer 64" usesScalarValueType="YES"/>
+        <relationship name="weeklyForecast" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WeeklyForecastEntity" inverseName="currentDetails" inverseEntity="WeeklyForecastEntity"/>
+    </entity>
     <entity name="CurrentForecastEntity" representedClassName=".CurrentForecastEntity" syncable="YES">
         <relationship name="currentWeatherEntities" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="CurrentWeatherEntity" inverseName="currentForecast" inverseEntity="CurrentWeatherEntity"/>
     </entity>
     <entity name="CurrentWeatherEntity" representedClassName=".CurrentWeatherEntity" syncable="YES">
         <relationship name="city" maxCount="1" deletionRule="Cascade" destinationEntity="CityEntity" inverseName="currentWeather" inverseEntity="CityEntity"/>
-        <relationship name="currentForecast" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="CurrentForecastEntity" inverseName="currentWeatherEntities" inverseEntity="CurrentForecastEntity"/>
+        <relationship name="currentForecast" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="CurrentForecastEntity" inverseName="currentWeatherEntities" inverseEntity="CurrentForecastEntity"/>
         <relationship name="parameters" maxCount="1" deletionRule="Cascade" destinationEntity="TemperatureParametersEntity" inverseName="currentWeather" inverseEntity="TemperatureParametersEntity"/>
         <relationship name="weatherDescription" optional="YES" maxCount="1" deletionRule="Cascade" destinationEntity="WeatherDescriptionEntity" inverseName="currentWeather" inverseEntity="WeatherDescriptionEntity"/>
     </entity>
@@ -47,18 +56,20 @@
     <entity name="WeeklyForecastEntity" representedClassName=".WeeklyForecastEntity" syncable="YES">
         <attribute name="latitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
         <attribute name="longitude" attributeType="Double" defaultValueString="0.0" usesScalarValueType="YES"/>
-        <relationship name="dailyWeather" toMany="YES" deletionRule="Nullify" destinationEntity="DailyWeatherEntity" inverseName="weeklyForecast" inverseEntity="DailyWeatherEntity"/>
-        <relationship name="hourlyWeather" toMany="YES" deletionRule="Nullify" destinationEntity="HourlyWeatherEntity" inverseName="weeklyForecast" inverseEntity="HourlyWeatherEntity"/>
+        <relationship name="currentDetails" maxCount="1" deletionRule="Cascade" destinationEntity="CurrentDetailsEntity" inverseName="weeklyForecast" inverseEntity="CurrentDetailsEntity"/>
+        <relationship name="dailyWeather" toMany="YES" deletionRule="Cascade" destinationEntity="DailyWeatherEntity" inverseName="weeklyForecast" inverseEntity="DailyWeatherEntity"/>
+        <relationship name="hourlyWeather" toMany="YES" deletionRule="Cascade" destinationEntity="HourlyWeatherEntity" inverseName="weeklyForecast" inverseEntity="HourlyWeatherEntity"/>
     </entity>
     <elements>
         <element name="CityEntity" positionX="-81" positionY="45" width="128" height="88"/>
+        <element name="CurrentDetailsEntity" positionX="-81" positionY="45" width="128" height="148"/>
+        <element name="CurrentForecastEntity" positionX="-81" positionY="45" width="128" height="58"/>
         <element name="CurrentWeatherEntity" positionX="-43.96875" positionY="-92.11328125" width="128" height="103"/>
         <element name="DailyWeatherEntity" positionX="128.8515625" positionY="265.453125" width="128" height="118"/>
         <element name="HourlyWeatherEntity" positionX="312.04296875" positionY="-109.4375" width="128" height="118"/>
         <element name="TemperatureEntity" positionX="394.33984375" positionY="279.6171875" width="128" height="88"/>
         <element name="TemperatureParametersEntity" positionX="241.7578125" positionY="4.34765625" width="128" height="103"/>
         <element name="WeatherDescriptionEntity" positionX="-289.23046875" positionY="107.16796875" width="128" height="88"/>
-        <element name="WeeklyForecastEntity" positionX="-166.10546875" positionY="260.0703125" width="128" height="103"/>
-        <element name="CurrentForecastEntity" positionX="-81" positionY="45" width="128" height="58"/>
+        <element name="WeeklyForecastEntity" positionX="-166.10546875" positionY="260.0703125" width="128" height="118"/>
     </elements>
 </model>

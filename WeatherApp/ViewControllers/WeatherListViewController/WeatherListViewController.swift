@@ -120,6 +120,7 @@ extension WeatherListViewController {
         }
     }
 }
+
 // MARK:- Bindings
 
 extension WeatherListViewController {
@@ -138,7 +139,7 @@ extension WeatherListViewController {
         
         weatherViewModel.currentWeatherData
             .observeOn(MainScheduler.instance)
-            .map{ [CurrentWeatherSectionModel(model: "", items: $0) ]}
+            .map { [CurrentWeatherSectionModel(model: "", items: $0) ]}
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
         

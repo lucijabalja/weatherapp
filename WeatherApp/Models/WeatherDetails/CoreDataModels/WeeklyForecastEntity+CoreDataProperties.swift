@@ -2,7 +2,7 @@
 //  WeeklyForecastEntity+CoreDataProperties.swift
 //  WeatherApp
 //
-//  Created by Lucija Balja on 27/08/2020.
+//  Created by Lucija Balja on 28/09/2020.
 //  Copyright © 2020 Lucija Balja. All rights reserved.
 //
 //
@@ -21,6 +21,7 @@ extension WeeklyForecastEntity {
     @NSManaged public var longitude: Double
     @NSManaged public var dailyWeather: NSSet
     @NSManaged public var hourlyWeather: NSSet
+    @NSManaged public var currentDetails: CurrentDetailsEntity
 
 }
 
@@ -55,5 +56,9 @@ extension WeeklyForecastEntity {
 
     @objc(removeHourlyWeather:)
     @NSManaged public func removeFromHourlyWeather(_ values: NSSet)
+
+}
+
+extension WeeklyForecastEntity : Identifiable {
 
 }

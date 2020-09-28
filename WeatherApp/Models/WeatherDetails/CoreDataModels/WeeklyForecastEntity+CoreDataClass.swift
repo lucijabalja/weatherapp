@@ -27,6 +27,7 @@ public class WeeklyForecastEntity: NSManagedObject {
         let weeklyForecastEntity = WeeklyForecastEntity(context: context)
         weeklyForecastEntity.latitude = weeklyWeatherResponse.latitude
         weeklyForecastEntity.longitude = weeklyWeatherResponse.longitude
+        weeklyForecastEntity.currentDetails = CurrentDetailsEntity.createFrom(currentDetails: weeklyWeatherResponse.currentWeatherDetails, context: context)
         
         for (index, dailyForecast) in weeklyWeatherResponse.dailyForecast.enumerated() {
             let dailyWeatherEntity = DailyWeatherEntity.createFrom(dailyForecast, index, context: context)

@@ -16,7 +16,7 @@ struct HourlyWeather {
     
     init(from hourlyWeatherEntity: HourlyWeatherEntity) {
         self.dateTime = Int(hourlyWeatherEntity.time)
-        self.temperature = Utils.getFormattedTemperature(hourlyWeatherEntity.temperature)
+        self.temperature = Utils.formatTemperature(hourlyWeatherEntity.temperature)
         self.icon = Utils.resolveWeatherIcon(Int(hourlyWeatherEntity.conditionID))
     }
     

@@ -23,9 +23,9 @@ struct CurrentWeather: Equatable, IdentifiableType {
         self.condition = Condition(icon:  Utils.resolveWeatherIcon(Int(currentWeatherEntity.weatherDescription.conditionID)),
                                    conditionDescription: currentWeatherEntity.weatherDescription.conditionDescription)
         
-        self.parameters = CurrentTemperature(now: Utils.getFormattedTemperature(currentWeatherEntity.parameters.current),
-                                             min: Utils.getFormattedTemperature(currentWeatherEntity.parameters.min),
-                                             max: Utils.getFormattedTemperature(currentWeatherEntity.parameters.max))
+        self.parameters = CurrentTemperature(now: Utils.formatTemperature(currentWeatherEntity.parameters.current),
+                                             min: Utils.formatTemperature(currentWeatherEntity.parameters.min),
+                                             max: Utils.formatTemperature(currentWeatherEntity.parameters.max))
     }
     
     static func == (lhs: CurrentWeather, rhs: CurrentWeather) -> Bool {

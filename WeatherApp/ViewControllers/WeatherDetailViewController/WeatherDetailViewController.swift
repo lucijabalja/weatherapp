@@ -14,13 +14,19 @@ import PureLayout
 final class WeatherDetailViewController: UIViewController {
     
     @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var dateLabel: UILabel!
+    @IBOutlet weak var currentTempLabel: UILabel!
     @IBOutlet weak var weatherDescription: UILabel!
     @IBOutlet weak var cityLabel: UILabel!
     @IBOutlet weak var hourlyWeatherCollectionView: UICollectionView!
     @IBOutlet var dailyWeatherViews: [DailyWeatherView]!
+    @IBOutlet weak var sunriseLabel: UILabel!
+    @IBOutlet weak var sunsetLabel: UILabel!
+    @IBOutlet weak var pressureLabel: UILabel!
+    @IBOutlet weak var humidityLabel: UILabel!
+    @IBOutlet weak var visibilityLabel: UILabel!
+    @IBOutlet weak var feelsLikeLabel: UILabel!
     
-    private let disposeBag = DisposeBag()
+    let disposeBag = DisposeBag()
     private let refreshControl = UIRefreshControl()
     private var hourlyWeatherDataSource: RxCollectionViewSectionedReloadDataSource<SectionOfHourlyWeather>!
     

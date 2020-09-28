@@ -31,26 +31,38 @@ class Utils {
         }
     }
     
-    static func getFormattedDate(with date: Date = Date()) -> String {
+    static func formatDate(with date: Date = Date()) -> String {
         let formatter = DateFormatter()
         formatter.dateStyle = .full
         return formatter.string(from: date)
     }
     
-    static func getFormattedTime(with date: Date = Date()) -> String {
+    static func formatTime(with date: Date = Date()) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
         return formatter.string(from: date)
     }
     
-    static func getWeekDay(with date: Date = Date()) -> String {
+    static func resolveWeekDay(with date: Date = Date()) -> String {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE"
         return formatter.string(from: date)
     }
     
-    static func getFormattedTemperature(_ temperature: Double) -> String {
+    static func formatTemperature(_ temperature: Double) -> String {
         "\(Int(round(temperature)))°"
+    }
+    
+    static func formatHumidity(_ humidity: Int64) -> String {
+        "\(humidity) %"
+    }
+    
+    static func formatPressure(_ pressure: Int64) -> String {
+        "\(pressure) hPa "
+    }
+    
+    static func formatVisibility(_ visibility: Int64) -> String {
+        "\(visibility/1000) km"
     }
     
 }

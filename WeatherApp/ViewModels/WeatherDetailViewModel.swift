@@ -17,16 +17,17 @@ class WeatherDetailViewModel {
     private var dataRepository: DetailWeatherDataRepository
     var currentWeather: CurrentWeather
     var dailyWeather = BehaviorRelay<[DailyWeather]>(value: [])
+    var currentWeatherDetails: PublishSubject<CurrentDetails>
     var refreshData = PublishSubject<Void>()
     var showLoading = BehaviorRelay<Bool>(value: true)
     let disposeBag = DisposeBag()
     
     var date: String {
-        Utils.getFormattedDate()
+        Utils.formatDate()
     }
     
     var time: String {
-        Utils.getFormattedTime()
+        Utils.formatTime()
     }
     
     var hourlyWeather: Observable<[SectionOfHourlyWeather]> {
@@ -56,6 +57,7 @@ class WeatherDetailViewModel {
                     .map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
                     .sorted { $0.dateTime < $1.dateTime }
                 
+                self.currentWeatherDetails.onNext(CurrentDetails(from: weeklyForecastEntity.currentDetails))
                 self.dailyWeather.accept(dailyWeatherList)
                 self.showLoading.accept(false)
                 
@@ -68,6 +70,7 @@ class WeatherDetailViewModel {
         self.coordinator = coordinator
         self.locationService = appDependencies.locationService
         self.dataRepository = appDependencies.dataRepository
+        self.currentWeatherDetails = PublishSubject()
         
         locationService.getLocationCoordinates(location: currentWeather.city)
         refreshData.onNext(())

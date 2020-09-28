@@ -12,12 +12,14 @@ struct WeeklyWeatherResponse: Decodable {
     
     let latitude: Double
     let longitude: Double
+    let currentWeatherDetails: CurrentWeatherDetails
     let dailyForecast: [DailyForecast]
     let hourlyForecast: [HourlyForecast]
     
     enum CodingKeys: String, CodingKey {
         case latitude = "lat"
         case longitude = "lon"
+        case currentWeatherDetails = "current"
         case dailyForecast = "daily"
         case hourlyForecast = "hourly"
     }

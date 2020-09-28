@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import RxSwift
 
 // MARK:- UI Setup
 
@@ -14,9 +15,22 @@ extension WeatherDetailViewController {
     
     func setupUI() {
         cityLabel.text = weatherDetailViewModel.currentWeather.city
-        dateLabel.text = weatherDetailViewModel.date
+        currentTempLabel.text = weatherDetailViewModel.currentWeather.parameters.now
         weatherDescription.text = weatherDetailViewModel.currentWeather.condition.conditionDescription
         hourlyWeatherCollectionView.backgroundColor = .clear
+        
+        weatherDetailViewModel
+            .currentWeatherDetails
+            .observeOn(MainScheduler.instance)
+            .subscribe(onNext: { currentDetails in
+                self.sunriseLabel.text = Utils.formatTime(with: Date(timeIntervalSince1970: TimeInterval(currentDetails.sunrise)))
+                self.sunsetLabel.text = Utils.formatTime(with: Date(timeIntervalSince1970: TimeInterval(currentDetails.sunset)))
+                self.humidityLabel.text = Utils.formatHumidity(currentDetails.humidity)
+                self.pressureLabel.text = Utils.formatPressure(currentDetails.pressure)
+                self.feelsLikeLabel.text = Utils.formatTemperature(currentDetails.feelsLike)
+                self.visibilityLabel.text = Utils.formatVisibility(currentDetails.visibility)
+            })
+            .disposed(by: disposeBag)
     }
     
     func configureCollectionLayout() {
