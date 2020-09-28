@@ -138,7 +138,6 @@ extension WeatherListViewController {
         
         weatherViewModel.currentWeatherData
             .observeOn(MainScheduler.instance)
-            .debug("current")
             .map{ [CurrentWeatherSectionModel(model: "", items: $0) ]}
             .bind(to: tableView.rx.items(dataSource: dataSource))
             .disposed(by: disposeBag)
@@ -182,7 +181,7 @@ extension WeatherListViewController {
         searchBar
             .rx
             .cancelButtonClicked
-            .subscribe(onNext: { [weak self] (_)  in
+            .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 
                 self.search(shouldShow: false)
@@ -193,7 +192,7 @@ extension WeatherListViewController {
         searchBar
             .rx
             .searchButtonClicked
-            .subscribe(onNext: { [weak self] (_) in
+            .subscribe(onNext: { [weak self] in
                 guard let self = self else { return }
                 
                 if let city = self.searchBar.text {

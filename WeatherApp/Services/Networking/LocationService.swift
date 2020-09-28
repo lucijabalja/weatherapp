@@ -24,8 +24,11 @@ class LocationService {
         location = locationManager.rx
             .didUpdateLocations
             .filter { !$1.isEmpty }
-            .map { locationManager, locations in
-                guard let coord = locations.last?.coordinate else { return Coordinates(latitude: 0, longitude: 0) }
+            .map { (locationManager, locations) in
+                guard let coord = locations.last?.coordinate else {
+                    return Coordinates(latitude: 0, longitude: 0)
+                }
+                
                 return Coordinates(latitude: coord.latitude, longitude: coord.longitude)
             }
         

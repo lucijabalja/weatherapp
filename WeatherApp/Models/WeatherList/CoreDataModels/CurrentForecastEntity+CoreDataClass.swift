@@ -46,4 +46,5 @@ public class CurrentForecastEntity: NSManagedObject {
             return nil
         }
     }
+    
 }

@@ -31,7 +31,7 @@ class WeatherListViewModel {
                 self.showLoading.accept(true)
                 return self.dataRepository.getCurrentWeatherData()
             }
-            .flatMap { [weak self] (result) -> Observable<[CurrentWeather]> in
+            .flatMap { [weak self] result -> Observable<[CurrentWeather]> in
                 guard let self = self else { return Observable.just([]) }
                 
                 switch result {
@@ -78,7 +78,9 @@ class WeatherListViewModel {
             .flatMap { coordinates -> Observable<Result<String, NetworkError>> in
                 return self.locationService.getLocationName(with: coordinates)
             }
-            .flatMap { (result) -> Observable<Result<CurrentForecast, NetworkError>> in
+            .flatMap { [weak self] result -> Observable<Result<CurrentForecast, NetworkError>> in
+                guard let self = self else { return .just(.failure(.unwrappingError))}
+
                 switch result {
                 case .success(let location):
                     return self.dataRepository.getCurrentWeatherData(for: location)
@@ -91,13 +93,13 @@ class WeatherListViewModel {
                     self.coordinator.presentAlert(with: error)
                 }
             }).disposed(by: disposeBag)
-
+        
     }
     
     func bindModelSelected() {
         modelSelected
             .asObserver()
-            .subscribe(onNext: { [weak self] (currentWeather) in
+            .subscribe(onNext: { [weak self] currentWeather in
                 guard let self = self else { return }
                 
                 self.pushToDetailView(with: currentWeather)
@@ -114,7 +116,9 @@ class WeatherListViewModel {
                 }
                 return self.dataRepository.getCurrentWeatherData(for: city)
             }
-            .subscribe(onNext: { result in
+            .subscribe(onNext: { [weak self] result in
+                guard let self = self else { return }
+
                 if case .failure(_) = result {
                     self.coordinator.presentAlert(with: SearchError.termNotFound)
                 }
@@ -130,7 +134,9 @@ class WeatherListViewModel {
         dataRepository
             .getCurrentWeatherData()
             .take(1)
-            .subscribe(onNext: { result in
+            .subscribe(onNext: { [weak self] result in
+                guard let self = self else { return }
+
                 if case let .success(data) = result {
                     guard let currentWeather = data[safeIndex: sourceIndex] else {
                         return

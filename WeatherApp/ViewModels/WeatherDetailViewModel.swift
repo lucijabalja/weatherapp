@@ -39,7 +39,7 @@ class WeatherDetailViewModel {
                 return self.dataRepository.getWeeklyWeather(latitude: self.locationService.coordinates.value.latitude,
                                                             longitude: self.locationService.coordinates.value.longitude)
             }
-            .flatMap { [weak self] (weeklyForecastEntities) -> Observable<[SectionOfHourlyWeather]> in
+            .flatMap { [weak self] weeklyForecastEntities -> Observable<[SectionOfHourlyWeather]> in
                 guard
                     let self = self,
                     let weeklyForecastEntity = weeklyForecastEntities.first

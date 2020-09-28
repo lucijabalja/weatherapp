@@ -34,7 +34,7 @@ extension DataRepository: WeatherListDataRepository {
         let weatherData: WeatherResponse = weatherApiService.fetchData(urlString: apiURL)
         
         return weatherData
-            .do(onNext: { [weak self] (result) in
+            .do(onNext: { [weak self] result in
                 guard let self = self else { return }
                 
                 if case let .success(currentForecast) = result {
@@ -58,7 +58,7 @@ extension DataRepository: WeatherListDataRepository {
         let weatherData: ForecastResponse = weatherApiService.fetchData(urlString: apiURL)
         
         return weatherData
-            .do(onNext: { [weak self] (result) in
+            .do(onNext: { [weak self] result in
                 guard let self = self else { return }
                 
                 if case let .success(currentForecast) = result {
@@ -92,7 +92,7 @@ extension DataRepository: DetailWeatherDataRepository {
         let weeklyWeatherResponse: WeeklyResponse = weatherApiService.fetchData(urlString: apiURL)
         
         return weeklyWeatherResponse
-            .do(onNext: { [weak self] (result) in
+            .do(onNext: { [weak self] result in
                 guard let self = self else { return }
                 
                 if case let .success(weeklyWeatherResponse) = result {
@@ -104,4 +104,5 @@ extension DataRepository: DetailWeatherDataRepository {
                 return self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude)
         }
     }
+    
 }
