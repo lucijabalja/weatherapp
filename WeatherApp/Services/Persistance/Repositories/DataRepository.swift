@@ -12,7 +12,7 @@ import RxCocoa
 
 class DataRepository {
     
-    let weatherApiService: WeatherApiService
+    let weatherApiService: ApiService
     let coreDataService: CoreDataService
     let disposeBag = DisposeBag()
     
@@ -20,7 +20,7 @@ class DataRepository {
     typealias ForecastResponse = Observable<Result<CurrentForecast, NetworkError>>
     typealias WeeklyResponse = Observable<Result<WeeklyWeatherResponse, NetworkError>>
     
-    init(weatherApiService: WeatherApiService, coreDataService: CoreDataService) {
+    init(weatherApiService: ApiService, coreDataService: CoreDataService) {
         self.weatherApiService = weatherApiService
         self.coreDataService = coreDataService
     }
@@ -30,7 +30,6 @@ class DataRepository {
 extension DataRepository: WeatherListDataRepository {
     
     func getCurrentWeatherData() -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> {
-        print("ITS CALLED")
         let apiURL = URLGenerator.currentWeather(ids: getCurrentCityIds())
         let weatherData: WeatherResponse = weatherApiService.fetchData(urlString: apiURL)
         

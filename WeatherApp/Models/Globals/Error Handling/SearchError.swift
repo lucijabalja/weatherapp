@@ -19,8 +19,6 @@ enum SearchError: Error, WeatherErrorHandler {
             return (ErrorMessage.noLocationFound, ErrorMessage.tryAgain)
         case .locationUnavailable:
             return (ErrorMessage.locationUnavailable, ErrorMessage.tryAgain)
-        @unknown default:
-            return (ErrorMessage.searchError, ErrorMessage.tryAgain)
         }
     }
 }

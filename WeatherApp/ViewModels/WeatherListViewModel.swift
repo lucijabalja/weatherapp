@@ -88,7 +88,7 @@ class WeatherListViewModel {
             }
             .subscribe(onNext: { result in
                 if case let .failure(error) = result {
-                    self.coordinator.presentAlert(with: SearchError.locationUnavailable)
+                    self.coordinator.presentAlert(with: error)
                 }
             }).disposed(by: disposeBag)
 
@@ -115,8 +115,8 @@ class WeatherListViewModel {
                 return self.dataRepository.getCurrentWeatherData(for: city)
             }
             .subscribe(onNext: { result in
-                if case let .failure(error) = result {
-                    self.coordinator.presentAlert(with: error)
+                if case .failure(_) = result {
+                    self.coordinator.presentAlert(with: SearchError.termNotFound)
                 }
             })
             .disposed(by: disposeBag)

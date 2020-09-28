@@ -20,10 +20,8 @@ public class CurrentWeatherEntity: NSManagedObject {
         request.returnsObjectsAsFaults = false
         
         guard let currentWeather = load(with: request, context: context).first else {
-            print("not found")
             return createFrom(currentForecast, context: context)
         }
-        print("found")
         update(entity: currentWeather, with: currentForecast)
         return nil
     }

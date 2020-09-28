@@ -16,6 +16,8 @@ enum NetworkError: Error, WeatherErrorHandler {
         switch self {
         case .URLSessionError:
             return (ErrorMessage.noInternetConnection, ErrorMessage.turnInternetConnection)
+        case .termNotFound:
+            return (ErrorMessage.noLocationFound, ErrorMessage.tryAgain)
         @unknown default:
             return (ErrorMessage.loadingError, ErrorMessage.tryAgain)
         }

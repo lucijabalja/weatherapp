@@ -10,7 +10,7 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-class WeatherApiService {
+class ApiService {
     
     func fetchData<T: Decodable>(urlString: String) -> Observable<Result<T, NetworkError>> {
         guard let url = URL(string: urlString) else {

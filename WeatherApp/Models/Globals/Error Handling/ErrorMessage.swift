@@ -19,7 +19,7 @@ class ErrorMessage {
     static let noInternetConnection = "Internet connection is turned off"
     static let turnInternetConnection = "Turn on internet connection or Wi-Fi to access data."
     static let tryAgain = "Try again"
-    static let noLocationFound = "Location not found"
+    static let noLocationFound = "No results found"
     static let locationUnavailable = "Current location is temporaraly unavailable"
     static let emptyInput = "Input cannot be empty"
     static let searchBarInput = "Enter location name and try again"
