@@ -34,6 +34,7 @@ extension WeatherListViewController {
     //MARK:- UI Setup
     
     func setupUI() {
+        navigationController?.view.setupGradientBackground()
         tableView.backgroundColor = .clear
         tableView.separatorStyle = .none
         tableView.isHidden = false
