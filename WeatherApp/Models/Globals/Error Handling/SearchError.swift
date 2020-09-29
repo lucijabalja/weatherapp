@@ -8,17 +8,16 @@
 
 import Foundation
 
-enum SearchError: Error, WeatherErrorHandler {
-    case emptyInput, termNotFound, locationUnavailable
+enum SearchError: String, Error, ErrorHandler {
     
-    func resolveMessage() -> (String, String) {
+    case emptyInput, locationUnavailable
+    
+    var message: (String, String) {
         switch self {
         case .emptyInput:
-            return(ErrorMessage.emptyInput, ErrorMessage.searchBarInput)
-        case .termNotFound:
-            return (ErrorMessage.noLocationFound, ErrorMessage.tryAgain)
+            return (ErrorMessage.emptyInput, ErrorMessage.searchBarInput)
         case .locationUnavailable:
-            return (ErrorMessage.locationUnavailable, ErrorMessage.tryAgain)
+            return (ErrorMessage.locationUnavailable, ErrorMessage.tryAnother)
         }
     }
 }

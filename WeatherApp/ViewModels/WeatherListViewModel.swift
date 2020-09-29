@@ -25,6 +25,7 @@ class WeatherListViewModel {
     var currentWeatherData: Observable<[CurrentWeather]> {
         return refreshData
             .asObservable()
+            .skip(1)
             .flatMap{ [weak self] (_) -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
                 guard let self = self else { return Observable.just(.failure(.loadingError)) }
                 
@@ -58,9 +59,9 @@ class WeatherListViewModel {
         self.currentLocation = BehaviorRelay<Coordinates>(value: Coordinates(latitude: 0, longitude: 0))
         
         bindCurrentLocationWeather()
+        getCurrentLocationWeather()
         bindModelSelected()
         bindSearchCity()
-        getCurrentLocationWeather()
         refreshData.onNext(())
     }
     
@@ -83,12 +84,17 @@ class WeatherListViewModel {
 
                 switch result {
                 case .success(let location):
+                    self.showLoading.accept(false)
                     return self.dataRepository.getCurrentWeatherData(for: location)
                 case .failure(let error):
+                    self.showLoading.accept(false)
                     return .just(.failure(error))
                 }
             }
             .subscribe(onNext: { result in
+                self.showLoading.accept(false)
+                self.refreshData.onNext(())
+                
                 if case let .failure(error) = result {
                     self.coordinator.presentAlert(with: error)
                 }
@@ -119,8 +125,8 @@ class WeatherListViewModel {
             .subscribe(onNext: { [weak self] result in
                 guard let self = self else { return }
 
-                if case .failure(_) = result {
-                    self.coordinator.presentAlert(with: SearchError.termNotFound)
+                if case .failure(let error) = result {
+                    self.coordinator.presentAlert(with: error)
                 }
             })
             .disposed(by: disposeBag)
@@ -147,7 +153,7 @@ class WeatherListViewModel {
     }
     
     func pushToDetailView(with selectedCity: CurrentWeather) {
-        coordinator.pushDetailViewController(with: selectedCity)
+        coordinator.presentDetailViewController(with: selectedCity)
     }
     
 }

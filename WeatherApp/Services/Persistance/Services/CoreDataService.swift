@@ -16,6 +16,9 @@ class CoreDataService {
     let mainObjectContext: NSManagedObjectContext
     let privateObjectContext: NSManagedObjectContext
     
+    typealias CurrentWeatherDataResult = Observable<Result<[CurrentWeatherEntity], PersistanceError>>
+    typealias WeeklyWeatherDataResult = Observable<Result<[WeeklyForecastEntity], PersistanceError>>
+    
     init(coreDataManager: CoreDataManagerProtocol) {
         self.coreDataManager = coreDataManager
         self.mainObjectContext = coreDataManager.mainManagedObjectContext
@@ -27,21 +30,23 @@ class CoreDataService {
         saveChanges()
     }
     
-    func loadCurrentWeatherData() -> Observable<[CurrentWeatherEntity]> {
+    func loadCurrentWeatherData() -> CurrentWeatherDataResult {
         let request: NSFetchRequest<CurrentForecastEntity> = CurrentForecastEntity.fetchRequest()
         request.sortDescriptors = []
         
         return mainObjectContext
             .rx_entities(request as! NSFetchRequest<NSFetchRequestResult>)
-            .flatMap{ loadedManagedObject -> Observable<[CurrentWeatherEntity]> in
+            .flatMap{ loadedManagedObject -> CurrentWeatherDataResult in
                 guard
                     let loadedCurrentWeather = loadedManagedObject as? [CurrentForecastEntity],
                     let entities = loadedCurrentWeather.first?.currentWeatherEntities?.array as? [CurrentWeatherEntity]
                 else {
-                    return .just([])
+                    return .just(.failure(.noEntitiesFound))
                 }
+                
+                guard entities.count > 0 else { return .just(.failure(.noEntitiesFound))}
           
-                return .just(entities)
+                return .just(.success(entities))
             }
     }
     
@@ -51,6 +56,7 @@ class CoreDataService {
         guard let entity = CurrentWeatherEntity.load(with: request, context: mainObjectContext).first else {
             return
         }
+        
         CurrentWeatherEntity.delete(entity, context: mainObjectContext)
         saveChanges()
     }
@@ -65,7 +71,7 @@ class CoreDataService {
         saveChanges()
     }
     
-    func loadWeeklyForecast(withCoordinates latitude: Double, _ longitude: Double) -> Observable<[WeeklyForecastEntity]> {
+    func loadWeeklyForecast(withCoordinates latitude: Double, _ longitude: Double) -> WeeklyWeatherDataResult {
         let request: NSFetchRequest<WeeklyForecastEntity> = WeeklyForecastEntity.fetchRequest()
         let epsilon = 0.000001;
         let coordinatesPredicate = NSPredicate(format: "latitude > %lf AND latitude < %lf AND longitude > %lf AND longitude < %lf",
@@ -75,12 +81,14 @@ class CoreDataService {
         
         return mainObjectContext
             .rx_entities(request as! NSFetchRequest<NSFetchRequestResult>)
-            .flatMap { (loadedManagedObject) -> Observable<[WeeklyForecastEntity]> in
+            .flatMap { (loadedManagedObject) -> WeeklyWeatherDataResult in
                 guard let loadedWeeklyForecastEntity = loadedManagedObject as? [WeeklyForecastEntity] else {
-                    return .just([])
+                    return .just(.failure(.loadingError))
                 }
-                return .just(loadedWeeklyForecastEntity)
                 
+                guard loadedWeeklyForecastEntity.count > 0 else { return .just(.failure(.noEntitiesFound))}
+
+                return .just(.success(loadedWeeklyForecastEntity))
             }
     }
     

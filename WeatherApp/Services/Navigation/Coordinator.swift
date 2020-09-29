@@ -27,16 +27,16 @@ class Coordinator {
         navigationController?.pushViewController(rootViewController, animated: true)
     }
     
-    func pushDetailViewController(with selectedCity: CurrentWeather) {
+    func presentDetailViewController(with selectedCity: CurrentWeather) {
         let viewModel = WeatherDetailViewModel(appDependencies: appDependencies, currentWeather: selectedCity, coordinator: self)
         let weatherDetailViewController = WeatherDetailViewController(with: viewModel)
         weatherDetailViewController.modalPresentationStyle = .fullScreen
         navigationController?.pushViewController(weatherDetailViewController, animated: true)
     }
     
-    func presentAlert(with error: WeatherErrorHandler) {
+    func presentAlert(with error: ErrorHandler) {
         DispatchQueue.main.async {
-            let alert = UIAlertController(title: error.resolveMessage().0, message:error.resolveMessage().1, preferredStyle: .alert)
+            let alert = UIAlertController(title: error.message.0, message: error.message.1, preferredStyle: .alert)
             alert.addAction(UIAlertAction(title: "OK", style: .default))
             
             if !(self.navigationController?.visibleViewController?.isKind(of: UIAlertController.self))! {

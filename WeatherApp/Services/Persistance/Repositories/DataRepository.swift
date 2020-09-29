@@ -16,9 +16,12 @@ class DataRepository {
     let coreDataService: CoreDataService
     let disposeBag = DisposeBag()
     
-    typealias WeatherResponse = Observable<Result<CurrentWeatherResponse, NetworkError>>
-    typealias ForecastResponse = Observable<Result<CurrentForecast, NetworkError>>
-    typealias WeeklyResponse = Observable<Result<WeeklyWeatherResponse, NetworkError>>
+    typealias CurrentWeatherApiResponse = Observable<Result<CurrentWeatherResponse, NetworkError>>
+    typealias ForecastApiResponse = Observable<Result<CurrentForecast, NetworkError>>
+    typealias WeeklyApiResponse = Observable<Result<WeeklyWeatherResponse, NetworkError>>
+    
+    typealias CurrentWeatherDataResult = Observable<Result<[CurrentWeatherEntity], PersistanceError>>
+    typealias WeeklyForecastDataResult = Observable<Result<[WeeklyForecastEntity], PersistanceError>>
     
     init(weatherApiService: ApiService, coreDataService: CoreDataService) {
         self.weatherApiService = weatherApiService
@@ -29,33 +32,30 @@ class DataRepository {
 
 extension DataRepository: WeatherListDataRepository {
     
-    func getCurrentWeatherData() -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> {
+    func getCurrentWeatherData() -> CurrentWeatherDataResult {
         let apiURL = URLGenerator.currentWeather(ids: getCurrentCityIds())
-        let weatherData: WeatherResponse = weatherApiService.fetchData(urlString: apiURL)
+        let weatherData: CurrentWeatherApiResponse = weatherApiService.fetchData(urlString: apiURL)
         
         return weatherData
             .do(onNext: { [weak self] result in
                 guard let self = self else { return }
                 
                 if case let .success(currentForecast) = result {
-                    self.coreDataService.saveCurrentWeatherData(currentForecast.currentForecastList)
+                    return self.coreDataService.saveCurrentWeatherData(currentForecast.currentForecastList)
                 }
-            }).flatMap { [weak self ] (_) -> Observable<[CurrentWeatherEntity]> in
-                guard let self = self else {  return Observable.just([]) }
+            })
+            .flatMap { [weak self ] (result) -> CurrentWeatherDataResult in
+                guard let self = self else {
+                    return Observable.just(.failure(PersistanceError.loadingError))
+                }
                 
                 return self.coreDataService.loadCurrentWeatherData()
-            }.flatMap { (currentWeatherEntities) -> Observable<Result<[CurrentWeatherEntity], PersistanceError>> in
-                guard currentWeatherEntities.count > 0 else {
-                    return Observable.just(.failure(.loadingError))
-                }
-                
-                return Observable.just(.success(currentWeatherEntities))
             }
     }
     
-    func getCurrentWeatherData(for city: String) -> ForecastResponse {
+    func getCurrentWeatherData(for city: String) -> ForecastApiResponse {
         let apiURL = URLGenerator.currentCityWeather(forCity: city)
-        let weatherData: ForecastResponse = weatherApiService.fetchData(urlString: apiURL)
+        let weatherData: ForecastApiResponse = weatherApiService.fetchData(urlString: apiURL)
         
         return weatherData
             .do(onNext: { [weak self] result in
@@ -65,7 +65,7 @@ extension DataRepository: WeatherListDataRepository {
                     self.coreDataService.saveCurrentWeatherData([currentForecast])
                 }
             })
-            .flatMap { (result) -> ForecastResponse in
+            .flatMap { (result) -> ForecastApiResponse in
                 return .just(result)
             }
     }
@@ -80,16 +80,16 @@ extension DataRepository: WeatherListDataRepository {
     
     private func getCurrentCityIds() -> String {
         let cityIds = coreDataService.loadCityEntites().map { String($0.id) }
-        return cityIds.count > 0 ? cityIds.map { $0 }.joined(separator:",") : Constants.defaultCityIds
+        return cityIds.map { $0 }.joined(separator:",")
     }
     
 }
 
 extension DataRepository: DetailWeatherDataRepository {
     
-    func getWeeklyWeather(latitude: Double, longitude: Double) -> Observable<[WeeklyForecastEntity]> {
+    func getWeeklyWeather(latitude: Double, longitude: Double) -> WeeklyForecastDataResult {
         let apiURL = URLGenerator.weeklyWeather(with: latitude, longitude)
-        let weeklyWeatherResponse: WeeklyResponse = weatherApiService.fetchData(urlString: apiURL)
+        let weeklyWeatherResponse: WeeklyApiResponse = weatherApiService.fetchData(urlString: apiURL)
         
         return weeklyWeatherResponse
             .do(onNext: { [weak self] result in
@@ -98,11 +98,13 @@ extension DataRepository: DetailWeatherDataRepository {
                 if case let .success(weeklyWeatherResponse) = result {
                     self.coreDataService.saveWeeklyForecast(weeklyWeatherResponse)
                 }
-            }).flatMap { [weak self ] (_) -> Observable<[WeeklyForecastEntity]> in
-                guard let self = self else { return Observable.just([]) }
-                
+            }).flatMap { [weak self ] (result) -> WeeklyForecastDataResult in
+                guard let self = self else {
+                    return Observable.just(.failure(.loadingError))
+                }
+        
                 return self.coreDataService.loadWeeklyForecast(withCoordinates: latitude, longitude)
-        }
+            }
     }
     
 }

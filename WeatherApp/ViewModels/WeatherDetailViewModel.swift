@@ -32,34 +32,35 @@ class WeatherDetailViewModel {
     var hourlyWeather: Observable<[SectionOfHourlyWeather]> {
         return refreshData
             .asObservable()
-            .flatMap{ [weak self] (_) -> Observable<[WeeklyForecastEntity]> in
-                guard let self = self else { return Observable.just([])}
+            .flatMap{ [weak self] (_) -> Observable<Result<[WeeklyForecastEntity], PersistanceError>> in
+                guard let self = self else {
+                    return Observable.just(.failure(.loadingError))
+                }
                 
                 self.showLoading.accept(true)
                 return self.dataRepository.getWeeklyWeather(latitude: self.locationService.coordinates.value.latitude,
                                                             longitude: self.locationService.coordinates.value.longitude)
             }
-            .flatMap { [weak self] weeklyForecastEntities -> Observable<[SectionOfHourlyWeather]> in
-                guard
-                    let self = self,
-                    let weeklyForecastEntity = weeklyForecastEntities.first
-                else {
+            .flatMap { [weak self] result -> Observable<[SectionOfHourlyWeather]> in
+                guard let self = self else {
                     return Observable.just([])
                 }
                 
-                let hourlyWeatherList = weeklyForecastEntity.hourlyWeather
-                    .map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
-                    .sorted { $0.dateTime < $1.dateTime }
-                    .map( {SectionOfHourlyWeather(items: [$0]) } )
-                
-                let dailyWeatherList = weeklyForecastEntity.dailyWeather
-                    .map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
-                    .sorted { $0.dateTime < $1.dateTime }
-                
-                self.dailyWeather.accept(dailyWeatherList)
-                self.showLoading.accept(false)
-                
-                return Observable.just(hourlyWeatherList)
+                switch result {
+                case .success(let weeklyForecastEntities):
+                    guard let weeklyForecastEntity = weeklyForecastEntities.first else { return .just([]) }
+                    
+                    let hourlyWeatherList = self.mapToViewModel(weeklyForecastEntity)
+                    self.showLoading.accept(false)
+                    
+                    return Observable.just(hourlyWeatherList)
+                    
+                case .failure(let error):
+                    self.showLoading.accept(false)
+                    self.coordinator.presentAlert(with: error)
+                    
+                    return .just([])
+                }
             }
     }
     
@@ -73,5 +74,19 @@ class WeatherDetailViewModel {
         refreshData.onNext(())
     }
     
+    private func mapToViewModel(_ weeklyForecastEntity: WeeklyForecastEntity) -> [SectionOfHourlyWeather]{
+        let dailyWeatherList = weeklyForecastEntity.dailyWeather
+            .map { DailyWeather(from: $0 as! DailyWeatherEntity ) }
+            .sorted { $0.dateTime < $1.dateTime }
+        
+        dailyWeather.accept(dailyWeatherList)
+        
+        let hourlyWeatherList = weeklyForecastEntity.hourlyWeather
+            .map { HourlyWeather(from: $0 as! HourlyWeatherEntity) }
+            .sorted { $0.dateTime < $1.dateTime }
+            .map( {SectionOfHourlyWeather(items: [$0]) } )
+        
+        return hourlyWeatherList
+    }
 }
 

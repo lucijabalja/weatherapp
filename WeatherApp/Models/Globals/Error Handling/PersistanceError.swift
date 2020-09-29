@@ -8,18 +8,20 @@
 
 import Foundation
 
-enum PersistanceError: Error, WeatherErrorHandler {
+enum PersistanceError: Error, ErrorHandler {
     
-    case loadingError, savingError, noEntitiesFound
-    
-    func resolveMessage() -> (String, String) {
+    case loadingError, savingError, noEntitiesFound, noEntitesAndNoInternet
+
+    var message: (String, String) {
         switch self {
         case .loadingError:
             return (ErrorMessage.loadingError, ErrorMessage.tryAgain)
-        case .noEntitiesFound:
-            return (ErrorMessage.noInternetConnection, ErrorMessage.turnInternetConnection)
         case .savingError:
             return (ErrorMessage.savingError, ErrorMessage.tryAgain)
+        case .noEntitiesFound:
+            return (ErrorMessage.noEntities, ErrorMessage.startSearching)
+        case .noEntitesAndNoInternet:
+            return (ErrorMessage.noInternetConnection, ErrorMessage.turnInternetConnection)
         }
     }
 }

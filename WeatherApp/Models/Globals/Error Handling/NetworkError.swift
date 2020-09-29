@@ -8,19 +8,26 @@
 
 import Foundation
 
-enum NetworkError: Error, WeatherErrorHandler {
+enum NetworkError: Error, ErrorHandler {
     
-    case decodingError, unwrappingError, URLSessionError, invalidURLError, termNotFound
-    
-    func resolveMessage() -> (String, String){
+    case decodingError, invalidURLError, unwrappingError, URLSessionError, termNotFound, noInternetConnection
+        
+    var message: (String, String) {
         switch self {
+        case .decodingError:
+            return (ErrorMessage.decodingError, ErrorMessage.tryAgain)
+        case .invalidURLError:
+            return (ErrorMessage.invalidURLError, ErrorMessage.tryAgain)
+        case .unwrappingError:
+            return (ErrorMessage.unwrappingError, ErrorMessage.tryAgain)
         case .URLSessionError:
-            return (ErrorMessage.noInternetConnection, ErrorMessage.turnInternetConnection)
+            return (ErrorMessage.urlSessionError, ErrorMessage.tryAgain)
         case .termNotFound:
-            return (ErrorMessage.noLocationFound, ErrorMessage.tryAgain)
-        @unknown default:
-            return (ErrorMessage.loadingError, ErrorMessage.tryAgain)
+            return (ErrorMessage.cityNotFound, ErrorMessage.tryAnother)
+        case .noInternetConnection:
+            return (ErrorMessage.noInternetConnection, ErrorMessage.turnInternetConnection)
         }
     }
+    
 }
 

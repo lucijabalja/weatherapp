@@ -35,7 +35,7 @@ class ApiService {
                 return Observable.just(.failure(.decodingError))
             }
         }.catchError { (_) -> Observable<Result<T, NetworkError>> in
-            return Observable.just(.failure(.URLSessionError))
+            return Observable.just(.failure(.noInternetConnection))
         }
     }
     
